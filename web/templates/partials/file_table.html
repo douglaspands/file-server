@@ -5,7 +5,7 @@
                 <th scope="col" class="py-3.5 px-4 font-semibold">Nome</th>
                 <th scope="col" class="py-3.5 px-4 font-semibold w-32 hidden sm:table-cell">Tamanho</th>
                 <th scope="col" class="py-3.5 px-4 font-semibold w-44 hidden md:table-cell">Modificado em</th>
-                <th scope="col" class="py-3.5 px-4 font-semibold w-28 text-right">Ações</th>
+                <th scope="col" class="py-3.5 px-4 font-semibold w-32 text-right">Ações</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-slate-800/60">
@@ -71,8 +71,13 @@
                                 {{.Name}}
                             </a>
                             <span class="sm:hidden text-[11px] text-slate-500 font-mono block mt-0.5">Pasta</span>
+                        {{else if .IsViewable}}
+                            <a href="/view/{{.RelativePath}}" target="_blank" rel="noopener noreferrer" class="font-medium text-slate-200 hover:text-indigo-300 active:text-indigo-200 transition-colors truncate block text-sm sm:text-base" title="Visualizar {{.Name}}">
+                                {{.Name}}
+                            </a>
+                            <span class="sm:hidden text-[11px] text-slate-400 font-mono block mt-0.5">{{.FormattedSize}}</span>
                         {{else}}
-                            <a href="/download/{{.RelativePath}}" class="font-medium text-slate-200 hover:text-indigo-300 active:text-indigo-200 transition-colors truncate block text-sm sm:text-base">
+                            <a href="/download/{{.RelativePath}}" class="font-medium text-slate-200 hover:text-indigo-300 active:text-indigo-200 transition-colors truncate block text-sm sm:text-base" title="Baixar {{.Name}}">
                                 {{.Name}}
                             </a>
                             <span class="sm:hidden text-[11px] text-slate-400 font-mono block mt-0.5">{{.FormattedSize}}</span>
@@ -100,6 +105,18 @@
                                 </svg>
                             </a>
                         {{else}}
+                            {{if .IsViewable}}
+                                <a href="/view/{{.RelativePath}}" 
+                                   target="_blank" 
+                                   rel="noopener noreferrer"
+                                   title="Visualizar no navegador"
+                                   class="p-2 sm:p-1.5 min-w-[36px] min-h-[36px] sm:min-w-[32px] sm:min-h-[32px] flex items-center justify-center rounded-xl bg-slate-800 hover:bg-indigo-600 active:bg-indigo-700 text-slate-300 hover:text-white transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                </a>
+                            {{end}}
                             <a href="/download/{{.RelativePath}}" 
                                title="Baixar arquivo"
                                class="p-2 sm:p-1.5 min-w-[36px] min-h-[36px] sm:min-w-[32px] sm:min-h-[32px] flex items-center justify-center rounded-xl bg-slate-800 hover:bg-indigo-600 active:bg-indigo-700 text-slate-300 hover:text-white transition-colors">

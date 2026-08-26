@@ -63,6 +63,9 @@ func TestFileBrowserHandler(t *testing.T) {
 		assert.Contains(t, rec.Header().Get("Content-Type"), "text/html")
 		assert.Contains(t, rec.Body.String(), "sample.txt")
 		assert.Contains(t, rec.Body.String(), "documents")
+		assert.Contains(t, rec.Body.String(), `href="/view/sample.txt"`)
+		assert.Contains(t, rec.Body.String(), `href="/download/sample.txt"`)
+		assert.Contains(t, rec.Body.String(), `href="/zip/documents"`)
 	})
 
 	t.Run("GET /files/documents renderiza subdiretório", func(t *testing.T) {
@@ -212,6 +215,86 @@ func TestDownloadFileHandler(t *testing.T) {
 		mux.ServeHTTP(rec, req)
 
 		assert.Equal(t, http.StatusForbidden, rec.Code)
+	})
+}
+
+func TestViewFileHandler(t *testing.T) {
+	_, mux := setupTestEnvironment(t)
+
+	t.Run("GET /view/sample.txt exibe arquivo inline com cabeçalho inline", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/view/sample.txt", nil)
+		rec := httptest.NewRecorder()
+		mux.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Contains(t, rec.Header().Get("Content-Disposition"), `inline; filename="sample.txt"`)
+		assert.Contains(t, rec.Header().Get("Content-Type"), "text/plain")
+		assert.Equal(t, "sample file content for download", rec.Body.String())
+	})
+
+	t.Run("GET /view/documents/guide.pdf exibe PDF inline com Content-Type application/pdf", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/view/documents/guide.pdf", nil)
+		rec := httptest.NewRecorder()
+		mux.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Contains(t, rec.Header().Get("Content-Disposition"), `inline; filename="guide.pdf"`)
+		assert.Equal(t, "application/pdf", rec.Header().Get("Content-Type"))
+		assert.Equal(t, "guide content", rec.Body.String())
+	})
+
+	t.Run("HEAD /view/sample.txt retorna cabeçalhos inline sem corpo", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodHead, "/view/sample.txt", nil)
+		rec := httptest.NewRecorder()
+		mux.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Contains(t, rec.Header().Get("Content-Disposition"), `inline; filename="sample.txt"`)
+		assert.Empty(t, rec.Body.String())
+	})
+
+	t.Run("GET /view/sample.txt com Range retorna HTTP 206 Partial Content", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/view/sample.txt", nil)
+		req.Header.Set("Range", "bytes=0-5")
+		rec := httptest.NewRecorder()
+		mux.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusPartialContent, rec.Code)
+		assert.Equal(t, "sample", rec.Body.String())
+		assert.Contains(t, rec.Header().Get("Content-Range"), "bytes 0-5/")
+		assert.Contains(t, rec.Header().Get("Content-Disposition"), `inline; filename="sample.txt"`)
+	})
+
+	t.Run("GET /view/documents (pasta) retorna 400 Bad Request", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/view/documents", nil)
+		rec := httptest.NewRecorder()
+		mux.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusBadRequest, rec.Code)
+	})
+
+	t.Run("GET /view/inexistente retorna 404 Not Found", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/view/inexistente.pdf", nil)
+		rec := httptest.NewRecorder()
+		mux.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusNotFound, rec.Code)
+	})
+
+	t.Run("GET /view com path traversal retorna 403 Forbidden", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/view/%2e%2e/%2e%2e/etc/passwd", nil)
+		rec := httptest.NewRecorder()
+		mux.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusForbidden, rec.Code)
+	})
+
+	t.Run("POST /view retorna 405 Method Not Allowed", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodPost, "/view/sample.txt", nil)
+		rec := httptest.NewRecorder()
+		mux.ServeHTTP(rec, req)
+
+		assert.Equal(t, http.StatusMethodNotAllowed, rec.Code)
 	})
 }
 

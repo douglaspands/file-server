@@ -219,6 +219,9 @@ func (s *LocalFileService) ListDirectory(ctx context.Context, relPath string) (*
 
 		itemRelPath := filepath.ToSlash(filepath.Join(cleanRel, entry.Name()))
 
+		ext := strings.ToLower(filepath.Ext(entry.Name()))
+		category := domain.DetectCategory(entry.Name(), isDir)
+
 		item := domain.FileItem{
 			Name:             entry.Name(),
 			RelativePath:     itemRelPath,
@@ -227,8 +230,9 @@ func (s *LocalFileService) ListDirectory(ctx context.Context, relPath string) (*
 			FormattedSize:    domain.FormatFileSize(itemSize),
 			ModTime:          entryInfo.ModTime(),
 			FormattedModTime: entryInfo.ModTime().Format("02/01/2006 15:04"),
-			Extension:        strings.ToLower(filepath.Ext(entry.Name())),
-			Category:         domain.DetectCategory(entry.Name(), isDir),
+			Extension:        ext,
+			Category:         category,
+			IsViewable:       domain.IsViewableFormat(category, ext),
 		}
 
 		items = append(items, item)

@@ -32,6 +32,7 @@ type FileItem struct {
 	FormattedModTime string       `json:"formattedModTime"`
 	Extension        string       `json:"extension"`
 	Category         FileCategory `json:"category"`
+	IsViewable       bool         `json:"isViewable"`
 }
 
 // Breadcrumb representa um elemento no caminho hierárquico de navegação.
@@ -103,5 +104,34 @@ func DetectCategory(name string, isDir bool) FileCategory {
 		return CategoryCode
 	default:
 		return CategoryOther
+	}
+}
+
+// IsViewableFormat determina se um arquivo com a categoria e extensão especificadas pode ser visualizado nativamente no navegador.
+func IsViewableFormat(category FileCategory, ext string) bool {
+	if category == CategoryFolder || category == CategoryArchive {
+		return false
+	}
+	cleanExt := strings.ToLower(ext)
+	if !strings.HasPrefix(cleanExt, ".") && cleanExt != "" {
+		cleanExt = "." + cleanExt
+	}
+	switch category {
+	case CategoryImage, CategoryVideo, CategoryAudio, CategoryCode:
+		return true
+	case CategoryDocument:
+		switch cleanExt {
+		case ".pdf", ".txt", ".csv", ".tsv", ".md", ".log":
+			return true
+		default:
+			return false
+		}
+	default:
+		switch cleanExt {
+		case ".txt", ".log", ".cfg", ".conf", ".ini", ".env", ".json", ".xml", ".yaml", ".yml":
+			return true
+		default:
+			return false
+		}
 	}
 }
