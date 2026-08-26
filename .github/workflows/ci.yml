@@ -2,7 +2,7 @@ name: CI Quality Gate
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, 'feature/**' ]
   pull_request:
     branches: [ main, master ]
 
@@ -19,6 +19,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.26.x'
+          check-latest: true
           cache: true
 
       - name: Verify Dependencies
@@ -31,6 +32,7 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           version: latest
+          install-mode: goinstall
           args: --timeout=5m
 
       - name: Run Security Audit (govulncheck)
@@ -46,7 +48,7 @@ jobs:
       - name: Setup Node for OpenSpec validation
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Validate OpenSpec Integrity
         run: |

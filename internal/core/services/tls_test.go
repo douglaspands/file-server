@@ -84,7 +84,6 @@ func TestBuildTLSConfig(t *testing.T) {
 	assert.Contains(t, cfg.NextProtos, "h2")
 	assert.Contains(t, cfg.NextProtos, "http/1.1")
 	assert.NotEmpty(t, cfg.CipherSuites)
-	assert.True(t, cfg.PreferServerCipherSuites)
 	assert.Len(t, cfg.Certificates, 1)
 }
 
