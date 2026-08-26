@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/douglas/file-server/cmd"
+	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -79,5 +80,11 @@ func TestExecuteRoot(t *testing.T) {
 	t.Run("Given valid args When executing root Then runs without error", func(t *testing.T) {
 		err := cmd.ExecuteRoot([]string{"--help"})
 		require.NoError(t, err)
+	})
+}
+
+func TestMousetrapDisabled(t *testing.T) {
+	t.Run("Given root command initialization When checking mousetrap Then MousetrapHelpText is empty", func(t *testing.T) {
+		assert.Empty(t, cobra.MousetrapHelpText, "Cobra MousetrapHelpText deve estar vazio para permitir clique duplo no Windows Explorer")
 	})
 }
