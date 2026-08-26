@@ -1,0 +1,34 @@
+# Binários e executáveis
+bin/
+dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+sftp-server
+sftp-server.exe
+
+# Arquivos de cobertura e testes
+*.out
+*.test
+coverage.html
+coverage.txt
+
+# Arquivos temporários e de build
+tmp/
+.air/
+.task/
+*.log
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Variáveis de ambiente locais
+.env
+.env.local

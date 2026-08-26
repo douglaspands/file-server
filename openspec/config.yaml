@@ -1,0 +1,48 @@
+schema: spec-driven
+
+# Contexto Geral do Projeto (Injetado em todas as novas propostas e planos)
+context: |
+  Projeto: File Server (file-server)
+  Tecnologia & Arquitetura:
+  - Linguagem: Go (Golang) com padrão de Clean Architecture / Ports & Adapters.
+  - Domínio e regras privadas residem exclusivamente em internal/.
+  - Frontend: Renderização no servidor (Go html/template) com HTMX, Alpine.js e Tailwind CSS.
+  - Assets e templates SEMPRE embutidos no binário via go:embed (embed.FS).
+  - CLI: Inicialização modular baseada em Cobra com comando 'version' (ldflags dinâmico) e 'serve'.
+  - Documentação: README.md completo com badges, guia de uso da CLI e guia do desenvolvedor.
+  - Qualidade: TDD/BDD com 'testing' + 'testify', barreira inegociável de cobertura >= 80%.
+  - Comandos: Makefile universal (make help, make test, make lint, make check, make build, make build-all).
+  - Commits: Padrão Conventional Commits (feat, fix, refactor, test, docs, chore).
+  - Idioma: Todas as especificações e documentações devem ser escritas em Português do Brasil (PT-BR).
+
+# Regras por Artefato
+rules:
+  proposal:
+    - Todas as propostas devem ser escritas em Português do Brasil (PT-BR).
+    - Declarar explicitamente novas capacidades ou impactos na arquitetura Go, CLI, Web ou Testes.
+    - Manter foco no 'porquê' e 'o que muda', reservando detalhes de implementação para design.md.
+  specs:
+    - Todas as especificações devem ser escritas em Português do Brasil (PT-BR).
+    - Escrever os requisitos funcionais sob a ótica CONJUNTA de PO (valor de negócio e critérios de aceitação) e QA (cenários de teste, bordas, Given-When-Then).
+    - Toda especificação de nova capacidade DEVE iniciar com ## Purpose (mínimo de 50 caracteres).
+    - Cada requisito deve conter pelo menos um cenário no formato '#### Scenario:' com 4 hashtags.
+    - Scenarios devem usar estritamente bullets com - **WHEN** e - **THEN** (e opcionalmente - **GIVEN**).
+  design:
+    - Detalhar decisões técnicas, padrões arquiteturais e alternativas consideradas.
+    - Assegurar desacoplamento de dependências e ausência de dependências circulares.
+    - Detalhar estratégias de testes unitários e de integração.
+  tasks:
+    - Tarefas devem ser organizadas em seções numeradas '## N. Nome do Grupo'.
+    - Cada item deve ser um checkbox no formato '- [ ] N.M Descrição da tarefa'.
+    - Incluir tarefas explícitas de testes unitários/BDD com validação de cobertura >= 80% e verificação via make check.
+
+# Orientações Operacionais (Apply e Archive)
+operations:
+  apply:
+    guidance:
+      - Utilizar a suíte de testes e o Makefile (make test, make check) para validar alterações antes de concluir tarefas.
+      - Manter a cobertura de código igual ou superior a 80%.
+  archive:
+    guidance:
+      - O arquivamento de uma especificação concluída DEVE ser finalizado criando um commit Git (Conventional Commits) contendo todas as implementações e a sincronização da spec.
+      - Mensagem sugerida de commit: "feat(spec): archive <change-name> and apply changes"

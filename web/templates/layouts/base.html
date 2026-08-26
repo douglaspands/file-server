@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{block "title" .}}File Server{{end}}</title>
+    <!-- Tailwind CSS Standalone / CDN Fallback -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.14.0/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans antialiased">
+    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl">⚡</span>
+                <span class="font-bold text-xl tracking-tight text-white">File Server</span>
+                <span class="text-xs bg-indigo-500/20 text-indigo-400 font-mono px-2 py-0.5 rounded border border-indigo-500/30">{{.Version}}</span>
+            </div>
+            <nav class="flex items-center space-x-4 text-sm font-medium">
+                <a href="/" class="hover:text-indigo-400 transition-colors">Início</a>
+                <a href="/api/health" class="text-slate-400 hover:text-slate-200 transition-colors">API Health</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-6xl mx-auto px-4 py-8 w-full">
+        {{template "content" .}}
+    </main>
+
+    <footer class="border-t border-slate-800 py-6 text-center text-xs text-slate-500 bg-slate-950">
+        <p>File Server &copy; 2026 - Desenvolvido com Go + HTML + HTMX + Tailwind</p>
+    </footer>
+
+    {{if .IsDev}}
+    <!-- Live Reload SSE Hook em modo de desenvolvimento -->
+    <script>
+        if (!!window.EventSource) {
+            const source = new EventSource('/_live_reload');
+            source.onerror = function() {
+                setTimeout(() => { location.reload(); }, 1500);
+            };
+        }
+    </script>
+    {{end}}
+</body>
+</html>

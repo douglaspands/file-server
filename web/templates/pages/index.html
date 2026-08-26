@@ -1,0 +1,53 @@
+{{template "base.html" .}}
+
+{{define "content"}}
+<div class="space-y-8">
+    <div class="bg-gradient-to-r from-indigo-900/40 via-slate-800 to-slate-900 border border-indigo-500/20 rounded-2xl p-8 shadow-xl">
+        <h1 class="text-3xl font-extrabold text-white tracking-tight mb-2">Fundação do Sistema Pronta</h1>
+        <p class="text-slate-300 max-w-2xl text-sm leading-relaxed">
+            Ambiente moderno em Golang com renderização HTML no servidor, TDD/BDD, assets embutidos no binário (<code class="text-indigo-400 font-mono text-xs">go:embed</code>) e integração com HTMX + Tailwind.
+        </p>
+    </div>
+
+    <!-- Seção Dinâmica com HTMX -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-white">Status de Integridade (Health)</h2>
+                <button hx-get="/partials/health" 
+                        hx-target="#health-status-container" 
+                        hx-swap="outerHTML"
+                        class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-3 py-1.5 rounded-lg transition shadow">
+                    Atualizar Status
+                </button>
+            </div>
+            
+            <div id="health-status-container">
+                {{template "health_card.html" .Health}}
+            </div>
+        </div>
+
+        <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-6 shadow-sm">
+            <h2 class="text-lg font-semibold text-white mb-4">Recursos da Arquitetura</h2>
+            <ul class="space-y-2 text-sm text-slate-300">
+                <li class="flex items-center space-x-2">
+                    <span class="text-emerald-400 font-bold">✓</span>
+                    <span>Clean Architecture com isolamento em <code class="font-mono text-xs text-indigo-400">internal/</code></span>
+                </li>
+                <li class="flex items-center space-x-2">
+                    <span class="text-emerald-400 font-bold">✓</span>
+                    <span>Binário único autocontido portátil via <code class="font-mono text-xs text-indigo-400">go:embed</code></span>
+                </li>
+                <li class="flex items-center space-x-2">
+                    <span class="text-emerald-400 font-bold">✓</span>
+                    <span>Testes TDD/BDD com meta de cobertura &ge; 80%</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                    <span class="text-emerald-400 font-bold">✓</span>
+                    <span>Makefile universal e cross-compilação para Linux/Windows</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{{end}}

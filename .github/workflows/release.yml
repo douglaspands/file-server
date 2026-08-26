@@ -1,0 +1,80 @@
+name: Release Multiplataforma
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build Multiplatform & Create GitHub Release
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            artifact_name: file-server-linux-amd64
+            archive_ext: tar.gz
+          - goos: linux
+            goarch: arm64
+            artifact_name: file-server-linux-arm64
+            archive_ext: tar.gz
+          - goos: windows
+            goarch: amd64
+            artifact_name: file-server-windows-amd64.exe
+            archive_ext: zip
+          - goos: windows
+            goarch: arm64
+            artifact_name: file-server-windows-arm64.exe
+            archive_ext: zip
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.x'
+
+      - name: Extract Tag Version
+        id: vars
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          echo "COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+
+      - name: Build Binary (${{ matrix.goos }}/${{ matrix.goarch }})
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 0
+        run: |
+          mkdir -p dist
+          LDFLAGS="-X 'github.com/douglas/file-server/internal/version.Version=${{ env.VERSION }}' \
+                   -X 'github.com/douglas/file-server/internal/version.Commit=${{ env.COMMIT }}' \
+                   -X 'github.com/douglas/file-server/internal/version.Date=${{ env.DATE }}' -s -w"
+          go build -ldflags="$LDFLAGS" -trimpath -o "dist/${{ matrix.artifact_name }}" main.go
+
+      - name: Package Artifact (.tar.gz / .zip)
+        run: |
+          cd dist
+          if [ "${{ matrix.archive_ext }}" = "tar.gz" ]; then
+            tar -czf "file-server-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz" "${{ matrix.artifact_name }}"
+          else
+            zip "file-server-${{ env.VERSION }}-${{ matrix.goos }}-${{ matrix.goarch }}.zip" "${{ matrix.artifact_name }}"
+          fi
+
+      - name: Upload Artifact to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.tar.gz
+            dist/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

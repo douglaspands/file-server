@@ -1,0 +1,16 @@
+<div id="health-status-container" class="space-y-3">
+    <div class="flex items-center space-x-2">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            ● {{.Status}}
+        </span>
+        <span class="text-xs text-slate-400">Uptime: <strong class="text-slate-200">{{.Uptime}}</strong></span>
+    </div>
+    
+    <div class="bg-slate-900/80 rounded-lg p-3 text-xs font-mono border border-slate-700/50 space-y-1 text-slate-300">
+        <div><span class="text-slate-500">Timestamp:</span> {{.Timestamp.Format "2006-01-02 15:04:05 UTC"}}</div>
+        <div><span class="text-slate-500">Versão:</span> {{.Version}}</div>
+        {{range $k, $v := .Details}}
+        <div><span class="text-slate-500">{{$k}}:</span> {{$v}}</div>
+        {{end}}
+    </div>
+</div>

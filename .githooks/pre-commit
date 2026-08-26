@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -e
+
+echo "🔍 [Pre-commit] Formatando código Go e validando..."
+go fmt ./...
+make test-unit
