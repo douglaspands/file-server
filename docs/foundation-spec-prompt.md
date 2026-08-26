@@ -1,6 +1,6 @@
 # Prompt Mestre: Fundação de Projetos Go com OpenSpec e Antigravity CLI
 
-Este documento contém o **Prompt Mestre de Fundação de Projetos** (`foundation-spec-prompt`), projetado para ser utilizado com o **Antigravity CLI** e o framework **OpenSpec** (por exemplo, via comando `/openspec-propose` ou como instrução inicial). Ele condensa todos os requisitos arquiteturais, de qualidade, automação, esteira de testes, CI/CD, governança e engenharia de agentes estabelecidos na especificação de fundação (`project-foundation`), permitindo replicar com precisão esse mesmo padrão de excelência para qualquer novo projeto Go.
+Este documento contém o **Prompt Mestre de Fundação de Projetos** (`foundation-spec-prompt`), projetado para ser utilizado com o **Antigravity CLI** e o framework **OpenSpec** (por exemplo, via comando `/openspec-propose` ou como instrução inicial). Ele condensa todos os requisitos arquiteturais, de qualidade, automação, esteira de testes, CI/CD, governança, autonomia operacional e engenharia de agentes estabelecidos na especificação de fundação (`project-foundation`), permitindo replicar com precisão esse mesmo padrão de excelência para qualquer novo projeto Go.
 
 ---
 
@@ -28,7 +28,7 @@ Você é um Arquiteto de Software Principal, Engenheiro Líder em Go (Golang) e 
 Sua tarefa é criar a especificação completa de fundação arquitetural e de engenharia de software intitulada 'project-foundation' para o novo projeto '[NOME_DO_PROJETO]' (Módulo Go: '[MODULO_GO]', Executável CLI: '[COMANDO_CLI]'), cuja descrição é:
 "[DESCRICAO_DO_PROJETO]"
 
-A especificação deve ser gerada utilizando o padrão OpenSpec em Português do Brasil (PT-BR) e cobrir integralmente os 10 pilares fundamentais descritos a seguir, produzindo os artefatos: 'proposal.md', 'design.md', 'specs/project-foundation/spec.md', 'tasks.md', 'openspec/config.yaml' e as diretrizes em '.agent/rules/'.
+A especificação deve ser gerada utilizando o padrão OpenSpec em Português do Brasil (PT-BR) e cobrir integralmente os 10 pilares fundamentais descritos a seguir, produzindo os artefatos: 'proposal.md', 'design.md', 'specs/project-foundation/spec.md', 'tasks.md', 'openspec/config.yaml', 'AGENTS.md', 'GEMINI.md', '.agent/settings.json' e as regras em '.agent/rules/'.
 
 ================================================================================
 PILAR 1: PADRÃO ARQUITETURAL E ESTRUTURA CANÔNICA EM GO (CLEAN ARCHITECTURE)
@@ -109,30 +109,38 @@ PILAR 5: STACK DE FRONTEND WEB, LIVE-RELOAD E BINÁRIO 100% AUTOCONTIDO (GO:EMBE
   * Script injetado de Live Reload no modo desenvolvimento ('make dev') recarregando a página no navegador com ciclo de feedback inferior a 2 segundos.
 
 ================================================================================
-PILAR 6: ESTRATÉGIAS DO ANTIGRAVITY CLI (HARNESS, LOOP E GRAPH ENGINEERING)
+PILAR 6: ENGENHARIA DE AGENTES, PRIORIDADE DE FERRAMENTAS E ECONOMIA DE TOKENS
 ================================================================================
-- Documentar e configurar em '.agent/rules/' e 'openspec/config.yaml' as estratégias para desenvolvimento assistido por IA:
-  1. Harness Engineering:
-     - O Antigravity CLI deve utilizar o 'Makefile' como seu harness de automação ('make test', 'make lint', 'make check').
-     - Utilizar comandos silenciosos/concisos para reduzir o gasto de tokens e manter o foco na janela de contexto.
-  2. Loop Engineering:
-     - Operar em ciclos curtos de auto-validação: Inspeção de Contratos -> Implementação Pontual -> Execução de Testes Automatizados -> Diagnóstico de Falhas -> Correção -> Validação Final com 'make check'.
-     - Nenhuma tarefa deve ser marcada como concluída sem evidência de testes passando e cobertura >= 80%.
-  3. Graph Engineering:
-     - Planejar e implementar componentes navegando pelo grafo acíclico de dependências (DAG):
-       Contratos/Interfaces ('ports/') -> Entidades de Domínio ('domain/') -> Serviços de Negócio ('services/') -> Adaptadores/Handlers ('adapters/') -> Composição ('cmd/').
-     - Prevenir ativamente qualquer dependência circular entre módulos.
+- Documentar e configurar em 'AGENTS.md', 'GEMINI.md', '.agent/rules/' e '.agent/settings.json' as diretrizes de operação e autonomia do Antigravity (AGY):
+  1. Prioridade Mandatória de Ferramentas Nativas:
+     - Criar arquivos: Utilizar estritamente 'write_to_file'. Proibido executar 'cat << EOF', 'echo >' ou 'touch' via terminal.
+     - Editar arquivos: Utilizar 'replace_file_content' para alterações pontuais e cirúrgicas. Proibido scripts 'sed', 'awk' ou 'cat >' no terminal.
+     - Inspecionar / Ler arquivos: Utilizar 'view_file' especificando 'StartLine' e 'EndLine' para focar apenas no trecho relevante. Proibido 'cat', 'head', 'tail'.
+     - Buscar código: Utilizar 'grep_search'. Proibido 'grep', 'rg' via terminal.
+     - Localizar arquivos: Utilizar 'find_by_name'. Proibido 'find', 'ls -R' via terminal.
+     - Listar diretórios: Utilizar 'list_dir'. Proibido 'ls' via terminal.
+  2. Uso Restrito do Terminal ('run_command'):
+     - O terminal deve ser utilizado exclusivamente para ferramentas do ciclo de vida: 'make' ('make test', 'make lint', 'make check', 'make build'), 'go' ('go test', 'go mod tidy'), 'git', 'openspec' e binários executáveis.
+  3. Autonomia Operacional e Permissões (.agent/settings.json):
+     - Configurar permissões pré-autorizadas ('allow') para todas as ferramentas cotidianas ('go', 'make', 'git', 'openspec', linters), eliminando prompts de confirmação repetitivos.
+  4. Economia Ativa de Tokens e Otimização de Outputs:
+     - Respostas do agente devem ser concisas e estruturadas em Markdown com links clicáveis '[arquivo](file:///caminho)'.
+     - NUNCA duplicar blocos massivos de código já existentes no disco na resposta do chat.
+     - Leitura cirúrgica de arquivos limitando linhas e execução de comandos com saídas concisas (sem flags excessivamente verbosas).
+  5. Harness, Loop & Graph Engineering:
+     - Harness Engineering: Makefile como interface universal de execução.
+     - Loop Engineering: Ciclos curtos de feedback contínuo (código -> teste automatizado -> correção -> validação com 'make check').
+     - Graph Engineering: Implementação na ordem topológica da DAG (ports -> domain -> services -> adapters -> cmd) sem dependências circulares.
 
 ================================================================================
 PILAR 7: GOVERNANÇA OPENSPEC (PO/QA, PT-BR E REGRAS PERMANENTES)
 ================================================================================
 - Configurar 'openspec/config.yaml' com:
-  * context: Declaração da stack (Go, Clean Architecture, HTMX, Tailwind, embed, TDD/BDD >= 80%, Makefile, PT-BR).
+  * context: Declaração da stack (Go, Clean Architecture, HTMX, Tailwind, embed, TDD/BDD >= 80%, Makefile, PT-BR, Autonomia e Ferramentas Nativas do AGY).
   * rules.proposal: Foco no 'porquê' e 'o que muda', declaração explícita de impacto e idioma PT-BR.
   * rules.specs: Escrita em PT-BR sob ótica CONJUNTA de PO (valor de negócio e critérios de aceitação) e QA (cenários de teste com 4 hashtags '#### Scenario:', bullets '- **WHEN**' e '- **THEN**', validação de bordas e erros). Mínimo de 50 caracteres na seção '## Purpose'.
   * rules.tasks: Seções numeradas '## N. Nome do Grupo', checkboxes '- [ ] N.M Descrição', tarefas explícitas de testes unitários/BDD com validação de cobertura >= 80% e 'make check'.
-  * operations.apply.guidance: Executar 'make test' e 'make check' para validar alterações antes de concluir tarefas.
-  * operations.archive.guidance: Ao arquivar uma especificação concluída, o agente DEVE criar o commit Git com Conventional Commits: 'feat(spec): archive <change-name> and apply changes'.
+  * operations.apply.guidance: Executar 'make test' e 'make check' para validar alterações antes de concluir tarefas, priorizando ferramentas nativas.
 
 ================================================================================
 PILAR 8: PIPELINES DE CI/CD E RELEASE MULTIPLATAFORMA NO GITHUB ACTIONS
@@ -162,21 +170,26 @@ PILAR 9: DOCUMENTAÇÃO VIVA E EXAUSTIVA NO README.MD
      - Harness de comandos via Makefile ('make check', 'make dev', 'make test', 'make build-all').
      - Metodologia de testes TDD/BDD com barreira de 80%.
      - Live-reload no desenvolvimento web.
-     - Diretrizes de IA (Antigravity) e padrão Conventional Commits.
+     - Diretrizes de IA (Antigravity), autonomia de ferramentas e padrão Conventional Commits.
 
 ================================================================================
-PILAR 10: GOVERNANÇA GIT, CONVENTIONAL COMMITS E HOOKS
+PILAR 10: GOVERNANÇA GIT, CONVENTIONAL COMMITS, BRANCHING E SQUASH MERGE
 ================================================================================
 - Padrão estrito de Conventional Commits: 'feat:', 'fix:', 'refactor:', 'test:', 'docs:', 'chore:'.
-- Configuração de ganchos de pre-commit para validação de formatação de código e mensagens de commit.
-- Procedimento mandatório e automatizado de commit Git durante o arquivamento de especificações OpenSpec.
+- Feature Branch por Especificação:
+  * Toda nova mudança do OpenSpec inicia em branch dedicada: 'git checkout main && git checkout -b feature/<change-name>'.
+- Permissão Obrigatória do Usuário:
+  * Ao concluir e arquivar uma especificação, o agente DEVE solicitar permissão explícita ao usuário antes de integrar na 'main' ou abrir Pull Request.
+- Estratégia de Integração Exclusivamente SQUASH:
+  * Merge Local: 'git checkout main && git merge --squash feature/<change-name> && git commit -m "feat(<change-name>): ..."'.
+  * Pull Request: Integração configurada estritamente via Squash and Merge ('gh pr merge --squash').
 ```
 
 ---
 
 ## Estrutura Esperada dos Artefatos OpenSpec Gerados
 
-Quando o prompt acima for executado pelo Antigravity CLI, ele deve produzir a seguinte árvore de artefatos na pasta `openspec/changes/project-foundation/`:
+Quando o prompt acima for executado pelo Antigravity CLI, ele deve produzir a seguinte árvore de artefatos no repositório:
 
 ```text
 openspec/
@@ -189,17 +202,24 @@ openspec/
         └── specs/
             └── project-foundation/
                 └── spec.md
+AGENTS.md
+GEMINI.md
 .agent/
+├── settings.json
 └── rules/
     ├── agent_harness_engineering.md
-    ├── golang_conventions.md
-    └── archive_workflow.md
+    ├── agent_tooling_autonomy.md
+    ├── git_branching_workflow.md
+    ├── archive_workflow.md
+    └── golang_conventions.md
 ```
 
 ### Checklist dos Artefatos Gerados:
-- [x] **`proposal.md`**: Define o *Why*, *What Changes*, *Capabilities* (`project-foundation`) e *Impact* (código, IA, governança).
-- [x] **`design.md`**: Detalha *Context*, *Goals/Non-Goals*, *Decisions* (arquitetura Go, testes BDD, Makefile, Air, tokens, HTMX/Tailwind, Cobra/ldflags, release matrix, README, CI/CD) e *Risks/Trade-offs*.
-- [x] **`specs/project-foundation/spec.md`**: Define os 10 requisitos com perspectivas explícitas de **PO** e **QA**, cada um acompanhado de cenários BDD `#### Scenario:` com `- **WHEN**` e `- **THEN**`.
-- [x] **`tasks.md`**: Lista de 10 grupos de tarefas numeradas (`## 1.` a `## 10.`), com subtarefas granulares `- [ ] N.M`, incluindo verificações de compilação, testes unitários, linter, cobertura >= 80% e `openspec validate --all`.
-- [x] **`openspec/config.yaml`**: Configuração central com `context`, `rules` (proposal, specs, design, tasks) e `operations` (apply e archive).
-- [x] **`.agent/rules/`**: Diretrizes operacionais para Harness, Loop, Graph Engineering, convenções Go e fluxo de arquivamento com commit.
+- [x] **`proposal.md`**: Define o *Why*, *What Changes*, *Capabilities* (`project-foundation`) e *Impact* (código, IA, governança, autonomia).
+- [x] **`design.md`**: Detalha *Context*, *Goals/Non-Goals*, *Decisions* (arquitetura Go, testes BDD, Makefile, Air, tokens, HTMX/Tailwind, Cobra/ldflags, release matrix, README, CI/CD, prioridade de ferramentas nativas) e *Risks/Trade-offs*.
+- [x] **`specs/project-foundation/spec.md`**: Define os requisitos com perspectivas explícitas de **PO** e **QA**, cada um acompanhado de cenários BDD `#### Scenario:` com `- **WHEN**` e `- **THEN**`.
+- [x] **`tasks.md`**: Lista de tarefas organizadas por seções numeradas (`## 1.` a `## 10.`), com subtarefas granulares `- [ ] N.M`, incluindo verificações de compilação, testes unitários, linter, cobertura >= 80% e `openspec validate --all`.
+- [x] **`openspec/config.yaml`**: Configuração central com `context`, `rules` (proposal, specs, design, tasks) e `operations` (apply).
+- [x] **`AGENTS.md` e `GEMINI.md`**: Diretrizes operacionais de alta prioridade para autonomia do AGY, ferramentas nativas, economia de tokens e fluxo Git squash.
+- [x] **`.agent/settings.json`**: Permissões de desenvolvimento pré-autorizadas para máxima autonomia sem interrupções.
+- [x] **`.agent/rules/`**: Diretrizes operacionais para Harness/Loop/Graph Engineering, Autonomia de Ferramentas, Git Branching Workflow, Arquivamento com Squash e Convenções Go.

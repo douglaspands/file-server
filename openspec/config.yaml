@@ -14,6 +14,7 @@ context: |
   - Comandos: Makefile universal (make help, make test, make lint, make check, make build, make build-all).
   - Commits: Padrão Conventional Commits (feat, fix, refactor, test, docs, chore).
   - Idioma: Todas as especificações e documentações devem ser escritas em Português do Brasil (PT-BR).
+  - Autonomia & Economia: Prioridade mandatória de ferramentas nativas do AGY (write_to_file, replace_file_content, view_file, grep_search, find_by_name, list_dir), proibição de comandos bash para I/O e respostas concisas sem duplicação de código.
 
 # Regras por Artefato
 rules:
@@ -36,15 +37,10 @@ rules:
     - Cada item deve ser um checkbox no formato '- [ ] N.M Descrição da tarefa'.
     - Incluir tarefas explícitas de testes unitários/BDD com validação de cobertura >= 80% e verificação via make check.
 
-# Orientações Operacionais (Apply e Archive)
+# Orientações Operacionais (Apply)
 operations:
   apply:
     guidance:
       - Utilizar a suíte de testes e o Makefile (make test, make check) para validar alterações antes de concluir tarefas.
       - Manter a cobertura de código igual ou superior a 80%.
-  archive:
-    guidance:
-      - O arquivamento de uma especificação concluída DEVE ser finalizado criando um commit Git (Conventional Commits) na branch de feature.
-      - Após o arquivamento e commit na feature branch, o AGY deve SEMPRE solicitar permissão explícita ao usuário antes de realizar o merge na branch main ou abrir Pull Request.
-      - A integração com a branch main (seja merge local ou Pull Request no GitHub) DEVE ser obrigatoriamente do tipo SQUASH (git merge --squash ou GitHub Squash and Merge).
-      - Mensagem sugerida de commit: "feat(spec): archive <change-name> and apply changes"
+      - Priorizar ferramentas nativas para edição e inspeção de código (replace_file_content, view_file).

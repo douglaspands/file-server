@@ -55,12 +55,12 @@ O sistema SHALL fornecer capacidade de recarregamento rápido (live-reload) no d
 - **THEN** o servidor de desenvolvimento deve recompilar e reiniciar automaticamente em menos de 2 segundos, atualizando a interface web
 
 ### Requirement: Estratégias do Antigravity CLI (Harness, Loop e Graph Engineering) e Otimização de Tokens
-O repositório SHALL conter diretrizes, regras e configurações em `.agent/rules/`, `.agent/` e `openspec/config.yaml` que capacitem o Antigravity CLI a utilizar estratégias avançadas de engenharia de agente (**Harness Engineering, Loop Engineering e Graph Engineering**) durante o ciclo de desenvolvimento da aplicação.
-*(Visão PO: Garante máxima eficiência, precisão e redução de custo de tokens no desenvolvimento conduzido por IA. Visão QA: Estabelece que o agente execute loops de auto-validação e siga a ordem de dependências antes de sinalizar conclusão).*
+O repositório SHALL conter diretrizes, regras e configurações em `.agent/rules/`, `.agent/settings.json`, `AGENTS.md`, `GEMINI.md` e `openspec/config.yaml` que capacitem o Antigravity CLI a operar com autonomia máxima sem interrupções desnecessárias por confirmação de prompt, priorizando estritamente ferramentas nativas de arquivos em vez de comandos de terminal, otimizando o consumo de tokens na janela de contexto e aplicando estratégias de engenharia de agente (**Harness Engineering, Loop Engineering, Graph Engineering e Tooling Autonomy**).
+*(Visão PO: Garante autonomia operacional contínua, agilidade máxima sem interrupções manuais triviais e economia drástica de tokens em todas as interações. Visão QA: Garante validação determinística via ferramentas nativas de inspeção/edição e execução segura de comandos de ciclo de vida com rastreabilidade total).*
 
 #### Scenario: Harness Engineering pelo Antigravity CLI
 - **WHEN** o Antigravity CLI executar comandos de desenvolvimento, teste ou diagnóstico
-- **THEN** o agente deve utilizar o Makefile como harness padronizado, consumindo saídas concisas e estruturadas para minimizar gasto de tokens
+- **THEN** o agente deve utilizar o Makefile como harness padronizado (`make test`, `make lint`, `make check`), consumindo saídas concisas e estruturadas para minimizar gasto de tokens
 
 #### Scenario: Loop Engineering pelo Antigravity CLI
 - **WHEN** o Antigravity CLI implementar ou refatorar componentes da aplicação
@@ -72,7 +72,19 @@ O repositório SHALL conter diretrizes, regras e configurações em `.agent/rule
 
 #### Scenario: Governança contínua de regras para propostas futuras
 - **WHEN** qualquer nova proposta ou plano for iniciado no repositório
-- **THEN** o arquivo `openspec/config.yaml` deve injetar contexto e regras obrigatórias exigindo padrão Go, TDD/BDD, cobertura >= 80%, Makefile, PT-BR e perspectivas PO/QA
+- **THEN** o arquivo `openspec/config.yaml` deve injetar contexto e regras operacionais íntegras exigindo padrão Go, TDD/BDD, cobertura >= 80%, Makefile, PT-BR e perspectivas PO/QA sem avisos de parsing
+
+#### Scenario: Prioridade mandatória de ferramentas nativas do AGY
+- **WHEN** o Antigravity CLI precisar criar, inspecionar, editar ou pesquisar arquivos no repositório
+- **THEN** o agente deve obrigatoriamente invocar as ferramentas nativas (`write_to_file`, `replace_file_content`, `view_file`, `grep_search`, `find_by_name`, `list_dir`) e abster-se estritamente de executar comandos bash equivalentes (`cat`, `echo >`, `sed`, `awk`, `touch`, `find`, `grep`, `ls`) via terminal
+
+#### Scenario: Configuração de permissões para máxima autonomia
+- **WHEN** o Antigravity CLI executar ferramentas essenciais e comandos de ciclo de vida do projeto (`go`, `make`, `git`, `openspec`, `golangci-lint`, `govulncheck`, scripts de teste)
+- **THEN** o arquivo `.agent/settings.json` deve conter permissões pré-autorizadas (`allow`) para essas operações legítimas, eliminando solicitações de autorização repetitivas e garantindo execução fluida
+
+#### Scenario: Economia de tokens e respostas concisas
+- **WHEN** o Antigravity CLI interagir com o usuário ou processar arquivos
+- **THEN** o agente deve responder de forma concisa utilizando links markdown `[arquivo](file:///...)`, aplicar leitura cirúrgica com intervalos de linhas (`StartLine`/`EndLine`) e edições pontuais com `replace_file_content`, evitando replicar blocos massivos de código na resposta
 
 ### Requirement: Arquitetura de Frontend, Assets Embutidos e Experiência do Usuário
 O sistema SHALL integrar uma camada moderna de frontend para renderização do lado do servidor (SSR) combinada com interatividade hipermidiática declarativa (recomendações: HTMX, Alpine.js e Tailwind CSS), fornecendo interfaces responsivas e empacotamento integral de assets (`go:embed`) para geração de binários únicos 100% autocontidos e portáteis.
