@@ -2,9 +2,7 @@ package sftp
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"io"
 	"log"
 	"net"
 	"sync"
@@ -28,8 +26,8 @@ type ServerOptions struct {
 	ReadOnly  bool
 }
 
-// SFTPServer gerencia o listener SSH e o subsistema SFTP.
-type SFTPServer struct {
+// Server gerencia o listener SSH e o subsistema SFTP.
+type Server struct {
 	opts      ServerOptions
 	sshConfig *ssh.ServerConfig
 	listener  net.Listener
@@ -40,7 +38,7 @@ type SFTPServer struct {
 }
 
 // NewServer inicializa e configura o servidor SFTP validando chaves e credenciais.
-func NewServer(opts ServerOptions) (*SFTPServer, error) {
+func NewServer(opts ServerOptions) (*Server, error) {
 	fsHandler, err := NewFSHandler(opts.TargetDir, opts.ReadOnly)
 	if err != nil {
 		return nil, fmt.Errorf("erro ao configurar handler de arquivos SFTP: %w", err)
@@ -92,7 +90,7 @@ func NewServer(opts ServerOptions) (*SFTPServer, error) {
 
 	sshConfig.AddHostKey(hostSigner)
 
-	return &SFTPServer{
+	return &Server{
 		opts:      opts,
 		sshConfig: sshConfig,
 		fsHandler: fsHandler,
@@ -101,7 +99,7 @@ func NewServer(opts ServerOptions) (*SFTPServer, error) {
 }
 
 // Addr retorna o endereço de escuta do servidor (útil quando escutando em porta 0 em testes).
-func (s *SFTPServer) Addr() net.Addr {
+func (s *Server) Addr() net.Addr {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.listener != nil {
@@ -160,7 +158,7 @@ func LogStartupBanner(opts ServerOptions) {
 }
 
 // Serve escuta conexões no listener informado até ser cancelado ou fechado.
-func (s *SFTPServer) Serve(listener net.Listener) error {
+func (s *Server) Serve(listener net.Listener) error {
 	s.mu.Lock()
 	s.listener = listener
 	s.mu.Unlock()
@@ -185,7 +183,7 @@ func (s *SFTPServer) Serve(listener net.Listener) error {
 	}
 }
 
-func (s *SFTPServer) trackConn(c net.Conn, add bool) {
+func (s *Server) trackConn(c net.Conn, add bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if add {
@@ -196,7 +194,7 @@ func (s *SFTPServer) trackConn(c net.Conn, add bool) {
 	}
 }
 
-func (s *SFTPServer) handleConn(nConn net.Conn) {
+func (s *Server) handleConn(nConn net.Conn) {
 	sshConn, chans, reqs, err := ssh.NewServerConn(nConn, s.sshConfig)
 	if err != nil {
 		return
@@ -230,9 +228,7 @@ func (s *SFTPServer) handleConn(nConn net.Conn) {
 				if ok {
 					handlers := s.fsHandler.ToHandlers()
 					server := sftp.NewRequestServer(channel, handlers)
-					if err := server.Serve(); err != nil && !errors.Is(err, io.EOF) {
-						// encerramento de sessão SFTP
-					}
+					_ = server.Serve()
 					_ = channel.Close()
 					return
 				}
@@ -242,7 +238,7 @@ func (s *SFTPServer) handleConn(nConn net.Conn) {
 }
 
 // Shutdown encerra o listener e todas as conexões ativas do servidor SFTP.
-func (s *SFTPServer) Shutdown(ctx context.Context) error {
+func (s *Server) Shutdown(ctx context.Context) error {
 	s.mu.Lock()
 	s.closed = true
 	var err error
@@ -258,7 +254,7 @@ func (s *SFTPServer) Shutdown(ctx context.Context) error {
 }
 
 // Run inicializa o listener TCP e executa o servidor SFTP aguardando cancelamento pelo contexto.
-func (s *SFTPServer) Run(ctx context.Context) error {
+func (s *Server) Run(ctx context.Context) error {
 	addr := fmt.Sprintf("%s:%d", s.opts.Host, s.opts.Port)
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {

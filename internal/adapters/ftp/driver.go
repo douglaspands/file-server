@@ -27,7 +27,6 @@ type Driver struct {
 	opts      ServerOptions
 	rootDir   string
 	tlsConfig *tls.Config
-	listener  ftpserver.Settings
 }
 
 // NewDriver cria e inicializa um novo Driver validando o diretório raiz e opções de TLS.

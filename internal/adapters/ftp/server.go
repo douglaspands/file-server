@@ -25,15 +25,15 @@ type ServerOptions struct {
 	ReadOnly     bool
 }
 
-// FTPServer encapsula o servidor FTP e suas dependências.
-type FTPServer struct {
+// Server encapsula o servidor FTP e suas dependências.
+type Server struct {
 	opts   ServerOptions
 	driver *Driver
 	server *ftpserver.FtpServer
 }
 
-// NewServer inicializa um novo FTPServer com driver configurado.
-func NewServer(opts ServerOptions) (*FTPServer, error) {
+// NewServer inicializa um novo Server com driver configurado.
+func NewServer(opts ServerOptions) (*Server, error) {
 	driver, err := NewDriver(opts)
 	if err != nil {
 		return nil, fmt.Errorf("erro ao configurar driver FTP: %w", err)
@@ -41,7 +41,7 @@ func NewServer(opts ServerOptions) (*FTPServer, error) {
 
 	server := ftpserver.NewFtpServer(driver)
 
-	return &FTPServer{
+	return &Server{
 		opts:   opts,
 		driver: driver,
 		server: server,
@@ -49,7 +49,7 @@ func NewServer(opts ServerOptions) (*FTPServer, error) {
 }
 
 // Addr retorna o endereço em que o servidor está escutando.
-func (s *FTPServer) Addr() string {
+func (s *Server) Addr() string {
 	if s.server != nil {
 		return s.server.Addr()
 	}
@@ -112,7 +112,7 @@ func LogStartupBanner(opts ServerOptions, isTLS bool) {
 }
 
 // Run executa o servidor FTP aguardando sinal de cancelamento pelo contexto.
-func (s *FTPServer) Run(ctx context.Context) error {
+func (s *Server) Run(ctx context.Context) error {
 	if err := s.server.Listen(); err != nil {
 		return fmt.Errorf("falha ao iniciar listener FTP: %w", err)
 	}
