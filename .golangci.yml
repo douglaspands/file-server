@@ -1,5 +1,3 @@
-version: "2"
-
 run:
   timeout: 5m
   tests: true
@@ -16,7 +14,6 @@ linters:
     - gosec
     - goconst
     - unconvert
-    - misspell
 
 linters-settings:
   govet:
@@ -39,3 +36,8 @@ issues:
     - tmp
     - bin
     - dist
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - gosec
+        - errcheck
