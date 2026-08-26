@@ -7,52 +7,61 @@
 [![Platforms](https://img.shields.io/badge/Platforms-Linux%20%7C%20Windows-blueviolet?style=flat)](#-compilação-multiplataforma)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](LICENSE)
 
-> Servidor web, SFTP e FTP/FTPS de alta performance para rede local (LAN) com interface moderna, streaming direto com suporte a HTTP Range (206), downloads de pastas compactadas em ZIP via streaming sob demanda, uploads multipart/drag-and-drop, isolamento estrito de sandbox contra path traversal e criptografia em trânsito (SSHv2 / TLS / HTTPS) para evitar que scans e sniffs interceptem o tráfego. Empacotado em um **único binário executável 100% autocontido e portátil** (`go:embed`).
+> Servidor de arquivos de alta performance para rede local (LAN) com **Interface Gráfica Desktop Nativa (GNOME Adwaita Dark)**, suporte a protocolos **Web (HTTP/HTTPS)**, **SFTP (SSHv2)** e **FTP/FTPS**, streaming direto com HTTP Range (206), downloads de pastas compactadas em ZIP sob demanda (zero resíduos em disco), uploads multipart/drag-and-drop, isolamento estrito de sandbox contra path traversal e criptografia em trânsito. Empacotado em um **único binário executável 100% autocontido e portátil** (`go:embed`).
 
 ---
 
-## 📖 Visão Geral
+## 🖥️ Como Usar: Interface Gráfica Desktop (Modo Principal)
 
-O **File Server** é uma solução leve, portátil e de alta performance desenvolvida em Go para compartilhamento instantâneo de arquivos e pastas no terminal ou rede local via Web (HTTP/HTTPS), SFTP (SSH) e FTP/FTPS.
+O **File Server** foi projetado para oferecer uma experiência visual moderna, intuitiva e imediata no desktop. Ao clicar duas vezes no executável ou executar o binário sem parâmetros em seu ambiente gráfico, a interface desktop nativa é inicializada automaticamente.
 
-### ✨ Principais Recursos do Produto
+<p align="center">
+  <img src="docs/assets/gui-launcher.svg" alt="File Server Desktop Launcher - GNOME Adwaita Dark" width="850">
+</p>
 
-- 🚀 **Inicialização Instantânea**: Execute `file-server` em qualquer pasta e comece a compartilhar imediatamente. Fallback automático para o diretório atual (`.`) ou configuração de raiz via argumento posicional ou flag `--dir`/`-d`.
-- 🔒 **Criptografia em Trânsito (TLS / SSHv2 / FTPS)**: Suporte nativo a conexões 100% criptografadas para navegação web (HTTPS), SFTP (SSHv2 com Ed25519/RSA e ChaCha20/AES) e FTPS (TLS 1.3/1.2), evitando que *packet sniffing* e *scans* na rede local interceptem credenciais ou dados.
-- 🛡️ **Sandboxing Rigoroso & Segurança**: Validação de fronteira canônica e bloqueio absoluto contra ataques de *path traversal* (`../`, links simbólicos externos e caminhos absolutos forçados) em todos os protocolos (Web, SFTP e FTP).
-- 🌐 **Interface Web Moderna & Intuitiva**: Interface visual desenvolvida com **Tailwind CSS**, **Alpine.js** e **HTMX**, com ícones dinâmicos por categoria de arquivo e navegação por *breadcrumbs*.
-- 🔑 **SFTP e FTP/FTPS Nativos**: Transfira arquivos utilizando clientes de terminal (`sftp`, `lftp`, scripts de automação, rsync/scp) ou clientes gráficos (FileZilla, Cyberduck, WinSCP) com suporte a autenticação por senha ou chave pública SSH.
-- ⚡ **Alta Performance em LAN**: Download direto via streaming com `http.ServeContent`, suporte completo a requisições parciais (header `Range: bytes=...`, HTTP 206) e modo somente leitura (`--read-only`).
-- 📦 **Download de Pastas em ZIP sob Demanda**: Compactação em streaming direto para a resposta HTTP (`io.Writer`) com cancelamento via contexto e **zero resíduos ou arquivos temporários deixados em disco**.
-- 📤 **Upload Simples e em Lote (Drag & Drop)**: Envio de arquivos únicos ou múltiplos diretamente para o diretório visualizado.
-- 📦 **Binário Único Autocontido**: Todos os templates HTML, estilos CSS e scripts JS são compilados dentro do executável via `go:embed`. Transporte apenas um arquivo para qualquer servidor Linux ou Windows.
+### 🎯 Passo a Passo de Utilização da GUI
+
+1. **Inicialização Automática**:
+   - Basta clicar duas vezes no executável `file-server` ou rodar `./bin/file-server` no terminal.
+   - O launcher desktop abre instantaneamente com tema escuro elegante baseado no design system **GNOME Adwaita Dark** (`slate-900`/`slate-950`, acentos `indigo-500` e bordas `slate-800`).
+
+2. **Escolha da Pasta e Protocolo**:
+   - **Pasta Compartilhada**: Clique no botão **📂 Procurar** para abrir a caixa de diálogo nativa do seu sistema operacional (*Folder Picker*) e escolher qualquer pasta com facilidade.
+   - **Seletor de Modo**: Alterne com um clique entre **🌐 Web (HTTP/HTTPS)**, **📁 FTP / FTPS** ou **🔒 SFTP (SSH)**. As portas padrão recomendadas (`8080`, `2121`, `2222`) são preenchidas automaticamente.
+
+3. **Segurança e Criptografia em Trânsito**:
+   - Ative o seletor de **Criptografia (TLS)** para proteger todas as transferências com certificados autoassinados instantâneos ou selecione seus próprios arquivos PEM de certificado e chave.
+   - Para FTP e SFTP, utilize o botão **🎲 Gerar** para criar senhas temporárias seguras de 12 caracteres com um clique.
+
+4. **Descoberta Escalável de Múltiplos IPs & Compartilhamento**:
+   - **Viewport Rolável Inteligente**: Visualize com clareza todos os adaptadores de rede disponíveis na sua máquina (Wi-Fi, Ethernet, VPNs como Tailscale/WireGuard, Docker Bridges e WSL) sem poluir a janela.
+   - **Tags e Destaques**: O endereço primário recomendado de rede física e o Loopback são fixados no topo com tags visuais (`Wi-Fi`, `Ethernet`, `VPN`, `Docker`).
+   - **Cópia em 1 Clique**: Clique em `📋 Copiar` ao lado de qualquer endereço ou no botão **Copiar Todos** com feedback imediato (*"✓ Copiado!"*).
+   - **📱 Modal de QR Code**: Clique no ícone de QR Code para exibir o código na tela e conectar smartphones ou tablets na mesma rede Wi-Fi instantaneamente.
+   - **📋 Compartilhar Link**: Gera e copia uma mensagem formatada com o resumo do compartilhamento, links e credenciais pronta para envio no Slack, WhatsApp, Teams ou Discord.
+
+5. **Controle de Execução e Logs em Tempo Real**:
+   - Clique em **▶ Iniciar Servidor** para ativar o serviço.
+   - Use o botão direto **🚀 Abrir no Navegador** para acessar o explorador web com um único clique.
+   - Acompanhe acessos, downloads e requisições no **Terminal de Eventos & Logs** integrado na parte inferior da janela com auto-scroll em tempo real via Server-Sent Events (SSE).
 
 ---
 
-## 🚀 Guia de Uso da CLI
+## 💻 Modo Linha de Comando (CLI Avançado & Headless)
 
-### 1. Obtenção e Compilação
+Para ambientes de servidores puros sem interface gráfica (SSH, VPS, contêineres Docker ou automações CI/CD), o File Server oferece uma CLI completa e retrocompatível.
 
-Você pode compilar localmente com um único comando:
-
-```bash
-# Compilar o binário para seu sistema operacional
-make build
-
-# O binário será gerado em bin/file-server
-./bin/file-server --help
-```
-
----
-
-### 2. Catálogo Completo de Comandos da CLI
+### 1. Catálogo Completo de Comandos da CLI
 
 | Comando / Flag | Descrição | Exemplo de Uso |
 | :--- | :--- | :--- |
-| `file-server [dir]` | Inicia o servidor Web na pasta informada (ou na pasta atual caso omitida) | `./bin/file-server` ou `./bin/file-server /meus/arquivos` |
+| `file-server [dir]` | Inicia a GUI (em desktop) ou o servidor Web na pasta informada | `./bin/file-server` ou `./bin/file-server /meus/dados` |
+| `file-server gui [dir]` | Inicia explicitamente a interface gráfica desktop | `./bin/file-server gui ~/Documentos` |
 | `file-server serve [dir]` | Subcomando explícito para iniciar o servidor web HTTP/HTTPS | `./bin/file-server serve ./dados -p 8080` |
 | `file-server sftp [dir]` | Inicia o servidor SFTP seguro sobre SSH com chaves e senha | `./bin/file-server sftp ./dados -p 2222` |
 | `file-server ftp [dir]` | Inicia o servidor FTP com suporte a FTPS (TLS) e modo passivo | `./bin/file-server ftp ./dados -p 2121 --tls` |
+| `--gui` | Força a inicialização da interface gráfica desktop | `./bin/file-server --gui` |
+| `--no-open` | Inicia o servidor da GUI sem abrir o navegador/janela automaticamente | `./bin/file-server gui --no-open` |
 | `--dir` (`-d`) | Define o caminho do diretório raiz a ser compartilhado | `./bin/file-server -d /var/public` |
 | `--port` (`-p`) | Define a porta TCP de escuta (Web: `8080`, SFTP: `2222`, FTP: `2121`) | `./bin/file-server sftp -p 2222` |
 | `--host` | Define o endereço IP/host de escuta (default: `0.0.0.0`) | `./bin/file-server --host 127.0.0.1` |
@@ -70,7 +79,7 @@ make build
 
 ---
 
-### 3. Exemplos Práticos de Inicialização
+### 2. Exemplos de Execução Headless via Terminal
 
 #### Servidor SFTP Seguro (Recomendado para Redes Locais)
 ```bash
@@ -83,117 +92,92 @@ make build
 # Conectar via terminal:
 sftp -P 2222 admin@<ip-do-servidor>
 
-# Ou via FileZilla / Cyberduck:
-# Protocolo: SFTP (SSH File Transfer Protocol)
-# Host: <ip-do-servidor>, Porta: 2222
+# Ou via FileZilla / Cyberduck / WinSCP:
+# Protocolo: SFTP (SSH File Transfer Protocol) | Host: <ip-do-servidor> | Porta: 2222
 ```
 
 #### Servidor FTP com Criptografia FTPS / TLS
 ```bash
 # Inicia servidor FTP com FTPS ativado na porta 2121
 ./bin/file-server ftp /dados -p 2121 --tls -u transfer -P Senha123
-
-# Conectar via FileZilla com "Usar FTP explícito sobre TLS se disponível"
 ```
 
-#### Compartilhar a Pasta Atual Instantaneamente via Web (HTTP)
+#### Servidor Web Seguro com HTTPS / TLS
 ```bash
-# Inicia na porta 8080 servindo o diretório corrente
-./bin/file-server
-
-# Acesse no navegador:
-# http://localhost:8080 ou http://<ip-da-maquina>:8080
-```
-
-#### Iniciar Servidor Web Seguro com TLS/HTTPS Autoassinado
-```bash
-# Inicia com HTTPS na porta 8443 e certificado gerado em memória
-./bin/file-server -s -p 8443
-
-# Acesse no navegador:
-# https://localhost:8443 ou https://<ip-da-maquina>:8443
+# Inicia na porta 8443 com HTTPS e certificado autoassinado automático
+./bin/file-server serve /dados -s -p 8443
 ```
 
 ---
 
-## 🌐 Guia de Uso da Interface Web
+## 🌐 Guia do Explorador Web de Arquivos
 
-A interface gráfica do **File Server** foi projetada para oferecer uma experiência ágil tanto no desktop quanto em dispositivos móveis:
+Quando o modo **Web (HTTP/HTTPS)** é iniciado, os usuários na rede local podem acessar o explorador web completo diretamente pelo navegador:
 
-1. **Navegação Hierárquica por Breadcrumbs**:
-   - Clique em qualquer pasta na lista para entrar nela.
-   - Utilize a barra de navegação (*breadcrumbs*) no topo para retornar instantaneamente a qualquer nível superior ou para a raiz do compartilhamento.
-
-2. **Filtro de Busca em Tempo Real**:
-   - Digite na caixa de busca (*"Filtrar arquivos nesta pasta..."*) para filtrar instantaneamente os itens visíveis no navegador via Alpine.js sem recarregar a página ou fazer requisições extras ao servidor.
-
-3. **Download de Arquivos e Pastas**:
-   - **Download Individual**: Clique no nome do arquivo ou no ícone de download para baixar diretamente com suporte a pausas e retomadas (*HTTP Range requests*).
-   - **Download de Pasta em ZIP**: Clique no botão *"Baixar Pasta (.zip)"* no topo ou no ícone correspondente na linha de qualquer pasta para baixar a árvore inteira compactada em `.zip` em streaming contínuo.
-
-4. **Upload Simples e Múltiplo (Drag & Drop)**:
-   - **Botão Enviar**: Clique em *"Enviar Arquivos"*, selecione um ou mais arquivos e confirme o envio.
-   - **Arrastar e Soltar**: Arraste arquivos de qualquer lugar do seu computador e solte sobre a janela do navegador para iniciar o envio diretamente para a pasta atualmente aberta.
+1. **Navegação por Breadcrumbs**: Navegue recursivamente por diretórios e subdiretórios com navegação instantânea por migalhas de pão no topo da tela.
+2. **Busca e Filtro em Tempo Real**: Digite no campo de pesquisa para filtrar instantaneamente os arquivos visíveis via Alpine.js sem recarregar a página.
+3. **Download com HTTP Range (206)**: Download de arquivos de qualquer tamanho com suporte nativo a pausas, retomadas e streaming direto de vídeos e áudios.
+4. **Download de Pastas em ZIP via Streaming**: Compactação sob demanda em streaming direto (`io.Writer`) sem gravar arquivos temporários em disco.
+5. **Uploads Drag & Drop em Lote**: Arraste múltiplos arquivos diretamente do seu computador e solte sobre a janela do navegador para iniciar o envio com barra de progresso.
 
 ---
 
-## 📡 Catálogo de Rotas e Endpoints da API Web
+## 📡 Catálogo de Rotas e Endpoints da API
 
 | Método | Rota | Descrição |
 | :--- | :--- | :--- |
 | `GET` | `/` ou `/files/*` | Interface gráfica do explorador de arquivos (HTML/SSR) |
-| `GET` | `/api/files/*` | Metadados e listagem do diretório em JSON |
+| `GET` | `/api/files/*` | Metadados e listagem do diretório em formato JSON |
 | `GET` | `/download/*` | Download de arquivo individual com suporte a HTTP Range (206) |
-| `GET` | `/zip/*` | Download de diretório compactado em `.zip` via streaming |
+| `GET` | `/zip/*` | Download de diretório compactado em `.zip` via streaming sob demanda |
 | `POST`| `/upload/*` | Upload multipart de arquivos para o diretório de destino |
-| `GET` | `/status` | Painel de diagnóstico e integridade dos serviços do servidor |
-| `GET` | `/partials/health` | Fragmento HTML do card de saúde para requisições HTMX |
+| `GET` | `/status` | Painel web de diagnóstico e integridade dos serviços |
 | `GET` | `/api/health` | Status de saúde e métricas de uptime em JSON |
-| `GET` | `/api/version` | Metadados estruturados de versão e build em JSON |
+| `GET` | `/api/interfaces` | Detecção categorizada de adaptadores de rede e URLs ativas |
+| `GET` | `/api/logs/stream` | Streaming de logs em tempo real via Server-Sent Events (SSE) |
+| `POST`| `/api/server/start` | Inicia servidor em background (Web, FTP ou SFTP) via API do launcher |
+| `POST`| `/api/server/stop` | Interrompe o servidor ativo graciosamente |
+| `POST`| `/api/picker/folder` | Abre diálogo nativo do sistema operacional para seleção de pasta |
+| `POST`| `/api/app/open-browser`| Abre URL no navegador padrão do sistema operacional |
+| `POST`| `/api/app/close` | Realiza o shutdown gracioso e finaliza a aplicação desktop |
 
 ---
 
-## 🛠️ Guia para Desenvolvedores e Padrões de Qualidade
+## 🛠️ Guia para Desenvolvedores & Padrões de Qualidade
 
-Esta seção descreve os padrões de engenharia de software empregados no desenvolvimento do **File Server**.
-
-### 📋 Pré-requisitos
-
-- **Go**: Versão `1.25` ou superior instalada ([golang.org](https://golang.org)).
-- **Make**: Utilitário Make (`/usr/bin/make`) para automação de tarefas.
-- **Git**: Controle de versão.
-
----
+Esta seção descreve os padrões de engenharia de software e Clean Architecture empregados no projeto.
 
 ### 🏗️ Arquitetura e Estrutura de Pacotes
-
-O projeto adota rigorosamente os princípios de **Clean Architecture** e **Ports & Adapters**, isolando todo o domínio de negócio em `internal/`:
 
 ```
 file-server/
 ├── cmd/                          # Camada de entrada da CLI (Cobra)
-│   ├── root.go                   # Comando base e inicialização padrão
-│   ├── version.go                # Subcomando 'version'
+│   ├── root.go                   # Comando raiz com detecção automática de GUI
+│   ├── gui.go                    # Subcomando 'gui' desktop launcher
 │   ├── serve.go                  # Subcomando 'serve' (Web HTTP/HTTPS)
 │   ├── sftp.go                   # Subcomando 'sftp' (SFTP sobre SSH)
-│   └── ftp.go                    # Subcomando 'ftp' (FTP/FTPS com TLS)
+│   ├── ftp.go                    # Subcomando 'ftp' (FTP/FTPS com TLS)
+│   └── version.go                # Subcomando 'version'
 ├── internal/                     # Domínio isolado e privado (internal/)
 │   ├── core/
-│   │   ├── domain/               # Entidades de domínio (FileItem, DirectoryListing, Breadcrumb)
-│   │   ├── ports/                # Interfaces e contratos (FileService, HealthService)
-│   │   └── services/             # Serviços centrais (LocalFileService, TLS, Auth & SSH Host Keys)
+│   │   ├── domain/               # Entidades de domínio (FileItem, HealthStatus)
+│   │   ├── ports/                # Contratos e interfaces (FileService, HealthService)
+│   │   └── services/             # Serviços de negócio (LocalFileService, TLS, Auth, SSH)
 │   ├── adapters/
-│   │   ├── handlers/             # Controladores HTTP, templates e downloads
+│   │   ├── gui/                  # Controlador da GUI Desktop, redes, logs SSE e folder picker
+│   │   ├── handlers/             # Controladores HTTP, templates SSR e uploads
 │   │   ├── sftp/                 # Adaptador do servidor SFTP (SSH listener e FSHandler)
 │   │   └── ftp/                  # Adaptador do servidor FTP/FTPS (Driver e Settings)
 │   ├── testutils/                # Fixtures e mocks para testes automatizados
 │   └── version/                  # Metadados de compilação injetados via ldflags
 ├── web/                          # Recursos de frontend
-│   ├── templates/                # Templates Go HTML (layouts, pages, partials)
-│   ├── static/                   # CSS, scripts JS e assets estáticos
+│   ├── templates/                # Templates Go HTML (gui_launcher.html, explorer.html)
+│   ├── static/                   # Estilos CSS dark, scripts JS e app.js
 │   └── web.go                    # Empacotamento embutido (go:embed embed.FS)
-├── scripts/                      # Harness de automação (scripts de cobertura e setup)
-├── openspec/                     # Especificações normativas do projeto
+├── docs/                         # Documentação técnica e assets visuais
+│   └── assets/                   # Screenshots e diagramas vetoriais da interface gráfica
+├── scripts/                      # Harness de automação (cobertura e setup)
+├── openspec/                     # Especificações normativas do projeto (OpenSpec)
 └── Makefile                      # Interface universal de comandos
 ```
 
@@ -228,18 +212,7 @@ make help
 
 O desenvolvimento segue **TDD (Test-Driven Development)** e especificações em estilo **BDD (Behavior-Driven Development)** estruturadas em subtestes com `testing` + `testify`:
 
-```go
-func TestLocalFileService_GetFile(t *testing.T) {
-    t.Run("sucesso ao obter arquivo existente", func(t *testing.T) {
-        file, info, err := svc.GetFile(ctx, "sample.txt")
-        require.NoError(t, err)
-        defer file.Close()
-        assert.Equal(t, "sample.txt", info.Name())
-    })
-}
-```
-
-- **Barreira Mínima de Cobertura**: Meta contínua de cobertura de código &ge; 80%.
+- **Barreira Mínima de Cobertura**: Meta contínua e inegociável de cobertura de código &ge; 80%.
 - **Execução e Relatório**:
   ```bash
   make test

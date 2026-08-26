@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Server - Painel Desktop</title>
+    <!-- Tailwind CSS Standalone -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.14.0/dist/cdn.min.js"></script>
+    <!-- Scripts & Estilos da Aplicação -->
+    <script src="/static/js/app.js"></script>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased select-none" x-data="guiLauncher('{{.InitialDir}}')">
+
+    <!-- Topbar Estilo GNOME Adwaita Dark -->
+    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-30 px-4 py-3">
+        <div class="max-w-5xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl">⚡</span>
+                <div>
+                    <h1 class="font-bold text-base sm:text-lg text-white leading-tight tracking-tight">File Server</h1>
+                    <p class="text-[11px] text-slate-400">Launcher Desktop de Compartilhamento</p>
+                </div>
+                <span class="text-xs bg-indigo-500/20 text-indigo-400 font-mono px-2 py-0.5 rounded border border-indigo-500/30">{{.Version}}</span>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <!-- Status Pill -->
+                <div class="flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium border"
+                     :class="isRunning ? 'bg-emerald-950/60 text-emerald-300 border-emerald-800/80' : 'bg-slate-800/60 text-slate-400 border-slate-700/60'">
+                    <span class="w-2 h-2 rounded-full" :class="isRunning ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'"></span>
+                    <span x-text="isRunning ? '🟢 Em Execução' : '⚪ Parado'"></span>
+                </div>
+
+                <!-- Botão Fechar App -->
+                <button @click="closeApp()" title="Fechar Aplicativo" class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-grow max-w-5xl mx-auto px-4 py-6 w-full space-y-6">
+
+        <!-- Mensagens de Erro ou Alerta -->
+        <div x-show="errorMessage" x-cloak class="p-3 bg-rose-950/80 border border-rose-800 text-rose-200 rounded-lg text-sm flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span>⚠️</span>
+                <span x-text="errorMessage"></span>
+            </div>
+            <button @click="errorMessage = ''" class="text-rose-400 hover:text-rose-200 text-xs">✕</button>
+        </div>
+
+        <!-- Seletor de Protocolos Segmented Bar -->
+        <div class="bg-slate-900 p-1.5 rounded-xl border border-slate-800 flex items-center justify-center max-w-lg mx-auto shadow-sm">
+            <button type="button" @click="onProtocolChange('web')"
+                    :disabled="isRunning"
+                    :class="protocol === 'web' ? 'bg-indigo-600 text-white shadow-sm font-semibold' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'"
+                    class="flex-1 py-2 px-3 text-xs sm:text-sm rounded-lg transition-all flex items-center justify-center space-x-2 disabled:opacity-60">
+                <span>🌐</span>
+                <span>Web (HTTP/HTTPS)</span>
+            </button>
+
+            <button type="button" @click="onProtocolChange('ftp')"
+                    :disabled="isRunning"
+                    :class="protocol === 'ftp' ? 'bg-indigo-600 text-white shadow-sm font-semibold' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'"
+                    class="flex-1 py-2 px-3 text-xs sm:text-sm rounded-lg transition-all flex items-center justify-center space-x-2 disabled:opacity-60">
+                <span>📁</span>
+                <span>FTP / FTPS</span>
+            </button>
+
+            <button type="button" @click="onProtocolChange('sftp')"
+                    :disabled="isRunning"
+                    :class="protocol === 'sftp' ? 'bg-indigo-600 text-white shadow-sm font-semibold' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'"
+                    class="flex-1 py-2 px-3 text-xs sm:text-sm rounded-lg transition-all flex items-center justify-center space-x-2 disabled:opacity-60">
+                <span>🔒</span>
+                <span>SFTP (SSH)</span>
+            </button>
+        </div>
+
+        <!-- Grid de Configurações e Ações -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Coluna Esquerda: Formulário de Configuração -->
+            <div class="lg:col-span-7 space-y-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
+                    <h2 class="text-sm font-semibold text-slate-200 flex items-center space-x-2 border-b border-slate-800/80 pb-2.5">
+                        <span>⚙️</span>
+                        <span>Configurações do Compartilhamento</span>
+                    </h2>
+
+                    <!-- Diretório Compartilhado com Folder Picker -->
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1.5">Pasta Compartilhada</label>
+                        <div class="flex space-x-2">
+                            <input type="text" x-model="targetDir" :disabled="isRunning"
+                                   placeholder="/caminho/do/diretorio"
+                                   class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60 font-mono">
+                            <button type="button" @click="pickFolder()" :disabled="isRunning"
+                                    class="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 px-3 py-2 rounded-lg text-xs font-medium border border-slate-700 flex items-center space-x-1.5 disabled:opacity-50 transition-colors flex-shrink-0">
+                                <span>📂</span>
+                                <span class="hidden sm:inline">Procurar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Host & Porta -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Host de Escuta</label>
+                            <input type="text" x-model="host" :disabled="isRunning"
+                                   class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60 font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Porta</label>
+                            <input type="number" x-model.number="port" @input="fetchInterfaces()" :disabled="isRunning" min="1" max="65535"
+                                   class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-indigo-500 disabled:opacity-60 font-mono">
+                        </div>
+                    </div>
+
+                    <!-- TLS / Criptografia Toggle -->
+                    <div class="pt-2 border-t border-slate-800/80">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-xs font-medium text-slate-200">Criptografia em Trânsito (TLS / HTTPS / FTPS)</span>
+                                <p class="text-[11px] text-slate-400">Protege transferências com TLS 1.3 / HTTP/2</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" x-model="useTLS" @change="fetchInterfaces()" :disabled="isRunning" class="sr-only peer">
+                                <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                            </label>
+                        </div>
+
+                        <!-- Opções Customizadas de TLS -->
+                        <div x-show="useTLS" x-cloak class="mt-3 p-3 bg-slate-950/70 border border-slate-800 rounded-lg space-y-2 text-xs">
+                            <div class="flex space-x-4">
+                                <label class="flex items-center space-x-1.5 cursor-pointer">
+                                    <input type="radio" value="self-signed" x-model="tlsMode" :disabled="isRunning" class="text-indigo-600 focus:ring-0">
+                                    <span class="text-slate-300">Certificado Autoassinado (Instantâneo)</span>
+                                </label>
+                                <label class="flex items-center space-x-1.5 cursor-pointer">
+                                    <input type="radio" value="custom" x-model="tlsMode" :disabled="isRunning" class="text-indigo-600 focus:ring-0">
+                                    <span class="text-slate-300">Certificado Customizado (PEM)</span>
+                                </label>
+                            </div>
+
+                            <div x-show="tlsMode === 'custom'" x-cloak class="space-y-2 pt-2">
+                                <input type="text" x-model="tlsCert" :disabled="isRunning" placeholder="Caminho do arquivo server.crt / .pem" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-200">
+                                <input type="text" x-model="tlsKey" :disabled="isRunning" placeholder="Caminho da chave privada server.key / .pem" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-200">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campos Específicos para FTP / SFTP -->
+                    <div x-show="protocol === 'ftp' || protocol === 'sftp'" x-cloak class="pt-2 border-t border-slate-800/80 space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Usuário</label>
+                                <input type="text" x-model="user" :disabled="isRunning" placeholder="admin"
+                                       class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-mono">
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <label class="block text-xs font-medium text-slate-300">Senha</label>
+                                    <button type="button" @click="generatePassword()" :disabled="isRunning" class="text-[11px] text-indigo-400 hover:text-indigo-300">🎲 Gerar</button>
+                                </div>
+                                <input type="text" x-model="pass" :disabled="isRunning" placeholder="Senha segura"
+                                       class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-mono">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-1">
+                            <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                                <input type="checkbox" x-model="readOnly" :disabled="isRunning" class="rounded bg-slate-950 border-slate-800 text-indigo-600 focus:ring-0">
+                                <span>Modo Somente Leitura (Bloqueia uploads e exclusões)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação Principal -->
+                    <div class="pt-4 border-t border-slate-800 flex flex-wrap items-center gap-3">
+                        <!-- Iniciar / Parar -->
+                        <button type="button" @click="toggleServer()" :disabled="isLoading"
+                                :class="isRunning ? 'bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white' : 'bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white'"
+                                class="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold shadow-md flex items-center justify-center space-x-2 transition-all disabled:opacity-50">
+                            <template x-if="isLoading">
+                                <span class="animate-spin text-base">🔄</span>
+                            </template>
+                            <template x-if="!isLoading && !isRunning">
+                                <span>▶ Iniciar Servidor</span>
+                            </template>
+                            <template x-if="!isLoading && isRunning">
+                                <span>■ Parar Servidor</span>
+                            </template>
+                        </button>
+
+                        <!-- Abrir no Navegador (Web) -->
+                        <template x-if="isRunning && protocol === 'web'">
+                            <button type="button" @click="openBrowser()"
+                                    class="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-indigo-400 border border-slate-700 py-2.5 px-4 rounded-xl text-sm font-medium flex items-center space-x-2 transition-colors">
+                                <span>🚀</span>
+                                <span>Abrir no Navegador</span>
+                            </button>
+                        </template>
+
+                        <!-- Compartilhar Link Formatado -->
+                        <button type="button" @click="shareLink()"
+                                class="bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 border border-slate-700 py-2.5 px-4 rounded-xl text-sm font-medium flex items-center space-x-2 transition-colors">
+                            <span>📋</span>
+                            <span x-text="copiedId === 'share-msg' ? '✓ Mensagem Copiada!' : 'Compartilhar Link'"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna Direita: Adaptadores de Rede & IPs -->
+            <div class="lg:col-span-5 space-y-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm space-y-3">
+                    <div class="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-base">🌐</span>
+                            <h2 class="text-sm font-semibold text-slate-200">Endereços de Rede</h2>
+                            <span class="text-[10px] font-mono bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded" x-text="`${interfaces.length} detectados`"></span>
+                        </div>
+                        <button type="button" @click="copyAllIPs()" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium">
+                            <span x-text="copiedId === 'all-ips' ? '✓ Copiado!' : 'Copiar Todos'"></span>
+                        </button>
+                    </div>
+
+                    <!-- Campo de Busca / Filtro Rápido -->
+                    <div class="relative">
+                        <input type="text" x-model="searchQuery" placeholder="🔍 Filtrar interfaces ou IP..."
+                               class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                    </div>
+
+                    <!-- Viewport Rolável de IPs -->
+                    <div class="max-h-60 overflow-y-auto pr-1 space-y-2 custom-scrollbar">
+                        <template x-for="(iface, idx) in filteredInterfaces" :key="idx">
+                            <div class="bg-slate-950 border border-slate-800/90 rounded-lg p-3 hover:border-slate-700 transition-colors space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2 min-w-0">
+                                        <span class="font-semibold text-xs text-slate-200 truncate" x-text="iface.name"></span>
+                                        
+                                        <!-- Badge Tipo -->
+                                        <span class="text-[10px] px-1.5 py-0.5 rounded border font-mono"
+                                              :class="{
+                                                  'bg-emerald-500/10 text-emerald-400 border-emerald-500/30': iface.type === 'wifi',
+                                                  'bg-blue-500/10 text-blue-400 border-blue-500/30': iface.type === 'ethernet',
+                                                  'bg-purple-500/10 text-purple-400 border-purple-500/30': iface.type === 'vpn',
+                                                  'bg-amber-500/10 text-amber-400 border-amber-500/30': iface.type === 'docker',
+                                                  'bg-slate-800 text-slate-400 border-slate-700': iface.type === 'loopback' || iface.type === 'other'
+                                              }"
+                                              x-text="iface.typeLabel"></span>
+
+                                        <!-- Badge Recomendado -->
+                                        <template x-if="iface.isRecommended">
+                                            <span class="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.5 rounded font-medium">Recomendado</span>
+                                        </template>
+                                    </div>
+
+                                    <!-- Ações de Cópia & QR Code -->
+                                    <div class="flex items-center space-x-1 flex-shrink-0">
+                                        <button type="button" @click="openQR(iface.url)" title="Ver QR Code para Celular"
+                                                class="p-1 text-slate-400 hover:text-indigo-400 hover:bg-slate-900 rounded transition-colors text-xs">
+                                            📱 QR
+                                        </button>
+                                        <button type="button" @click="copyText(iface.url, 'iface-' + idx)" title="Copiar URL"
+                                                class="p-1 text-slate-400 hover:text-slate-200 hover:bg-slate-900 rounded transition-colors text-xs font-mono">
+                                            <span x-text="copiedId === ('iface-' + idx) ? '✓' : '📋'"></span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="font-mono text-xs text-indigo-400 bg-slate-900/80 px-2 py-1 rounded border border-slate-800/60 select-all truncate"
+                                     x-text="iface.url"></div>
+                            </div>
+                        </template>
+
+                        <template x-if="filteredInterfaces.length === 0">
+                            <div class="text-center py-4 text-xs text-slate-500">
+                                Nenhuma interface correspondente à busca.
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Terminal de Logs em Tempo Real -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
+            <div class="bg-slate-950/80 px-4 py-2 border-b border-slate-800 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="flex space-x-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+                    </div>
+                    <span class="text-xs font-medium text-slate-400 font-mono">Terminal de Eventos & Logs</span>
+                </div>
+                <button type="button" @click="clearLogs()" class="text-[11px] text-slate-500 hover:text-slate-300">
+                    🗑️ Limpar
+                </button>
+            </div>
+            <div x-ref="logConsole" class="p-3 bg-slate-950 font-mono text-xs text-slate-300 h-40 overflow-y-auto custom-scrollbar space-y-1">
+                <template x-for="(line, idx) in logs" :key="idx">
+                    <div class="leading-relaxed whitespace-pre-wrap break-all" x-text="line"></div>
+                </template>
+                <template x-if="logs.length === 0">
+                    <div class="text-slate-600 italic">Aguardando eventos do servidor...</div>
+                </template>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal de Visualização de QR Code -->
+    <div x-show="showQRModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm" @click.self="showQRModal = false">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-sm font-semibold text-slate-200">Acesso via Smartphone / Tablet</h3>
+                <button @click="showQRModal = false" class="text-slate-400 hover:text-slate-200 text-sm">✕</button>
+            </div>
+
+            <p class="text-xs text-slate-400">Escaneie o código com a câmera do celular conectado à mesma rede Wi-Fi:</p>
+
+            <div id="qrcode-canvas" class="flex items-center justify-center py-2 min-h-[200px]"></div>
+
+            <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 font-mono text-xs text-indigo-400 select-all break-all" x-text="qrURL"></div>
+
+            <button @click="showQRModal = false" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-lg text-xs font-medium border border-slate-700 transition-colors">
+                Fechar
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

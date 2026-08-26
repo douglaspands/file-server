@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/douglas/file-server/internal/adapters/gui"
 	"github.com/spf13/cobra"
 )
 
@@ -19,16 +20,16 @@ var (
 	rootUseTLS  bool
 	rootTLSCert string
 	rootTLSKey  string
+	rootUseGUI  bool
 )
 
 // RootCmd representa o comando base executado sem subcomandos.
 var RootCmd = &cobra.Command{
 	Use:   "file-server [diretório]",
 	Short: "Servidor web de arquivos e diretórios de alta performance",
-	Long:  `File Server é uma aplicação portátil de compartilhamento e navegação de arquivos com interface web moderna, uploads, downloads, streaming de ZIP e TLS/HTTPS.`,
+	Long:  `File Server é uma aplicação portátil de compartilhamento e navegação de arquivos com interface gráfica desktop, streaming de ZIP, uploads, downloads e TLS/HTTPS.`,
 	Args:  cobra.MaximumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		// Se nenhum subcomando for chamado, inicia o servidor com o diretório informado ou atual
 		targetDir, err := ResolveDirectory(args, rootDirFlag)
 		if err != nil {
 			return err
@@ -36,6 +37,20 @@ var RootCmd = &cobra.Command{
 
 		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 		defer stop()
+
+		// Se a flag --gui for explícita ou estiver em ambiente desktop sem flags de servidor CLI
+		shouldLaunchGUI := rootUseGUI || (gui.IsDesktopEnvironment() && !cmd.Flags().Changed("port") && !cmd.Flags().Changed("host") && !cmd.Flags().Changed("tls") && !cmd.Flags().Changed("tls-cert") && !cmd.Flags().Changed("tls-key"))
+
+		if shouldLaunchGUI {
+			return RunGUIWithOptions(ctx, GUIOptions{
+				Host:       "127.0.0.1",
+				Port:       0,
+				InitialDir: targetDir,
+				NoOpen:     false,
+			})
+		}
+
+		// Modo CLI Headless tradicional
 		return RunServerWithOptions(ctx, ServerOptions{
 			Host:      rootHost,
 			Port:      rootPort,
@@ -70,4 +85,5 @@ func init() {
 	RootCmd.Flags().BoolVarP(&rootUseTLS, "tls", "s", false, "habilita HTTPS com certificado autoassinado ou customizado")
 	RootCmd.Flags().StringVar(&rootTLSCert, "tls-cert", "", "caminho do arquivo PEM contendo o certificado público TLS")
 	RootCmd.Flags().StringVar(&rootTLSKey, "tls-key", "", "caminho do arquivo PEM contendo a chave privada TLS")
+	RootCmd.Flags().BoolVar(&rootUseGUI, "gui", false, "inicializa a interface gráfica desktop (GUI)")
 }
