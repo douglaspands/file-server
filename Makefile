@@ -39,10 +39,10 @@ fmt: ## Formata todo o código fonte Go e templates
 .PHONY: lint
 lint: ## Executa o linter estrito (golangci-lint)
 	@echo "🔍 Executando golangci-lint..."
-	@if command -v golangci-lint >/dev/null 2>&1; then \
+	@if golangci-lint --version >/dev/null 2>&1; then \
 		golangci-lint run ./...; \
 	else \
-		echo "⚠️  golangci-lint não encontrado. Executando go vet..."; \
+		echo "⚠️  golangci-lint não configurado/encontrado. Executando go vet..."; \
 		go vet ./...; \
 	fi
 
