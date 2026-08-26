@@ -82,6 +82,44 @@ func FormatFileSize(bytes int64) string {
 	return fmt.Sprintf("%.1f %s", float64(bytes)/float64(div), units[exp])
 }
 
+var (
+	imageExts = map[string]struct{}{
+		".jpg": {}, ".jpeg": {}, ".png": {}, ".gif": {}, ".svg": {},
+		".webp": {}, ".bmp": {}, ".ico": {}, ".tiff": {},
+	}
+	videoExts = map[string]struct{}{
+		".mp4": {}, ".mkv": {}, ".avi": {}, ".mov": {}, ".wmv": {},
+		".flv": {}, ".webm": {}, ".m4v": {},
+	}
+	audioExts = map[string]struct{}{
+		".mp3": {}, ".wav": {}, ".flac": {}, ".aac": {}, ".ogg": {},
+		".wma": {}, ".m4a": {},
+	}
+	archiveExts = map[string]struct{}{
+		".zip": {}, ".tar": {}, ".gz": {}, ".tgz": {}, ".rar": {},
+		".7z": {}, ".bz2": {}, ".xz": {}, ".iso": {},
+	}
+	documentExts = map[string]struct{}{
+		".pdf": {}, ".doc": {}, ".docx": {}, ".xls": {}, ".xlsx": {},
+		".ppt": {}, ".pptx": {}, ".txt": {}, ".rtf": {}, ".odt": {},
+		".ods": {}, ".odp": {}, ".csv": {}, ".tsv": {},
+	}
+	codeExts = map[string]struct{}{
+		".go": {}, ".js": {}, ".ts": {}, ".jsx": {}, ".tsx": {},
+		".html": {}, ".css": {}, ".scss": {}, ".json": {}, ".xml": {},
+		".yaml": {}, ".yml": {}, ".py": {}, ".rs": {}, ".java": {},
+		".c": {}, ".cpp": {}, ".h": {}, ".hpp": {}, ".sh": {},
+		".bash": {}, ".sql": {}, ".md": {}, ".env": {},
+	}
+	viewableDocExts = map[string]struct{}{
+		".pdf": {}, ".txt": {}, ".csv": {}, ".tsv": {}, ".md": {}, ".log": {},
+	}
+	viewableOtherExts = map[string]struct{}{
+		".txt": {}, ".log": {}, ".cfg": {}, ".conf": {}, ".ini": {},
+		".env": {}, ".json": {}, ".xml": {}, ".yaml": {}, ".yml": {},
+	}
+)
+
 // DetectCategory classifica um arquivo pela extensão e se é diretório.
 func DetectCategory(name string, isDir bool) FileCategory {
 	if isDir {
@@ -89,22 +127,25 @@ func DetectCategory(name string, isDir bool) FileCategory {
 	}
 
 	ext := strings.ToLower(filepath.Ext(name))
-	switch ext {
-	case ".jpg", ".jpeg", ".png", ".gif", ".svg", ".webp", ".bmp", ".ico", ".tiff":
+	if _, ok := imageExts[ext]; ok {
 		return CategoryImage
-	case ".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm", ".m4v":
-		return CategoryVideo
-	case ".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a":
-		return CategoryAudio
-	case ".zip", ".tar", ".gz", ".tgz", ".rar", ".7z", ".bz2", ".xz", ".iso":
-		return CategoryArchive
-	case ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".rtf", ".odt", ".ods", ".odp", ".csv", ".tsv":
-		return CategoryDocument
-	case ".go", ".js", ".ts", ".jsx", ".tsx", ".html", ".css", ".scss", ".json", ".xml", ".yaml", ".yml", ".py", ".rs", ".java", ".c", ".cpp", ".h", ".hpp", ".sh", ".bash", ".sql", ".md", ".env":
-		return CategoryCode
-	default:
-		return CategoryOther
 	}
+	if _, ok := videoExts[ext]; ok {
+		return CategoryVideo
+	}
+	if _, ok := audioExts[ext]; ok {
+		return CategoryAudio
+	}
+	if _, ok := archiveExts[ext]; ok {
+		return CategoryArchive
+	}
+	if _, ok := documentExts[ext]; ok {
+		return CategoryDocument
+	}
+	if _, ok := codeExts[ext]; ok {
+		return CategoryCode
+	}
+	return CategoryOther
 }
 
 // IsViewableFormat determina se um arquivo com a categoria e extensão especificadas pode ser visualizado nativamente no navegador.
@@ -120,18 +161,10 @@ func IsViewableFormat(category FileCategory, ext string) bool {
 	case CategoryImage, CategoryVideo, CategoryAudio, CategoryCode:
 		return true
 	case CategoryDocument:
-		switch cleanExt {
-		case ".pdf", ".txt", ".csv", ".tsv", ".md", ".log":
-			return true
-		default:
-			return false
-		}
+		_, ok := viewableDocExts[cleanExt]
+		return ok
 	default:
-		switch cleanExt {
-		case ".txt", ".log", ".cfg", ".conf", ".ini", ".env", ".json", ".xml", ".yaml", ".yml":
-			return true
-		default:
-			return false
-		}
+		_, ok := viewableOtherExts[cleanExt]
+		return ok
 	}
 }

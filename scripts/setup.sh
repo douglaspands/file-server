@@ -25,6 +25,10 @@ install_tool "golangci-lint" "github.com/golangci/golangci-lint/cmd/golangci-lin
 install_tool "air" "github.com/air-verse/air"
 install_tool "govulncheck" "golang.org/x/vuln/cmd/govulncheck"
 
+if command -v asdf >/dev/null 2>&1; then
+    asdf reshim golang >/dev/null 2>&1 || true
+fi
+
 echo "========================================================================"
 echo "✨ Todas as ferramentas de desenvolvimento estão prontas para uso!"
 echo "💡 Certifique-se de que ${GOPATH_BIN} está no seu PATH."
