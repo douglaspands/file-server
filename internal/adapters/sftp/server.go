@@ -199,7 +199,7 @@ func (s *Server) handleConn(nConn net.Conn) {
 	if err != nil {
 		return
 	}
-	defer sshConn.Close()
+	defer func() { _ = sshConn.Close() }()
 
 	go ssh.DiscardRequests(reqs)
 

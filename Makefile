@@ -1,4 +1,5 @@
 SHELL := /bin/bash
+unexport GOROOT
 .DEFAULT_GOAL := help
 
 # Metadados de Compilação
@@ -46,8 +47,10 @@ fmt: ## Formata todo o código fonte Go e templates
 .PHONY: lint
 lint: ## Executa o linter estrito (golangci-lint)
 	@echo "🔍 Executando golangci-lint..."
-	@if golangci-lint --version >/dev/null 2>&1; then \
-		golangci-lint run ./...; \
+	@if command -v golangci-lint >/dev/null 2>&1 && golangci-lint --version >/dev/null 2>&1; then \
+		golangci-lint run --config=.golangci.yml ./...; \
+	elif [ -x "$$(go env GOPATH)/bin/golangci-lint" ]; then \
+		$$(go env GOPATH)/bin/golangci-lint run --config=.golangci.yml ./...; \
 	else \
 		echo "⚠️  golangci-lint não configurado/encontrado. Executando go vet..."; \
 		go vet ./...; \

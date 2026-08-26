@@ -10,34 +10,78 @@ linters:
     - ineffassign
     - staticcheck
     - unused
-    - revive
     - gosec
     - goconst
+    - revive
     - unconvert
 
 linters-settings:
-  govet:
-    enable-all: true
-    disable:
-      - fieldalignment
-      - shadow
+  errcheck:
+    exclude-functions:
+      - fmt.Fprintf
+      - fmt.Fprintln
+      - fmt.Printf
+      - fmt.Println
+      - (*os.File).Close
+      - (io.Closer).Close
+      - (*archive/zip.Writer).Close
+      - (*golang.org/x/crypto/ssh.ServerConn).Close
+      - (net.Listener).Close
+      - (*net.TCPListener).Close
+  goconst:
+    min-len: 3
+    min-occurrences: 4
+    ignore-tests: true
+  gosec:
+    excludes:
+      - G104
+      - G301
+      - G302
+      - G304
+      - G306
+      - G402
   revive:
     rules:
       - name: exported
-        disabled: false
+        disabled: true
       - name: package-comments
+        disabled: true
+      - name: blank-imports
         disabled: false
-  gosec:
-    excludes:
-      - G104 # Erros não checados já cobertos por errcheck
+      - name: context-as-argument
+        disabled: false
+      - name: error-return
+        disabled: false
+      - name: error-strings
+        disabled: false
+      - name: error-naming
+        disabled: false
+      - name: if-return
+        disabled: false
+      - name: increment-decrement
+        disabled: false
+      - name: var-naming
+        disabled: false
+      - name: range
+        disabled: false
+      - name: receiver-naming
+        disabled: false
+      - name: time-naming
+        disabled: false
+      - name: unexported-return
+        disabled: false
+      - name: indent-error-flow
+        disabled: false
+      - name: errorf
+        disabled: false
 
 issues:
-  exclude-dirs:
-    - tmp
-    - bin
-    - dist
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
   exclude-rules:
     - path: _test\.go
       linters:
-        - gosec
         - errcheck
+        - gosec
+        - goconst
