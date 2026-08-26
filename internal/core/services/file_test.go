@@ -131,11 +131,14 @@ func TestLocalFileService_ListDirectory(t *testing.T) {
 		assert.Equal(t, 4, listing.TotalItems)
 		assert.Greater(t, listing.TotalSize, int64(0))
 
-		// Verifica que as pastas vêm primeiro
+		// Verifica que as pastas vêm primeiro e IsViewable
 		require.GreaterOrEqual(t, len(listing.Items), 4)
 		assert.True(t, listing.Items[0].IsDir)
+		assert.False(t, listing.Items[0].IsViewable)
 		assert.True(t, listing.Items[1].IsDir)
+		assert.False(t, listing.Items[1].IsViewable)
 		assert.False(t, listing.Items[2].IsDir)
+		assert.True(t, listing.Items[2].IsViewable) // image.png ou notes.txt
 
 		// Verifica breadcrumbs
 		require.Len(t, listing.Breadcrumbs, 1)

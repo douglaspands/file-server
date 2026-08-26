@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"mime"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -13,6 +14,37 @@ import (
 	"github.com/douglas/file-server/internal/core/services"
 	"github.com/douglas/file-server/internal/version"
 )
+
+func init() {
+	_ = mime.AddExtensionType(".md", "text/markdown; charset=utf-8")
+	_ = mime.AddExtensionType(".markdown", "text/markdown; charset=utf-8")
+	_ = mime.AddExtensionType(".json", "application/json; charset=utf-8")
+	_ = mime.AddExtensionType(".js", "application/javascript; charset=utf-8")
+	_ = mime.AddExtensionType(".mjs", "application/javascript; charset=utf-8")
+	_ = mime.AddExtensionType(".ts", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".tsx", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".jsx", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".go", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".py", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".rs", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".c", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".cpp", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".h", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".hpp", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".sh", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".bash", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".sql", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".yaml", "text/yaml; charset=utf-8")
+	_ = mime.AddExtensionType(".yml", "text/yaml; charset=utf-8")
+	_ = mime.AddExtensionType(".xml", "text/xml; charset=utf-8")
+	_ = mime.AddExtensionType(".txt", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".csv", "text/csv; charset=utf-8")
+	_ = mime.AddExtensionType(".tsv", "text/tab-separated-values; charset=utf-8")
+	_ = mime.AddExtensionType(".log", "text/plain; charset=utf-8")
+	_ = mime.AddExtensionType(".pdf", "application/pdf")
+	_ = mime.AddExtensionType(".svg", "image/svg+xml")
+	_ = mime.AddExtensionType(".webp", "image/webp")
+}
 
 // extractSubpath extrai o caminho relativo após um prefixo específico na URL.
 func extractSubpath(r *http.Request, prefix string) string {
@@ -134,6 +166,38 @@ func (h *Handler) DownloadFileHandler(w http.ResponseWriter, r *http.Request) {
 	// Header para forçar o download com o nome correto
 	filename := filepath.Base(info.Name())
 	w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, filename))
+
+	// ServeContent cuida automaticamente de Content-Type, Content-Length, HTTP Range (206) e Last-Modified
+	http.ServeContent(w, r, info.Name(), info.ModTime(), file)
+}
+
+// ViewFileHandler realiza a visualização inline do arquivo com cabeçalho Content-Disposition inline e suporte a Range requests.
+func (h *Handler) ViewFileHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet && r.Method != http.MethodHead {
+		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+		return
+	}
+
+	subpath := extractSubpath(r, "/view")
+	file, info, err := h.fileService.GetFile(r.Context(), subpath)
+	if err != nil {
+		switch {
+		case errors.Is(err, services.ErrPathTraversal):
+			http.Error(w, "Acesso negado: fora do diretório raiz", http.StatusForbidden)
+		case errors.Is(err, services.ErrNotFound):
+			http.Error(w, "Arquivo não encontrado", http.StatusNotFound)
+		case errors.Is(err, services.ErrIsDirectory):
+			http.Error(w, "O caminho informado é um diretório", http.StatusBadRequest)
+		default:
+			http.Error(w, fmt.Sprintf("Erro ao abrir arquivo: %v", err), http.StatusInternalServerError)
+		}
+		return
+	}
+	defer file.Close()
+
+	// Header para permitir visualização inline no navegador
+	filename := filepath.Base(info.Name())
+	w.Header().Set("Content-Disposition", fmt.Sprintf(`inline; filename="%s"`, filename))
 
 	// ServeContent cuida automaticamente de Content-Type, Content-Length, HTTP Range (206) e Last-Modified
 	http.ServeContent(w, r, info.Name(), info.ModTime(), file)

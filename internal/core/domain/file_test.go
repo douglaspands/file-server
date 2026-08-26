@@ -53,3 +53,40 @@ func TestDetectCategory(t *testing.T) {
 		})
 	}
 }
+
+func TestIsViewableFormat(t *testing.T) {
+	tests := []struct {
+		name     string
+		category domain.FileCategory
+		ext      string
+		expected bool
+	}{
+		{"pasta", domain.CategoryFolder, "", false},
+		{"zip archive", domain.CategoryArchive, ".zip", false},
+		{"tar gz archive", domain.CategoryArchive, ".tar.gz", false},
+		{"imagem png", domain.CategoryImage, ".png", true},
+		{"imagem jpg", domain.CategoryImage, "jpg", true},
+		{"video mp4", domain.CategoryVideo, ".mp4", true},
+		{"video webm", domain.CategoryVideo, ".webm", true},
+		{"audio mp3", domain.CategoryAudio, ".mp3", true},
+		{"audio wav", domain.CategoryAudio, ".wav", true},
+		{"codigo go", domain.CategoryCode, ".go", true},
+		{"codigo js", domain.CategoryCode, ".js", true},
+		{"documento pdf", domain.CategoryDocument, ".pdf", true},
+		{"documento txt", domain.CategoryDocument, ".txt", true},
+		{"documento md", domain.CategoryDocument, ".md", true},
+		{"documento csv", domain.CategoryDocument, ".csv", true},
+		{"documento docx", domain.CategoryDocument, ".docx", false},
+		{"documento xlsx", domain.CategoryDocument, ".xlsx", false},
+		{"outro json", domain.CategoryOther, ".json", true},
+		{"outro log", domain.CategoryOther, ".log", true},
+		{"outro binario", domain.CategoryOther, ".bin", false},
+		{"outro exe", domain.CategoryOther, ".exe", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.expected, domain.IsViewableFormat(tt.category, tt.ext))
+		})
+	}
+}

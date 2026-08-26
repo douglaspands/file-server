@@ -94,4 +94,16 @@ func TestEmbeddedWebFiles(t *testing.T) {
 		require.NoError(t, err)
 		defer icoFile.Close()
 	})
+
+	t.Run("Given embedded templates FS When reading file_table partial Then file exists and contains view and download links", func(t *testing.T) {
+		tmplFS := web.GetTemplatesFS()
+		data, err := fs.ReadFile(tmplFS, "templates/partials/file_table.html")
+
+		require.NoError(t, err)
+		assert.NotEmpty(t, data)
+		assert.Contains(t, string(data), "/view/")
+		assert.Contains(t, string(data), "/download/")
+		assert.Contains(t, string(data), "Visualizar no navegador")
+		assert.Contains(t, string(data), "IsViewable")
+	})
 }

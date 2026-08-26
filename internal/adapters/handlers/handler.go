@@ -68,6 +68,8 @@ func (h *Handler) RegisterRoutes(mux *http.ServeMux) error {
 	mux.HandleFunc("/_live_reload", LiveReloadHandler)
 
 	// Rotas de Transferência e Operações de Arquivos
+	mux.HandleFunc("/view/", h.ViewFileHandler)
+	mux.HandleFunc("/view", h.ViewFileHandler)
 	mux.HandleFunc("/download/", h.DownloadFileHandler)
 	mux.HandleFunc("/download", h.DownloadFileHandler)
 	mux.HandleFunc("/zip/", h.DownloadZipHandler)
