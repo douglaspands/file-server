@@ -220,7 +220,7 @@ func LogStartupBanner(opts ServerOptions, isTLS bool) {
 		protocol = "HTTPS (TLS 1.3 / HTTP/2)"
 	}
 
-	log.Printf("⚡ File Server v%s inicializado com sucesso!", version.Get().Version)
+	log.Printf("⚡ File Server %s inicializado com sucesso!", version.Get().Version)
 	log.Printf("📁 Diretório compartilhado: %s", opts.TargetDir)
 	log.Printf("🔒 Protocolo: %s", protocol)
 	log.Printf("👉 Acesso Local:     %s", localURL)

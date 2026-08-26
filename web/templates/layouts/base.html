@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{block "title" .}}File Server{{end}}</title>
+    <!-- Tematização da Janela do Navegador e Barra de Título -->
+    <meta name="theme-color" content="#020617">
+    <meta name="color-scheme" content="dark">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/static/manifest.json">
+    <!-- Ícone da Aplicação e Favicons em Alta Resolução -->
+    <link rel="icon" type="image/svg+xml" href="/static/assets/icon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/assets/icon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/assets/icon-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/assets/icon-512.png">
+    <link rel="shortcut icon" href="/static/assets/favicon.ico">
     <!-- Tailwind CSS Standalone / CDN Fallback -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- HTMX -->
@@ -18,7 +29,7 @@
     <header class="border-b border-slate-800 bg-slate-950/85 backdrop-blur sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-3">
             <div class="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
-                <span class="text-xl sm:text-2xl select-none">⚡</span>
+                <img src="/static/assets/icon.svg" class="w-6 h-6 sm:w-7 sm:h-7 rounded-md select-none" alt="File Server Logo">
                 <a href="/" class="font-bold text-lg sm:text-xl tracking-tight text-white hover:text-indigo-400 transition-colors truncate">File Server</a>
                 <span class="text-[10px] sm:text-xs bg-indigo-500/20 text-indigo-400 font-mono px-2 py-0.5 rounded-md border border-indigo-500/30 flex-shrink-0">{{.Version}}</span>
             </div>

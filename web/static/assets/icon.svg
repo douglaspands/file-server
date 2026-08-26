@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Squircle Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </linearGradient>
+
+    <!-- Outer Glow / Border Gradient -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="50%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#312e81"/>
+    </linearGradient>
+
+    <!-- Lightning Bolt / Energy Gradient -->
+    <linearGradient id="boltGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="40%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+
+    <!-- Server Plate Gradient -->
+    <linearGradient id="plateGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+
+    <!-- Soft Ambient Glow Filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Base Squircle with Shadow & Border -->
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="8"/>
+
+  <!-- Stylized Server Rack Layer (Bottom Plate) -->
+  <g opacity="0.9">
+    <rect x="116" y="356" width="280" height="52" rx="14" fill="url(#plateGrad)" stroke="#475569" stroke-width="3"/>
+    <circle cx="152" cy="382" r="6" fill="#10b981"/>
+    <circle cx="174" cy="382" r="6" fill="#38bdf8"/>
+    <rect x="300" y="378" width="68" height="8" rx="4" fill="#64748b"/>
+  </g>
+
+  <!-- Stylized Server Rack Layer (Middle Plate) -->
+  <g opacity="0.9">
+    <rect x="116" y="284" width="280" height="52" rx="14" fill="url(#plateGrad)" stroke="#475569" stroke-width="3"/>
+    <circle cx="152" cy="310" r="6" fill="#10b981"/>
+    <circle cx="174" cy="310" r="6" fill="#818cf8"/>
+    <rect x="300" y="306" width="68" height="8" rx="4" fill="#64748b"/>
+  </g>
+
+  <!-- High Performance Energy Lightning Bolt (Center Core) -->
+  <!-- Ambient glow backdrop -->
+  <path d="M286 76 L164 252 L248 252 L226 416 L348 236 L264 236 Z" fill="#6366f1" opacity="0.4" filter="url(#glow)"/>
+
+  <!-- Crisp Core Lightning Bolt -->
+  <path d="M286 76 L164 252 L248 252 L226 416 L348 236 L264 236 Z" fill="url(#boltGrad)" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
+</svg>

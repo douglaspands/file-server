@@ -31,6 +31,13 @@ setup: ## Instala e verifica ferramentas locais de desenvolvimento (linters, air
 	@echo "📦 Instalando e verificando ferramentas locais..."
 	@./scripts/setup.sh
 
+.PHONY: icons
+icons: ## Gera e compila recursos de ícones e .syso para Windows
+	@echo "🎨 Gerando recursos de ícones e .syso para executáveis..."
+	@go run github.com/akavel/rsrc@latest -ico web/static/assets/icon.ico -arch amd64 -o rsrc_windows_amd64.syso
+	@go run github.com/akavel/rsrc@latest -ico web/static/assets/icon.ico -arch arm64 -o rsrc_windows_arm64.syso
+	@echo "✅ Recursos de ícone prontos."
+
 .PHONY: fmt
 fmt: ## Formata todo o código fonte Go e templates
 	@echo "🎨 Formatando código Go..."
@@ -103,8 +110,8 @@ build-linux: ## Compila binários para Linux (amd64 e arm64)
 	@CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags="$(LDFLAGS)" -trimpath -o $(DIST_DIR)/$(BINARY_NAME)-linux-arm64 main.go
 
 .PHONY: build-windows
-build-windows: ## Compila binários para Windows (amd64 e arm64)
-	@echo "🪟 Compilando binários para Windows..."
+build-windows: ## Compila binários para Windows (amd64 e arm64) com ícone embutido
+	@echo "🪟 Compilando binários para Windows com ícone embutido..."
 	@mkdir -p $(DIST_DIR)
 	@CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="$(LDFLAGS)" -trimpath -o $(DIST_DIR)/$(BINARY_NAME)-windows-amd64.exe main.go
 	@CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build -ldflags="$(LDFLAGS)" -trimpath -o $(DIST_DIR)/$(BINARY_NAME)-windows-arm64.exe main.go

@@ -90,7 +90,7 @@ func LogStartupBanner(opts ServerOptions, isTLS bool) {
 		localAccess = fmt.Sprintf("%s://%s@%s:%d", scheme, opts.User, opts.Host, opts.Port)
 	}
 
-	log.Printf("⚡ FTP Server v%s inicializado com sucesso!", version.Get().Version)
+	log.Printf("⚡ FTP Server %s inicializado com sucesso!", version.Get().Version)
 	log.Printf("📁 Diretório compartilhado: %s", opts.TargetDir)
 	log.Printf("🔒 Protocolo: %s", protocol)
 	log.Printf("👤 Usuário: %s", opts.User)

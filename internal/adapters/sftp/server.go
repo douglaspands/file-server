@@ -136,7 +136,7 @@ func LogStartupBanner(opts ServerOptions) {
 		localAccess = fmt.Sprintf("%s://%s@%s:%d", scheme, opts.User, opts.Host, opts.Port)
 	}
 
-	log.Printf("⚡ SFTP Server v%s inicializado com sucesso!", version.Get().Version)
+	log.Printf("⚡ SFTP Server %s inicializado com sucesso!", version.Get().Version)
 	log.Printf("📁 Diretório compartilhado: %s", opts.TargetDir)
 	log.Printf("🔒 Protocolo: SFTP (SSHv2 / Criptografia Forte)")
 	log.Printf("👤 Usuário: %s", opts.User)
