@@ -10,7 +10,7 @@
 ## 🌿 Boas Práticas de Git e Controle de Branches
 
 1. **Feature Branch por Especificação**:
-   - A cada nova especificação criada no OpenSpec (`/openspec-propose` ou `openspec new change "<name>"`), deve ser criada uma branch de feature dedicada a partir da `main`:
+   - A cada nova especificação criada no OpenSpec (`/opsx-propose`, `/openspec-propose` ou `openspec new change "<name>"`), deve ser criada uma branch de feature dedicada a partir da `main`:
      ```bash
      git checkout main
      git checkout -b feature/<change-name>
