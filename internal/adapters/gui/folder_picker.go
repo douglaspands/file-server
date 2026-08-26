@@ -55,9 +55,9 @@ func (p *NativeFolderPicker) PickFolder(ctx context.Context, initialDir string) 
 	var err error
 
 	switch runtime.GOOS {
-	case "windows":
+	case osWindows:
 		selected, err = p.pickWindows(ctx, initialDir)
-	case "darwin":
+	case osDarwin:
 		selected, err = p.pickDarwin(ctx, initialDir)
 	default: // Linux, FreeBSD, OpenBSD, etc.
 		selected, err = p.pickLinux(ctx, initialDir)

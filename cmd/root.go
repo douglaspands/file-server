@@ -77,6 +77,9 @@ func Execute() {
 }
 
 func init() {
+	// Desabilita o mousetrap do Cobra para permitir execução por duplo clique no Windows Explorer
+	cobra.MousetrapHelpText = ""
+
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "arquivo de configuração (default é $HOME/.file-server.yaml)")
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "habilita logs detalhados")
 	RootCmd.Flags().StringVarP(&rootDirFlag, "dir", "d", "", "caminho do diretório raiz a ser compartilhado")
