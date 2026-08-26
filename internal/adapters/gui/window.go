@@ -15,7 +15,7 @@ var (
 // IsDesktopEnvironment verifica se o sistema operacional possui interface gráfica disponível.
 func IsDesktopEnvironment() bool {
 	switch runtime.GOOS {
-	case "windows", "darwin":
+	case osWindows, osDarwin:
 		return true
 	default:
 		// Linux / Unix: verifica variáveis de display
@@ -31,9 +31,9 @@ func OpenURLInBrowser(url string) error {
 	var cmd *exec.Cmd
 
 	switch runtime.GOOS {
-	case "windows":
+	case osWindows:
 		cmd = execCommand("cmd", "/c", "start", "", url)
-	case "darwin":
+	case osDarwin:
 		cmd = execCommand("open", url)
 	default:
 		cmd = execCommand("xdg-open", url)
@@ -67,7 +67,7 @@ func LaunchDesktopWindow(ctx context.Context, url string) (*exec.Cmd, error) {
 
 	for _, cand := range candidates {
 		if _, err := lookPath(cand.name); err == nil {
-			cmd := exec.CommandContext(ctx, cand.name, cand.args...)
+			cmd := exec.CommandContext(ctx, cand.name, cand.args...) // #nosec G204
 			if err := cmd.Start(); err == nil {
 				return cmd, nil
 			}
@@ -77,12 +77,12 @@ func LaunchDesktopWindow(ctx context.Context, url string) (*exec.Cmd, error) {
 	// Fallback padrão para abrir URL diretamente
 	var fallbackCmd *exec.Cmd
 	switch runtime.GOOS {
-	case "windows":
-		fallbackCmd = exec.CommandContext(ctx, "cmd", "/c", "start", "", url)
-	case "darwin":
-		fallbackCmd = exec.CommandContext(ctx, "open", url)
+	case osWindows:
+		fallbackCmd = exec.CommandContext(ctx, "cmd", "/c", "start", "", url) // #nosec G204
+	case osDarwin:
+		fallbackCmd = exec.CommandContext(ctx, "open", url) // #nosec G204
 	default:
-		fallbackCmd = exec.CommandContext(ctx, "xdg-open", url)
+		fallbackCmd = exec.CommandContext(ctx, "xdg-open", url) // #nosec G204
 	}
 
 	if err := fallbackCmd.Start(); err != nil {

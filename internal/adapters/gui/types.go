@@ -76,8 +76,13 @@ type ServerStatus struct {
 	Health     *domain.HealthStatus `json:"health,omitempty"`
 }
 
-// GUIOptions define as opções de configuração para o próprio servidor da GUI.
-type GUIOptions struct {
+const (
+	osWindows = "windows"
+	osDarwin  = "darwin"
+)
+
+// Options define as opções de configuração para o próprio servidor da GUI.
+type Options struct {
 	Host       string
 	Port       int
 	InitialDir string
