@@ -7,6 +7,23 @@
 
 ---
 
+## ⚡ Autonomia Operacional, Ferramentas Nativas e Economia de Tokens
+
+1. **Prioridade Mandatória de Ferramentas Nativas**:
+   - **Criar Arquivo**: Utilize `write_to_file`. É **ESTRITAMENTE PROIBIDO** criar arquivos via `cat << 'EOF' > ...`, `echo "..." > ...` ou `touch` no terminal.
+   - **Editar Arquivo**: Utilize `replace_file_content` para edições cirúrgicas e pontuais. Nunca execute scripts `sed`, `awk` ou `cat >` via terminal.
+   - **Inspecionar / Ler**: Utilize `view_file` especificando `StartLine` e `EndLine` para focar apenas no trecho relevante. Nunca execute `cat`, `head`, `tail` via terminal.
+   - **Buscar Código e Arquivos**: Utilize `grep_search`, `find_by_name` e `list_dir`. Nunca execute `grep`, `find` ou `ls` via terminal.
+
+2. **Uso Restrito do Terminal (`run_command`)**:
+   - O terminal deve ser utilizado exclusivamente para ferramentas do ciclo de vida: `make` (`make test`, `make lint`, `make check`, `make build`), `go` (`go test`, `go mod tidy`), `git`, `openspec` e binários executáveis.
+
+3. **Execução Autônoma e Eficiência de Tokens**:
+   - Execute tarefas do plano sequencialmente sem interrupções desnecessárias por confirmação de prompt.
+   - **Economia de Tokens**: Forneça respostas concisas, utilizando links Markdown no padrão `[arquivo](file:///caminho)`. **NUNCA** replique blocos inteiros de código já salvos em disco na resposta do chat.
+
+---
+
 ## 🌿 Boas Práticas de Git e Controle de Branches
 
 1. **Feature Branch por Especificação**:

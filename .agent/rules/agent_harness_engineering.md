@@ -1,16 +1,16 @@
-# Diretrizes de Harness, Loop e Graph Engineering para Antigravity CLI
+# Diretrizes de Harness, Loop, Graph Engineering e Economia de Tokens para Antigravity CLI
 
 ## 1. Harness Engineering (Execução Otimizada de Comandos)
 - **Interface Primária**: Sempre utilize os alvos do `Makefile` para operações de desenvolvimento, testes e verificação (`make test`, `make lint`, `make check`, `make build`).
-- **Eficiência de Tokens**: Evite comandos com saídas verbosas desnecessárias na janela de contexto.
+- **Prioridade de Ferramentas Nativas**: Utilize as ferramentas nativas (`write_to_file`, `replace_file_content`, `view_file`, `grep_search`, `find_by_name`, `list_dir`) para interações no repositório. Nunca execute comandos bash para ler, escrever ou buscar arquivos.
 - **Automação Idempotente**: Execute `make check` localmente antes de sinalizar a conclusão de qualquer tarefa.
 
 ## 2. Loop Engineering (Ciclos Rápidos de Auto-Validação)
 - **Ciclo de Feedback Contínuo**:
-  1. *Inspeção*: Compreender os requisitos e contratos existentes.
-  2. *Implementação*: Fazer alterações mínimas e focadas.
+  1. *Inspeção*: Compreender os requisitos e contratos existentes via `view_file` (com limites de linhas).
+  2. *Implementação*: Fazer alterações mínimas e focadas com `replace_file_content` ou `write_to_file`.
   3. *Teste Automatizado*: Rodar testes unitários/cobertura imediatamente (`make test`).
-  4. *Diagnóstico & Correção*: Caso haja falhas, analisar logs, corrigir e revalidar.
+  4. *Diagnóstico & Correção*: Caso haja falhas, analisar logs de forma direcionada, corrigir e revalidar.
   5. *Validação Final*: Confirmar com `make check` e `openspec validate --all`.
 - Não finalize tarefas sem evidências de testes passando e conformidade de cobertura >= 80%.
 
@@ -22,3 +22,9 @@
   4. *Adaptadores e Handlers (`internal/adapters/`)*.
   5. *Composição / Entrypoints (`cmd/` e `main.go`)*.
 - Nunca crie dependências circulares entre pacotes internos.
+
+## 4. Token & Context Economy (Eficiência da Janela de Contexto)
+- **Leitura Cirúrgica**: Use `StartLine` e `EndLine` no `view_file` para evitar ler arquivos extensos na íntegra.
+- **Edição Cirúrgica**: Prefira `replace_file_content` para substituição de trechos específicos sem reescrever o arquivo completo.
+- **Outputs e Respostas Concisas**: Responda com resumos objetivos e links no padrão `[arquivo](file:///caminho)`, sem duplicar blocos de código já salvos no disco.
+- **Execução Enxuta**: Utilize comandos com saídas estruturadas e evite flags verbosas desnecessárias (ex: `-v` em testes).

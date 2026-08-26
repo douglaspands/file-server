@@ -11,6 +11,8 @@
       "command(go fmt)",
       "command(go mod)",
       "command(go env)",
+      "command(go version)",
+      "command(go doc)",
       "command(make)",
       "command(make help)",
       "command(make setup)",
@@ -60,6 +62,12 @@
       "command(git init)",
       "command(git fetch)",
       "command(git pull)",
+      "command(git merge)",
+      "command(git merge --squash)",
+      "command(git check-ignore)",
+      "command(gh)",
+      "command(gh pr)",
+      "command(gh auth)",
       "command(ls)",
       "command(cat)",
       "command(head)",
@@ -92,7 +100,9 @@
       "command(unzip)",
       "command(curl)",
       "command(wget)",
-      "command(convert)"
+      "command(convert)",
+      "command(jq)",
+      "command(xargs)"
     ],
     "ask": [
       "command(make clean)",
