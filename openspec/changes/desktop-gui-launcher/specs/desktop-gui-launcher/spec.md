@@ -1,6 +1,6 @@
 ## Purpose
 
-Fornece uma interface gráfica nativa e moderna para desktop (estilo GNOME / Adwaita Dark) para inicialização interativa do File Server sem necessidade de argumentos de linha de comando ou ao clicar duas vezes no executável, permitindo configuração visual de serviços (Web/HTTP, FTP, SFTP), identidade visual oficial com ícone clean e moderno de alta resolução embutido no executável e visível na barra de tarefas/janela, visualização escalável, amigável e captura facilitada de múltiplos endereços IP/URLs para compartilhamento, documentação visual no README como forma principal de uso, e controle completo do ciclo de vida da aplicação.
+Fornece uma interface gráfica nativa e moderna para desktop (estilo GNOME / Adwaita Dark) para inicialização interativa do File Server sem necessidade de argumentos de linha de comando ou ao clicar duas vezes no executável, permitindo configuração visual de serviços (Web/HTTP, FTP, SFTP), identidade visual oficial com ícone clean e moderno de alta resolução embutido no executável e visível na barra de tarefas/janela, formatação limpa da versão sem prefixos duplicados, visualização escalável, amigável e captura facilitada de múltiplos endereços IP/URLs para compartilhamento, documentação visual no README como forma principal de uso, e controle completo do ciclo de vida da aplicação.
 
 ## ADDED Requirements
 
@@ -36,6 +36,14 @@ O sistema DEVE fornecer um ícone oficial de alta resolução clean e moderno, v
 #### Scenario: Disponibilização do pacote de assets em múltiplas resoluções
 - **WHEN** os recursos visuais são carregados
 - **THEN** o sistema DEVE fornecer o ícone em formato vetorial SVG e bitmaps multi-resolução (16x16, 32x32, 48x48, 128x128, 256x256, 512x512 e .ico).
+
+### Requirement: Exibição Normalizada de Versão sem Duplicidade de Prefixo
+O sistema DEVE formatar e exibir as informações de versão de forma limpa, respeitando a tag do GitHub sem duplicar a letra "v".
+
+#### Scenario: Formatação limpa da versão sem prefixo duplicado
+- **GIVEN** que o binário foi compilado com tag de release do Git (ex: v1.1.0)
+- **WHEN** a versão é exibida nos banners de inicialização, templates HTML ou terminal
+- **THEN** o sistema DEVE exibir a versão sem duplicar a letra "v" (exibindo "v1.1.0" ou "dev").
 
 ### Requirement: Design Visual Estilo GNOME e Paleta de Cores Unificada
 A interface gráfica DEVE adotar um design clean, moderno e polido no padrão GNOME / Adwaita Dark, utilizando estritamente a paleta de cores do frontend web (`slate-900`, `slate-950`, `indigo-500`, `slate-100`, bordas `slate-800`).

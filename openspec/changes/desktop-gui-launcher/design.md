@@ -5,7 +5,7 @@ Os templates e assets web já utilizam Tailwind CSS, Alpine.js e HTMX embutidos 
 
 Para viabilizar a experiência de aplicativo desktop moderna, clean e com a estética GNOME / Adwaita Dark solicitada, a solução integrará uma janela desktop nativa/webview conectada a um controlador de launcher interno (`internal/adapters/gui`), reutilizando o design system do frontend existente, orquestrando o ciclo de vida dos servidores HTTP, FTP e SFTP, e fornecendo um container rolável inteligente e escalável para visualização de qualquer quantidade de interfaces de rede com cópia rápida e compartilhamento via QR Code.
 
-Além disso, a aplicação terá identidade visual oficial com ícone de alta resolução embutido no executável binário e renderizado na barra de tarefas e janela desktop, e o `README.md` apresentará a interface gráfica como o método principal de utilização.
+Além disso, a aplicação terá identidade visual oficial com ícone de alta resolução embutido no executável binário e renderizado na barra de tarefas e janela desktop, normalização de versão limpa (sem duplicar a letra `"v"` de tags do Git), e o `README.md` apresentará a interface gráfica como o método principal de utilização.
 
 ## Goals / Non-Goals
 
@@ -13,6 +13,7 @@ Além disso, a aplicação terá identidade visual oficial com ícone de alta re
 - Prover inicialização automática da interface gráfica desktop quando o binário for executado sem argumentos de linha de comando ou por clique duplo no gerenciador de arquivos.
 - Oferecer uma interface gráfica moderna, clean e com a estética GNOME Adwaita Dark (fundo `slate-900`/`slate-950`, acentos `indigo-500`, contrastes `slate-100` e bordas sutis `slate-800`).
 - Criar e integrar ícone oficial clean e moderno de alta resolução (SVG, PNGs multi-resolução e ICO) embutido no executável (.exe) e visível na barra de tarefas e na janela da aplicação.
+- Exibir a versão da aplicação sem duplicar prefixos `"v"` (considerando tags do GitHub como `v1.1.0` diretamente).
 - Permitir a seleção e parametrização completa dos modos de operação (Web HTTP/HTTPS, FTP/FTPS, SFTP sobre SSH).
 - Fornecer diálogo nativo de seleção de diretórios (*Folder Picker*) do sistema operacional.
 - Fornecer uma experiência fluida para máquinas com múltiplos adaptadores de rede (Wi-Fi, Ethernet, Docker bridges, WSL, Tailscale/WireGuard):
@@ -41,27 +42,30 @@ Além disso, a aplicação terá identidade visual oficial com ícone de alta re
   - Geração de pacote completo de ícones em alta resolução (`icon.ico`, `icon-16.png`, `icon-32.png`, `icon-48.png`, `icon-128.png`, `icon-256.png`, `icon-512.png`).
   - No Windows: embutimento via recurso de compilação `.syso` (compatível com `CGO_ENABLED=0`) garantindo o ícone visível no `.exe` pelo Windows Explorer.
   - No Desktop/Web: inclusão das tags `<link rel="icon">` e `<link rel="apple-touch-icon">` nos templates HTML (`gui_launcher.html` e `base.html`), fornecendo o ícone imediato na barra de tarefas, janelas e navegadores.
-- **Racional**: Mantém a portabilidade estrita do binário sem dependências de CGo e garante identidade visual consistente em todas as plataformas.
 
-### 3. Tratamento Escalável de Múltiplos IPs & Categorização de Interfaces
+### 3. Normalização da Exibição de Versão
+- **Decisão**:
+  - Remover a adição manual de `"v"` nos formatos de log (`v%s` → `%s`), permitindo que a versão injetada via tag do Git/GitHub (ex: `v1.1.0`) ou default `dev` seja renderizada perfeitamente sem duplicidade (`vv1.1.0` → `v1.1.0`).
+
+### 4. Tratamento Escalável de Múltiplos IPs & Categorização de Interfaces
 - **Decisão**: 
   - O backend Go analisa as interfaces via `net.Interfaces()` e `services.GetLANIPAddresses()`, associando nome de interface (ex: `wlan0`, `eth0`, `docker0`, `tailscale0`) e classificando seu tipo (`wifi`, `ethernet`, `vpn`, `virtual`).
   - A interface web/desktop encapsula a lista de IPs em um container com altura controlada (`max-h-48` / `max-h-56` com `overflow-y-auto`), exibindo badges inteligentes, barra de pesquisa/filtro por nome ou IP, e botão para copiar todos os endereços de uma única vez.
   - Geração de QR Code leve no frontend para cada IP individual, facilitando a conexão imediata de celulares na rede local.
 
-### 4. Estratégia de Documentação no README com Prints Visuais
+### 5. Estratégia de Documentação no README com Prints Visuais
 - **Decisão**:
   - Salvar capturas de tela/prints ilustrativos de alta qualidade da interface gráfica em `docs/assets/gui-launcher.svg`.
   - Reestruturar o `README.md` iniciando com "🚀 Como Usar (Interface Gráfica Desktop)", exibindo o screenshot da aplicação, explicando o fluxo visual (escolher pasta, selecionar protocolo, iniciar e copiar links/QR Code).
   - Manter as seções de "💻 Modo Linha de Comando (CLI)", tabelas de flags, APIs REST e guia de desenvolvimento organizadas nas seções seguintes.
 
-### 5. Diálogo Nativo de Seleção de Diretórios (Folder Picker)
+### 6. Diálogo Nativo de Seleção de Diretórios (Folder Picker)
 - **Decisão**: Utilizar integração nativa do sistema operacional (Zenity/KDialog no Linux, PowerShell/FolderBrowserDialog no Windows, AppleScript/NSOpenPanel no macOS) acionada via API REST/SSE interna do launcher.
 
-### 6. Orquestração e Ciclo de Vida dos Servidores
+### 7. Orquestração e Ciclo de Vida dos Servidores
 - **Decisão**: O controlador da GUI gerencia um `context.WithCancel` para cada servidor ativo. Ao clicar em "Iniciar Servidor", a rotina do serviço escolhido é iniciada em uma goroutine; ao clicar em "Parar" ou ao fechar a janela desktop, o contexto é cancelado, executando o `Shutdown` gracioso de 5 segundos.
 
-### 7. Transmissão de Logs em Tempo Real
+### 8. Transmissão de Logs em Tempo Real
 - **Decisão**: Implementar um `LogBroadcaster` em memória no pacote `internal/adapters/gui` que captura as mensagens de log dos servidores e as transmite para o painel de logs da interface via Server-Sent Events (SSE) ou HTMX/Alpine.
 
 ## Risks / Trade-offs

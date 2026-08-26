@@ -2,10 +2,12 @@
 
 Atualmente, o `file-server` é inicializado exclusivamente via linha de comando (CLI) ou executa o servidor HTTP padrão caso nenhum argumento seja passado em terminais interativos. Para usuários de desktop que interagem via gerenciador de arquivos (clique duplo no executável) ou preferem uma experiência visual moderna e intuitiva sem necessidade de memorizar flags e comandos do terminal, é fundamental fornecer uma interface gráfica nativa (GUI) desktop como forma principal de uso da aplicação. Essa interface permite configurar visualmente os parâmetros de rede, diretório compartilhado, credenciais, certificados TLS e alternar entre os serviços HTTP/Web, FTP e SFTP com um único clique, além de acompanhar o status, visualizar de forma organizada e escalável múltiplos IPs e facilitar a captura e compartilhamento dessas URLs via cópia ou QR Code.
 
-Além disso, para proporcionar uma experiência visual verdadeiramente profissional no desktop, a aplicação necessita de uma identidade visual própria com um **ícone clean, moderno e de alta resolução** embutido no executável binário (visível no Windows Explorer / atalhos Linux) e exibido na barra de tarefas e na janela do aplicativo quando aberto.
+Além disso, a aplicação possui identidade visual oficial com ícone de alta resolução embutido no executável binário e renderizado na barra de tarefas e na janela desktop, e formatação limpa da versão sem duplicação de prefixos `"v"`.
 
 ## What Changes
 
+- **Normalização da Exibição de Versão**:
+  - Ajuste nos formatos de log e templates para remover a concatenação redundante do prefixo `"v"`, evitando duplicidade (`vv1.1.0` → `v1.1.0`) e considerando a tag oficial do GitHub diretamente.
 - **Identidade Visual e Ícone da Aplicação em Alta Resolução**:
   - Criação de ícone oficial clean, moderno e vetorial (SVG) com tema de servidor/energia de alta performance nas cores da paleta (`slate-900`/`slate-950`, `indigo-500`, `slate-100`).
   - Pacote de ícones multi-resolução (`icon.svg`, `icon-16.png`, `icon-32.png`, `icon-48.png`, `icon-128.png`, `icon-256.png`, `icon-512.png` e `.ico` multi-camadas).
@@ -39,14 +41,14 @@ Além disso, para proporcionar uma experiência visual verdadeiramente profissio
 ## Capabilities
 
 ### New Capabilities
-- `desktop-gui-launcher`: Interface gráfica desktop (estilo GNOME / Adwaita Dark) para configuração visual, seleção de protocolos (HTTP, FTP, SFTP), inicialização do servidor com um clique, visualização escalável e captura simplificada de múltiplos IPs/URLs (com viewport rolável, tags de interface, busca, cópia em 1 clique e QR Code), identidade visual com ícone em alta resolução no executável e na barra de tarefas, visualização de status/logs, documentação visual no README como forma primária de uso e ciclo de vida padrão de desktop (maximizar, fechar e encerrar).
+- `desktop-gui-launcher`: Interface gráfica desktop (estilo GNOME / Adwaita Dark) para configuração visual, seleção de protocolos (HTTP, FTP, SFTP), inicialização do servidor com um clique, visualização escalável e captura simplificada de múltiplos IPs/URLs (com viewport rolável, tags de interface, busca, cópia em 1 clique e QR Code), identidade visual com ícone em alta resolução no executável e na barra de tarefas, normalização de versão de release, visualização de status/logs, documentação visual no README como forma primária de uso e ciclo de vida padrão de desktop (maximizar, fechar e encerrar).
 
 ### Modified Capabilities
 <!-- Nenhuma especificação existente teve seus requisitos de comportamento alterados; os modos CLI e servidores web/ftp/sftp permanecem 100% retrocompatíveis. -->
 
 ## Impact
 
-- **Código e CLI**: Criação do pacote `cmd/gui.go` e integração na lógica do comando raiz (`cmd/root.go`) para detecção e inicialização da GUI quando nenhum argumento for passado.
+- **Código e CLI**: Criação do pacote `cmd/gui.go` e integração na lógica do comando raiz (`cmd/root.go`) para detecção e inicialização da GUI quando nenhum argumento for passado, além de ajuste de formatação nos banners de inicialização.
 - **Módulo de GUI Desktop**: Criação de pacote dedicado `internal/adapters/gui` responsável por gerenciar a janela desktop, binding de configurações para os serviços existentes (`ServerOptions`, `adapterftp.ServerOptions`, `adaptersftp.ServerOptions`), descoberta categorizada de adaptadores de rede, integração com clipboard e controle de logs em tempo real.
 - **Frontend / Assets**: Criação de template e componentes do launcher incluindo container rolável de IPs, badges de tipo de rede, busca de adaptadores, botões de cópia, renderizador de QR Code e pacote de assets com ícone em alta resolução (`web/static/assets/icon.svg`, `icon.ico`, `icon-*.png`).
 - **Documentação**: Atualização do `README.md` e inclusão de capturas de tela/prints ilustrativos da GUI na pasta de assets de documentação.

@@ -35,3 +35,7 @@
 - [x] 6.2 Vincular os ícones nos cabeçalhos dos templates HTML (`gui_launcher.html` e `base.html`) para renderização na barra de tarefas e janela.
 - [x] 6.3 Configurar recurso de ícone embutido (.syso) para o binário executável do Windows no `Makefile` e `cmd/`.
 - [x] 6.4 Validar compilação cruzada (`make check` e `make build-all`) e atualizar documentação visual no `README.md`.
+
+## 7. Normalização de Versão
+
+- [x] 7.1 Corrigir formatação da versão nos banners de log e templates removendo o prefixo 'v' duplicado e atualizando os testes.

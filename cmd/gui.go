@@ -78,7 +78,7 @@ func RunGUIWithOptions(ctx context.Context, opts GUIOptions) error {
 		return fmt.Errorf("erro ao iniciar listener da GUI: %w", err)
 	}
 
-	log.Printf("⚡ File Server Launcher Desktop v%s inicializado!", version.Get().Version)
+	log.Printf("⚡ File Server Launcher Desktop %s inicializado!", version.Get().Version)
 	log.Printf("👉 Painel Gráfico Desktop: %s", guiURL)
 	log.Printf("📁 Diretório Inicial: %s", opts.InitialDir)
 	log.Printf("🛑 Pressione Ctrl+C para encerrar a aplicação.")
