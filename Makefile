@@ -16,7 +16,7 @@ BIN_DIR := bin
 DIST_DIR := dist
 BINARY_NAME := file-server
 
-export PATH := $(PATH):$(shell go env GOBIN):$(shell go env GOPATH)/bin:$(PWD)/$(BIN_DIR)
+export PATH := $(PATH):$(shell go env GOPATH)/bin:$(PWD)/$(BIN_DIR)
 
 .PHONY: help
 help: ## Exibe este menu interativo com os comandos disponíveis
