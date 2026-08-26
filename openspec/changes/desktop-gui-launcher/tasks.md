@@ -39,3 +39,9 @@
 ## 7. Normalização de Versão
 
 - [x] 7.1 Corrigir formatação da versão nos banners de log e templates removendo o prefixo 'v' duplicado e atualizando os testes.
+
+## 8. Tematização da Janela do Navegador nas Cores da Aplicação
+
+- [x] 8.1 Criar `web/static/manifest.json` com `theme_color` `#020617` e vincular nos templates HTML.
+- [x] 8.2 Atualizar `internal/adapters/gui/window.go` com flags de dark mode (`--force-dark-mode`, `--enable-features=WebUIDarkMode`) ao abrir janelas Chrome/Edge.
+- [x] 8.3 Validar suíte de testes e compilação (`make check`).

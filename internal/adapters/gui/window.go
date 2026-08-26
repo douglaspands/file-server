@@ -49,20 +49,20 @@ func LaunchDesktopWindow(ctx context.Context, url string) (*exec.Cmd, error) {
 		name string
 		args []string
 	}{
-		// Linux & Multiplataforma
-		{"google-chrome", []string{"--app=" + url, "--new-window"}},
-		{"chromium-browser", []string{"--app=" + url, "--new-window"}},
-		{"chromium", []string{"--app=" + url, "--new-window"}},
-		{"brave-browser", []string{"--app=" + url, "--new-window"}},
-		{"microsoft-edge", []string{"--app=" + url, "--new-window"}},
+		// Linux & Multiplataforma (Chromium-based com forçamento de tema escuro na moldura)
+		{"google-chrome", []string{"--app=" + url, "--new-window", "--force-dark-mode", "--enable-features=WebUIDarkMode"}},
+		{"chromium-browser", []string{"--app=" + url, "--new-window", "--force-dark-mode", "--enable-features=WebUIDarkMode"}},
+		{"chromium", []string{"--app=" + url, "--new-window", "--force-dark-mode", "--enable-features=WebUIDarkMode"}},
+		{"brave-browser", []string{"--app=" + url, "--new-window", "--force-dark-mode", "--enable-features=WebUIDarkMode"}},
+		{"microsoft-edge", []string{"--app=" + url, "--new-window", "--force-dark-mode", "--enable-features=WebUIDarkMode"}},
 		{"firefox", []string{"--new-window", url}},
 
 		// Windows
-		{"msedge", []string{"--app=" + url, "--new-window"}},
-		{"chrome", []string{"--app=" + url, "--new-window"}},
+		{"msedge", []string{"--app=" + url, "--new-window", "--force-dark-mode", "--enable-features=WebUIDarkMode"}},
+		{"chrome", []string{"--app=" + url, "--new-window", "--force-dark-mode", "--enable-features=WebUIDarkMode"}},
 
 		// macOS
-		{"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", []string{"--app=" + url}},
+		{"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", []string{"--app=" + url, "--force-dark-mode", "--enable-features=WebUIDarkMode"}},
 	}
 
 	for _, cand := range candidates {

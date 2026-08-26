@@ -18,6 +18,8 @@ func TestEmbeddedWebFiles(t *testing.T) {
 		assert.NotEmpty(t, data)
 		assert.Contains(t, string(data), "File Server")
 		assert.Contains(t, string(data), "icon.svg")
+		assert.Contains(t, string(data), "theme-color")
+		assert.Contains(t, string(data), "manifest.json")
 	})
 
 	t.Run("Given embedded templates FS When reading explorer page Then file exists", func(t *testing.T) {
@@ -37,6 +39,8 @@ func TestEmbeddedWebFiles(t *testing.T) {
 		assert.NotEmpty(t, data)
 		assert.Contains(t, string(data), "guiLauncher")
 		assert.Contains(t, string(data), "icon.svg")
+		assert.Contains(t, string(data), "theme-color")
+		assert.Contains(t, string(data), "manifest.json")
 	})
 
 	t.Run("Given embedded static FS When reading static stylesheet Then file exists", func(t *testing.T) {
@@ -57,6 +61,19 @@ func TestEmbeddedWebFiles(t *testing.T) {
 		require.NoError(t, err)
 
 		file, err := staticFS.Open("/js/app.js")
+		require.NoError(t, err)
+		defer file.Close()
+
+		stat, err := file.Stat()
+		require.NoError(t, err)
+		assert.False(t, stat.IsDir())
+	})
+
+	t.Run("Given embedded static FS When reading manifest.json Then file exists and has theme_color", func(t *testing.T) {
+		staticFS, err := web.GetStaticFileSystem()
+		require.NoError(t, err)
+
+		file, err := staticFS.Open("/manifest.json")
 		require.NoError(t, err)
 		defer file.Close()
 

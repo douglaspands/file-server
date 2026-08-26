@@ -1,6 +1,6 @@
 ## Purpose
 
-Fornece uma interface gráfica nativa e moderna para desktop (estilo GNOME / Adwaita Dark) para inicialização interativa do File Server sem necessidade de argumentos de linha de comando ou ao clicar duas vezes no executável, permitindo configuração visual de serviços (Web/HTTP, FTP, SFTP), identidade visual oficial com ícone clean e moderno de alta resolução embutido no executável e visível na barra de tarefas/janela, formatação limpa da versão sem prefixos duplicados, visualização escalável, amigável e captura facilitada de múltiplos endereços IP/URLs para compartilhamento, documentação visual no README como forma principal de uso, e controle completo do ciclo de vida da aplicação.
+Fornece uma interface gráfica nativa e moderna para desktop (estilo GNOME / Adwaita Dark) para inicialização interativa do File Server sem necessidade de argumentos de linha de comando ou ao clicar duas vezes no executável, permitindo configuração visual de serviços (Web/HTTP, FTP, SFTP), identidade visual oficial com ícone clean e moderno de alta resolução embutido no executável e visível na barra de tarefas/janela, tematização escura da moldura da janela do navegador nas cores da aplicação, formatação limpa da versão sem prefixos duplicados, visualização escalável, amigável e captura facilitada de múltiplos endereços IP/URLs para compartilhamento, documentação visual no README como forma principal de uso, e controle completo do ciclo de vida da aplicação.
 
 ## ADDED Requirements
 
@@ -36,6 +36,14 @@ O sistema DEVE fornecer um ícone oficial de alta resolução clean e moderno, v
 #### Scenario: Disponibilização do pacote de assets em múltiplas resoluções
 - **WHEN** os recursos visuais são carregados
 - **THEN** o sistema DEVE fornecer o ícone em formato vetorial SVG e bitmaps multi-resolução (16x16, 32x32, 48x48, 128x128, 256x256, 512x512 e .ico).
+
+### Requirement: Tematização da Moldura e Janela do Navegador nas Cores da Aplicação
+A interface DEVE fornecer metadados de cor e flags de execução para que a janela de aplicativo do Chrome/Edge adote a paleta de cores escura da aplicação.
+
+#### Scenario: Tematização da janela do navegador nas cores da aplicação
+- **GIVEN** que a interface desktop é aberta em modo janela de aplicativo (Chrome / Edge / Chromium)
+- **WHEN** a janela do navegador é criada
+- **THEN** a barra de título, bordas e controles de navegação DEVEM utilizar o tema escuro nas cores da aplicação (`#020617` / `slate-950`).
 
 ### Requirement: Exibição Normalizada de Versão sem Duplicidade de Prefixo
 O sistema DEVE formatar e exibir as informações de versão de forma limpa, respeitando a tag do GitHub sem duplicar a letra "v".
