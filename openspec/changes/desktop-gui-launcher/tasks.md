@@ -28,3 +28,10 @@
 - [x] 5.2 Criar testes unitários para os comandos CLI em `cmd/gui_test.go` e integração em `cmd/cmd_test.go`.
 - [x] 5.3 Executar validação de cobertura inegociável $\ge$ 80% e suite completa com `make check` e `make test`.
 - [x] 5.4 Salvar prints visuais da interface gráfica em `docs/assets/` e reformular o `README.md` destacando a interface desktop como o guia principal de uso, mantendo a documentação completa de CLI e desenvolvimento organizada logo abaixo.
+
+## 6. Identidade Visual e Ícone da Aplicação no Executável e Barra de Tarefas
+
+- [x] 6.1 Criar master vetorial (SVG) e pacote de ícones em alta resolução (.ico, .png 16/32/48/128/256/512) em `web/static/assets/` e `docs/assets/`.
+- [x] 6.2 Vincular os ícones nos cabeçalhos dos templates HTML (`gui_launcher.html` e `base.html`) para renderização na barra de tarefas e janela.
+- [x] 6.3 Configurar recurso de ícone embutido (.syso) para o binário executável do Windows no `Makefile` e `cmd/`.
+- [x] 6.4 Validar compilação cruzada (`make check` e `make build-all`) e atualizar documentação visual no `README.md`.

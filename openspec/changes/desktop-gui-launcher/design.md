@@ -5,13 +5,14 @@ Os templates e assets web já utilizam Tailwind CSS, Alpine.js e HTMX embutidos 
 
 Para viabilizar a experiência de aplicativo desktop moderna, clean e com a estética GNOME / Adwaita Dark solicitada, a solução integrará uma janela desktop nativa/webview conectada a um controlador de launcher interno (`internal/adapters/gui`), reutilizando o design system do frontend existente, orquestrando o ciclo de vida dos servidores HTTP, FTP e SFTP, e fornecendo um container rolável inteligente e escalável para visualização de qualquer quantidade de interfaces de rede com cópia rápida e compartilhamento via QR Code.
 
-Além disso, a documentação central do projeto (`README.md`) será reestruturada para apresentar a interface gráfica como o método principal e mais amigável de utilização, suportada por capturas visuais da GUI.
+Além disso, a aplicação terá identidade visual oficial com ícone de alta resolução embutido no executável binário e renderizado na barra de tarefas e janela desktop, e o `README.md` apresentará a interface gráfica como o método principal de utilização.
 
 ## Goals / Non-Goals
 
 **Goals:**
 - Prover inicialização automática da interface gráfica desktop quando o binário for executado sem argumentos de linha de comando ou por clique duplo no gerenciador de arquivos.
 - Oferecer uma interface gráfica moderna, clean e com a estética GNOME Adwaita Dark (fundo `slate-900`/`slate-950`, acentos `indigo-500`, contrastes `slate-100` e bordas sutis `slate-800`).
+- Criar e integrar ícone oficial clean e moderno de alta resolução (SVG, PNGs multi-resolução e ICO) embutido no executável (.exe) e visível na barra de tarefas e na janela da aplicação.
 - Permitir a seleção e parametrização completa dos modos de operação (Web HTTP/HTTPS, FTP/FTPS, SFTP sobre SSH).
 - Fornecer diálogo nativo de seleção de diretórios (*Folder Picker*) do sistema operacional.
 - Fornecer uma experiência fluida para máquinas com múltiplos adaptadores de rede (Wi-Fi, Ethernet, Docker bridges, WSL, Tailscale/WireGuard):
@@ -33,35 +34,35 @@ Além disso, a documentação central do projeto (`README.md`) será reestrutura
 ### 1. Arquitetura da Interface Gráfica: Webview Nativo com Controlador em Go
 - **Decisão**: Adotar uma janela desktop nativa acoplada a um controlador de estado em Go (`internal/adapters/gui`), renderizando uma página com design system GNOME / Adwaita Dark baseado em Tailwind CSS e Alpine.js.
 - **Racional**: Garante 100% de coerência visual e reaproveitamento de componentes da interface web do projeto (`web/`), mantendo alta responsividade, baixo consumo de memória e inicialização instantânea.
-- **Alternativas consideradas**:
-  - *Fyne / Gio*: Embora sejam bibliotecas Go puras, exigiriam duplicar toda a estilização CSS/HTML em código Go e dificultariam atingir exatamente a paleta e acabamento visual do frontend web existente.
-  - *Electron*: Descartado por gerar binários pesados (> 100MB) e alto consumo de memória.
 
-### 2. Tratamento Escalável de Múltiplos IPs & Categorização de Interfaces
+### 2. Identidade Visual e Embutimento Multiplataforma do Ícone da Aplicação
+- **Decisão**:
+  - Criação de master vetorial em SVG (`web/static/assets/icon.svg` e `docs/assets/icon.svg`) com design clean e moderno estilizando o símbolo do File Server (raio/energia em anil/índigo sob base geométrica escura).
+  - Geração de pacote completo de ícones em alta resolução (`icon.ico`, `icon-16.png`, `icon-32.png`, `icon-48.png`, `icon-128.png`, `icon-256.png`, `icon-512.png`).
+  - No Windows: embutimento via recurso de compilação `.syso` (compatível com `CGO_ENABLED=0`) garantindo o ícone visível no `.exe` pelo Windows Explorer.
+  - No Desktop/Web: inclusão das tags `<link rel="icon">` e `<link rel="apple-touch-icon">` nos templates HTML (`gui_launcher.html` e `base.html`), fornecendo o ícone imediato na barra de tarefas, janelas e navegadores.
+- **Racional**: Mantém a portabilidade estrita do binário sem dependências de CGo e garante identidade visual consistente em todas as plataformas.
+
+### 3. Tratamento Escalável de Múltiplos IPs & Categorização de Interfaces
 - **Decisão**: 
   - O backend Go analisa as interfaces via `net.Interfaces()` e `services.GetLANIPAddresses()`, associando nome de interface (ex: `wlan0`, `eth0`, `docker0`, `tailscale0`) e classificando seu tipo (`wifi`, `ethernet`, `vpn`, `virtual`).
   - A interface web/desktop encapsula a lista de IPs em um container com altura controlada (`max-h-48` / `max-h-56` com `overflow-y-auto`), exibindo badges inteligentes, barra de pesquisa/filtro por nome ou IP, e botão para copiar todos os endereços de uma única vez.
   - Geração de QR Code leve no frontend para cada IP individual, facilitando a conexão imediata de celulares na rede local.
-- **Racional**: Garante que a aplicação se comporte com perfeição tanto em laptops simples (com 1 placa Wi-Fi) quanto em estações de trabalho de desenvolvedores avançados com dezenas de interfaces virtuais, pontes Docker e VPNs, sem poluir ou quebrar a janela.
 
-### 3. Estratégia de Documentação no README com Prints Visuais
+### 4. Estratégia de Documentação no README com Prints Visuais
 - **Decisão**:
-  - Salvar capturas de tela/prints ilustrativos de alta qualidade da interface gráfica em `docs/assets/gui-launcher.png`.
+  - Salvar capturas de tela/prints ilustrativos de alta qualidade da interface gráfica em `docs/assets/gui-launcher.svg`.
   - Reestruturar o `README.md` iniciando com "🚀 Como Usar (Interface Gráfica Desktop)", exibindo o screenshot da aplicação, explicando o fluxo visual (escolher pasta, selecionar protocolo, iniciar e copiar links/QR Code).
   - Manter as seções de "💻 Modo Linha de Comando (CLI)", tabelas de flags, APIs REST e guia de desenvolvimento organizadas nas seções seguintes.
-- **Racional**: Proporciona excelente primeira impressão para usuários visuais e desktop, sem perder o detalhamento técnico exigido por administradores de sistema e desenvolvedores.
 
-### 4. Diálogo Nativo de Seleção de Diretórios (Folder Picker)
+### 5. Diálogo Nativo de Seleção de Diretórios (Folder Picker)
 - **Decisão**: Utilizar integração nativa do sistema operacional (Zenity/KDialog no Linux, PowerShell/FolderBrowserDialog no Windows, AppleScript/NSOpenPanel no macOS) acionada via API REST/SSE interna do launcher.
-- **Racional**: Proporciona a experiência familiar de seleção de pastas nativa do GNOME/Desktop sem necessidade de CGo ou bibliotecas pesadas de terceiros.
 
-### 5. Orquestração e Ciclo de Vida dos Servidores
+### 6. Orquestração e Ciclo de Vida dos Servidores
 - **Decisão**: O controlador da GUI gerencia um `context.WithCancel` para cada servidor ativo. Ao clicar em "Iniciar Servidor", a rotina do serviço escolhido é iniciada em uma goroutine; ao clicar em "Parar" ou ao fechar a janela desktop, o contexto é cancelado, executando o `Shutdown` gracioso de 5 segundos.
-- **Racional**: Reutiliza 100% dos adaptadores e serviços existentes (`services.NewFileService`, `adapterftp.NewServer`, `adaptersftp.NewServer`), garantindo segurança, integridade e isolamento.
 
-### 6. Transmissão de Logs em Tempo Real
+### 7. Transmissão de Logs em Tempo Real
 - **Decisão**: Implementar um `LogBroadcaster` em memória no pacote `internal/adapters/gui` que captura as mensagens de log dos servidores e as transmite para o painel de logs da interface via Server-Sent Events (SSE) ou HTMX/Alpine.
-- **Racional**: Permite ao usuário inspecionar requisições, downloads, conexões e eventuais erros diretamente na janela do aplicativo sem precisar de um terminal aberto.
 
 ## Risks / Trade-offs
 

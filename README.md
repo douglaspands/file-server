@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/icon.svg" alt="File Server Logo" width="120" height="120">
+</p>
+
 # ⚡ File Server
 
 [![Go Version](https://img.shields.io/badge/Go-1.25+-00ADD8?style=flat&logo=go&logoColor=white)](https://golang.org)
@@ -7,7 +11,7 @@
 [![Platforms](https://img.shields.io/badge/Platforms-Linux%20%7C%20Windows-blueviolet?style=flat)](#-compilação-multiplataforma)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](LICENSE)
 
-> Servidor de arquivos de alta performance para rede local (LAN) com **Interface Gráfica Desktop Nativa (GNOME Adwaita Dark)**, suporte a protocolos **Web (HTTP/HTTPS)**, **SFTP (SSHv2)** e **FTP/FTPS**, streaming direto com HTTP Range (206), downloads de pastas compactadas em ZIP sob demanda (zero resíduos em disco), uploads multipart/drag-and-drop, isolamento estrito de sandbox contra path traversal e criptografia em trânsito. Empacotado em um **único binário executável 100% autocontido e portátil** (`go:embed`).
+> Servidor de arquivos de alta performance para rede local (LAN) com **Interface Gráfica Desktop Nativa (GNOME Adwaita Dark)**, **Ícone Oficial em Alta Resolução Embutido no Executável e Barra de Tarefas**, suporte a protocolos **Web (HTTP/HTTPS)**, **SFTP (SSHv2)** e **FTP/FTPS**, streaming direto com HTTP Range (206), downloads de pastas compactadas em ZIP sob demanda (zero resíduos em disco), uploads multipart/drag-and-drop, isolamento estrito de sandbox contra path traversal e criptografia em trânsito. Empacotado em um **único binário executável 100% autocontido e portátil** (`go:embed`).
 
 ---
 

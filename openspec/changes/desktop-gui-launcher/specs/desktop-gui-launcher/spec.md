@@ -1,6 +1,6 @@
 ## Purpose
 
-Fornece uma interface gráfica nativa e moderna para desktop (estilo GNOME / Adwaita Dark) para inicialização interativa do File Server sem necessidade de argumentos de linha de comando ou ao clicar duas vezes no executável, permitindo configuração visual de serviços (Web/HTTP, FTP, SFTP), visualização escalável, amigável e captura facilitada de múltiplos endereços IP/URLs para compartilhamento, documentação visual no README como forma principal de uso, e controle completo do ciclo de vida da aplicação.
+Fornece uma interface gráfica nativa e moderna para desktop (estilo GNOME / Adwaita Dark) para inicialização interativa do File Server sem necessidade de argumentos de linha de comando ou ao clicar duas vezes no executável, permitindo configuração visual de serviços (Web/HTTP, FTP, SFTP), identidade visual oficial com ícone clean e moderno de alta resolução embutido no executável e visível na barra de tarefas/janela, visualização escalável, amigável e captura facilitada de múltiplos endereços IP/URLs para compartilhamento, documentação visual no README como forma principal de uso, e controle completo do ciclo de vida da aplicação.
 
 ## ADDED Requirements
 
@@ -19,6 +19,23 @@ O sistema DEVE abrir automaticamente a interface gráfica desktop (GUI) quando o
 #### Scenario: Execução com subcomandos de linha de comando
 - **WHEN** o usuário executa comandos específicos como `file-server serve`, `file-server ftp`, `file-server sftp` ou `file-server version`
 - **THEN** o sistema DEVE executar no modo CLI headless sem exibir a interface gráfica, mantendo total retrocompatibilidade.
+
+### Requirement: Identidade Visual e Ícone da Aplicação em Alta Resolução no Executável e Barra de Tarefas
+O sistema DEVE fornecer um ícone oficial de alta resolução clean e moderno, visível tanto no arquivo executável compilado quanto na barra de tarefas e janela durante a execução.
+
+#### Scenario: Exibição do ícone no executável do sistema operacional
+- **GIVEN** que o binário executável foi compilado para a plataforma de destino
+- **WHEN** o usuário visualiza o arquivo executável no gerenciador de arquivos (ex: Windows Explorer ou desktop Linux)
+- **THEN** o sistema DEVE exibir o ícone oficial personalizado do File Server associado ao arquivo binário.
+
+#### Scenario: Exibição do ícone na barra de tarefas e janela ativa
+- **GIVEN** que a aplicação foi inicializada em modo GUI desktop ou explorador web
+- **WHEN** a janela do aplicativo é aberta
+- **THEN** o sistema operacional e a barra de tarefas/dock DEVEM exibir o ícone personalizado de alta resolução na barra de título e no alternador de tarefas.
+
+#### Scenario: Disponibilização do pacote de assets em múltiplas resoluções
+- **WHEN** os recursos visuais são carregados
+- **THEN** o sistema DEVE fornecer o ícone em formato vetorial SVG e bitmaps multi-resolução (16x16, 32x32, 48x48, 128x128, 256x256, 512x512 e .ico).
 
 ### Requirement: Design Visual Estilo GNOME e Paleta de Cores Unificada
 A interface gráfica DEVE adotar um design clean, moderno e polido no padrão GNOME / Adwaita Dark, utilizando estritamente a paleta de cores do frontend web (`slate-900`, `slate-950`, `indigo-500`, `slate-100`, bordas `slate-800`).
