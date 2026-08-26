@@ -44,5 +44,7 @@ operations:
       - Manter a cobertura de código igual ou superior a 80%.
   archive:
     guidance:
-      - O arquivamento de uma especificação concluída DEVE ser finalizado criando um commit Git (Conventional Commits) contendo todas as implementações e a sincronização da spec.
+      - O arquivamento de uma especificação concluída DEVE ser finalizado criando um commit Git (Conventional Commits) na branch de feature.
+      - Após o arquivamento e commit na feature branch, o AGY deve SEMPRE solicitar permissão explícita ao usuário antes de realizar o merge na branch main ou abrir Pull Request.
+      - A integração com a branch main (seja merge local ou Pull Request no GitHub) DEVE ser obrigatoriamente do tipo SQUASH (git merge --squash ou GitHub Squash and Merge).
       - Mensagem sugerida de commit: "feat(spec): archive <change-name> and apply changes"

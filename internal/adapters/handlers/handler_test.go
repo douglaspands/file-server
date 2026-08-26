@@ -25,15 +25,18 @@ func TestHandlerRoutes(t *testing.T) {
 			Details:   map[string]string{"env": "test"},
 		},
 	}
+	mockFile := &testutils.MockFileService{
+		RootDir: "/tmp/mock",
+	}
 
-	handler, err := handlers.NewHandler(mockHealth)
+	handler, err := handlers.NewHandler(mockFile, mockHealth)
 	require.NoError(t, err)
 
 	mux := http.NewServeMux()
 	err = handler.RegisterRoutes(mux)
 	require.NoError(t, err)
 
-	t.Run("Given GET request to root (/) When path is valid Then renders HTML successfully", func(t *testing.T) {
+	t.Run("Given GET request to root (/) When path is valid Then renders file explorer successfully", func(t *testing.T) {
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		rec := httptest.NewRecorder()
 
@@ -42,16 +45,17 @@ func TestHandlerRoutes(t *testing.T) {
 		assert.Equal(t, http.StatusOK, rec.Code)
 		assert.Contains(t, rec.Header().Get("Content-Type"), "text/html")
 		assert.Contains(t, rec.Body.String(), "File Server")
-		assert.Contains(t, rec.Body.String(), "Fundação do Sistema Pronta")
 	})
 
-	t.Run("Given GET request to unknown path When path does not exist Then returns 404", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/unknown-endpoint", nil)
+	t.Run("Given GET request to /status When path is valid Then renders system status HTML", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/status", nil)
 		rec := httptest.NewRecorder()
 
 		mux.ServeHTTP(rec, req)
 
-		assert.Equal(t, http.StatusNotFound, rec.Code)
+		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Contains(t, rec.Header().Get("Content-Type"), "text/html")
+		assert.Contains(t, rec.Body.String(), "File Server - Status do Sistema")
 	})
 
 	t.Run("Given GET request to /partials/health When called via HTMX Then renders health card partial", func(t *testing.T) {
@@ -102,7 +106,7 @@ func TestHandlerRoutes(t *testing.T) {
 		failingMock := &testutils.MockHealthService{
 			Err: errors.New("database connection failed"),
 		}
-		failingHandler, err := handlers.NewHandler(failingMock)
+		failingHandler, err := handlers.NewHandler(mockFile, failingMock)
 		require.NoError(t, err)
 
 		failingMux := http.NewServeMux()
@@ -119,9 +123,11 @@ func TestHandlerRoutes(t *testing.T) {
 }
 
 func TestHandlerErrors(t *testing.T) {
+	mockFile := &testutils.MockFileService{}
+
 	t.Run("Given failing health service When calling /partials/health Then returns 500", func(t *testing.T) {
 		failingMock := &testutils.MockHealthService{Err: errors.New("health check failure")}
-		h, err := handlers.NewHandler(failingMock)
+		h, err := handlers.NewHandler(mockFile, failingMock)
 		require.NoError(t, err)
 
 		mux := http.NewServeMux()
@@ -134,15 +140,15 @@ func TestHandlerErrors(t *testing.T) {
 		assert.Equal(t, http.StatusInternalServerError, rec.Code)
 	})
 
-	t.Run("Given failing health service When calling Home / Then returns 500", func(t *testing.T) {
+	t.Run("Given failing health service When calling /status Then returns 500", func(t *testing.T) {
 		failingMock := &testutils.MockHealthService{Err: errors.New("health check failure")}
-		h, err := handlers.NewHandler(failingMock)
+		h, err := handlers.NewHandler(mockFile, failingMock)
 		require.NoError(t, err)
 
 		mux := http.NewServeMux()
 		_ = h.RegisterRoutes(mux)
 
-		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		req := httptest.NewRequest(http.MethodGet, "/status", nil)
 		rec := httptest.NewRecorder()
 		mux.ServeHTTP(rec, req)
 
@@ -154,7 +160,6 @@ func TestLiveReloadHandler(t *testing.T) {
 	t.Run("Given GET request to /_live_reload When client connects Then streams SSE headers and connected event", func(t *testing.T) {
 		req := httptest.NewRequest(http.MethodGet, "/_live_reload", nil)
 		ctx, cancel := req.Context(), func() {}
-		// Cancela imediatamente após ler inicial
 		req = req.WithContext(ctx)
 
 		rec := httptest.NewRecorder()
@@ -163,7 +168,6 @@ func TestLiveReloadHandler(t *testing.T) {
 			cancel()
 		}()
 
-		// Handler com cancelamento
 		go handlers.LiveReloadHandler(rec, req)
 		time.Sleep(100 * time.Millisecond)
 

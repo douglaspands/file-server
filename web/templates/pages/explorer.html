@@ -1,0 +1,100 @@
+{{template "base.html" .}}
+
+{{define "title"}}Explorador de Arquivos - File Server{{end}}
+
+{{define "content"}}
+<div x-data="fileExplorer()" 
+     @dragover.prevent="onWindowDragOver($event)" 
+     @dragleave.prevent="onWindowDragLeave($event)" 
+     @drop.prevent="onWindowDrop($event)"
+     class="space-y-6 relative">
+
+    <!-- Overlay de Drag & Drop Global -->
+    <div x-show="isDraggingOnWindow" 
+         x-cloak
+         class="fixed inset-0 z-40 bg-indigo-950/85 backdrop-blur-md flex flex-col items-center justify-center border-4 border-dashed border-indigo-400 m-4 rounded-3xl pointer-events-none transition-all duration-300">
+        <div class="p-6 bg-indigo-900/50 rounded-2xl flex flex-col items-center gap-3">
+            <svg class="w-16 h-16 text-indigo-300 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            </svg>
+            <h2 class="text-2xl font-bold text-white">Solte os arquivos para enviar</h2>
+            <p class="text-indigo-200 text-sm">Os arquivos serão gravados na pasta atual</p>
+        </div>
+    </div>
+
+    <!-- Barra Superior: Breadcrumbs, Ações e Busca -->
+    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5 sm:p-4 shadow-xl backdrop-blur space-y-3.5 sm:space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3.5">
+            <!-- Breadcrumbs -->
+            <div class="flex-grow min-w-0">
+                {{template "breadcrumbs.html" .Listing}}
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap flex-shrink-0">
+                <!-- Baixar Pasta ZIP -->
+                <a href="/zip/{{.Listing.CurrentPath}}" 
+                   title="Baixar esta pasta inteira compactada em ZIP"
+                   class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-800 text-slate-200 hover:text-white text-xs font-medium rounded-xl border border-slate-700/80 shadow transition min-h-[40px]">
+                    <svg class="w-4 h-4 text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    <span class="whitespace-nowrap">Baixar ZIP</span>
+                </a>
+
+                <!-- Botão de Upload -->
+                <button type="button" 
+                        @click="showUploadModal = true"
+                        class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-medium rounded-xl shadow-lg shadow-indigo-600/30 transition hover:scale-105 active:scale-95 min-h-[40px]">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                    </svg>
+                    <span class="whitespace-nowrap">Enviar Arquivos</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Barra de Busca Rápida no Cliente e Estatísticas -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-800/80">
+            <div class="relative w-full sm:w-72">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </span>
+                <input type="text" 
+                       x-model="searchQuery"
+                       placeholder="Filtrar arquivos nesta pasta..." 
+                       class="w-full pl-9 pr-8 py-1.5 text-xs bg-slate-950/80 border border-slate-800 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition">
+                <button x-show="searchQuery" 
+                        @click="searchQuery = ''"
+                        class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-500 hover:text-slate-300">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="text-xs text-slate-400 flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                <span><strong>{{.Listing.TotalDirs}}</strong> pastas</span>
+                <span>•</span>
+                <span><strong>{{.Listing.TotalFiles}}</strong> arquivos</span>
+                <span>•</span>
+                <span class="font-mono text-indigo-400">{{.Listing.FormattedTotalSize}}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela / Lista de Itens -->
+    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl shadow-xl overflow-hidden backdrop-blur">
+        {{if .Listing.IsEmpty}}
+            {{template "empty_state.html" .}}
+        {{else}}
+            {{template "file_table.html" .Listing}}
+        {{end}}
+    </div>
+
+    <!-- Modal de Upload -->
+    {{template "upload_modal.html" .}}
+</div>
+{{end}}

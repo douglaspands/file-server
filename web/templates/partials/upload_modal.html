@@ -1,0 +1,98 @@
+<div x-show="showUploadModal" 
+     x-cloak
+     class="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4"
+     @keydown.escape.window="showUploadModal = false">
+    
+    <div class="bg-slate-900 border border-slate-700/80 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative text-left"
+         @click.away="showUploadModal = false">
+        
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                </svg>
+                Enviar Arquivos
+            </h3>
+            <button @click="showUploadModal = false" class="text-slate-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        <form id="upload-form" 
+              action="/upload/{{.Listing.CurrentPath}}" 
+              method="POST" 
+              enctype="multipart/form-data" 
+              class="mt-4 space-y-4"
+              @submit="isUploading = true">
+            
+            <div class="border-2 border-dashed border-slate-700 rounded-xl p-6 text-center hover:border-indigo-500/60 transition-colors bg-slate-950/40 cursor-pointer"
+                 @click="$refs.fileInput.click()"
+                 @dragover.prevent="dragOver = true"
+                 @dragleave.prevent="dragOver = false"
+                 @drop.prevent="handleDrop($event)"
+                 :class="{'border-indigo-500 bg-indigo-500/10': dragOver}">
+                
+                <input type="file" 
+                       name="files" 
+                       id="files" 
+                       multiple 
+                       class="hidden" 
+                       x-ref="fileInput" 
+                       @change="selectedFiles = Array.from($event.target.files)">
+
+                <div class="space-y-2">
+                    <div class="w-12 h-12 mx-auto rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                    </div>
+                    <div class="text-sm font-medium text-slate-200">
+                        Clique para selecionar ou arraste arquivos aqui
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        Envio único ou múltiplo para: <span class="font-mono text-indigo-400">/{{.Listing.CurrentPath}}</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Lista de Arquivos Selecionados -->
+            <template x-if="selectedFiles.length > 0">
+                <div class="max-h-36 overflow-y-auto space-y-1.5 p-2 bg-slate-950/60 rounded-lg border border-slate-800">
+                    <template x-for="(f, i) in selectedFiles" :key="i">
+                        <div class="flex items-center justify-between text-xs text-slate-300 px-2 py-1 bg-slate-900 rounded">
+                            <span class="truncate max-w-xs font-mono" x-text="f.name"></span>
+                            <span class="text-slate-500" x-text="formatBytes(f.size)"></span>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- Barra de Progresso / Loading -->
+            <div x-show="isUploading" class="space-y-2">
+                <div class="flex justify-between text-xs text-indigo-400 font-medium">
+                    <span>Enviando arquivos...</span>
+                    <span>Aguarde</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                    <div class="bg-indigo-500 h-2 rounded-full animate-pulse w-full"></div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-2.5 sm:gap-3 pt-2">
+                <button type="button" 
+                        @click="showUploadModal = false" 
+                        class="px-4 py-2 text-xs sm:text-sm font-medium text-slate-300 hover:text-white rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-900 transition min-h-[42px]">
+                    Cancelar
+                </button>
+                <button type="submit" 
+                        :disabled="isUploading || selectedFiles.length === 0"
+                        class="px-4 py-2 text-xs sm:text-sm font-medium text-white rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-600/30 transition min-h-[42px]">
+                    <span x-show="!isUploading">Enviar (<span x-text="selectedFiles.length"></span>)</span>
+                    <span x-show="isUploading">Enviando...</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

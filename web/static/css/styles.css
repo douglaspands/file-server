@@ -1,7 +1,12 @@
-/* Estilos adicionais personalizados para SFTP Server */
+/* Estilos adicionais personalizados para File Server */
+[x-cloak] {
+    display: none !important;
+}
+
 [hx-get], [hx-post] {
     cursor: pointer;
 }
+
 .htmx-request {
     opacity: 0.6;
     transition: opacity 200ms ease-in-out;

@@ -2,35 +2,37 @@
 
 [![Go Version](https://img.shields.io/badge/Go-1.26+-00ADD8?style=flat&logo=go&logoColor=white)](https://golang.org)
 [![CI Quality Gate](https://img.shields.io/badge/CI-Passing-success?style=flat&logo=githubactions&logoColor=white)](.github/workflows/ci.yml)
-[![Test Coverage](https://img.shields.io/badge/Coverage-83.6%25-brightgreen?style=flat)](scripts/coverage.sh)
+[![Test Coverage](https://img.shields.io/badge/Coverage-%E2%89%A5%2080%25-brightgreen?style=flat)](scripts/coverage.sh)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20%2F%20Ports%20%26%20Adapters-informational?style=flat)](#-arquitetura-e-estrutura-de-pacotes)
 [![Platforms](https://img.shields.io/badge/Platforms-Linux%20%7C%20Windows-blueviolet?style=flat)](#-compilação-multiplataforma)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](LICENSE)
 
-> Servidor de arquivos e aplicação web moderna de alto desempenho desenvolvida em Go (Golang), com renderização no servidor (SSR), reatividade hipermidiática via HTMX, CLI modular extensível e empacotamento integral de assets (`go:embed`) em um **único binário executável 100% autocontido e portátil**.
+> Servidor web de arquivos de alta performance em rede local (LAN) com interface moderna e intuitiva, navegação fluida, download de arquivos individuais e pastas compactadas em ZIP via streaming sob demanda, upload multipart/drag-and-drop e proteção estrita de sandbox contra path traversal. Empacotado em um **único binário executável 100% autocontido e portátil** (`go:embed`).
 
 ---
 
 ## 📖 Visão Geral
 
-O **File Server** é uma solução completa para gerenciamento e disponibilização de arquivos projetada sob os mais altos padrões de Engenharia de Software.
+O **File Server** é uma solução leve, portátil e de alta performance desenvolvida em Go para compartilhamento instantâneo de arquivos e pastas no terminal ou rede local.
 
-### ✨ Principais Destaques
+### ✨ Principais Recursos do Produto
 
-- 🚀 **Binário Único Autocontido**: Todos os templates HTML, layouts, estilos CSS e scripts JS são compilados dentro do executável via `go:embed`. Transporte apenas um arquivo para qualquer servidor Linux ou Windows.
-- 💻 **CLI Modular e Extensível**: Inicialização estruturada via Cobra, com suporte a múltiplos comandos, argumentos, flags e versionamento dinâmico via `-ldflags`.
-- 🌐 **Interface Web Moderna e Reativa**: Renderização no servidor (SSR) veloz e leve combinada com **HTMX**, **Alpine.js** e **Tailwind CSS** para interatividade parcial sem recarregamento de página.
-- 🧪 **Excelência em Qualidade (TDD / BDD)**: Suíte rigorosa de testes unitários e de integração com cobertura de código validada continuamente (**meta inegociável &ge; 80%**).
-- ⚙️ **Harness Engineering Universal**: `Makefile` autodocumentado como ponto de contato unificado para desenvolvimento, testes, linters e builds.
-- 🤖 **IA & Spec-Driven Development**: Governança perpétua para Antigravity CLI via OpenSpec, integrando Harness, Loop e Graph Engineering.
+- 🚀 **Inicialização Instantânea**: Execute `file-server` em qualquer pasta e comece a compartilhar imediatamente. Fallback automático para o diretório atual (`.`) ou configuração de raiz via argumento posicional ou flag `--dir`/`-d`.
+- 🔒 **Criptografia em Trânsito (TLS/HTTPS)**: Suporte nativo a TLS 1.3 / 1.2 de alta performance com multiplexação HTTP/2 e proteção contra *packet sniffing*. Geração automática de certificados autoassinados em memória (zero configuração) ou suporte a certificados PEM customizados.
+- 🛡️ **Sandboxing Rigoroso & Segurança**: Validação de fronteira canônica e bloqueio absoluto contra ataques de *path traversal* (`../`, links simbólicos externos e caminhos absolutos forçados).
+- 🌐 **Interface Web Moderna & Intuitiva**: Interface visual moderna e responsiva desenvolvida com **Tailwind CSS**, **Alpine.js** e **HTMX**, com ícones dinâmicos por categoria de arquivo (vídeo, áudio, imagem, código, documentos, arquivos compactados) e navegação clara por *breadcrumbs*.
+- ⚡ **Alta Performance em LAN**: Download direto via streaming com `http.ServeContent`, suporte completo a requisições parciais (header `Range: bytes=...`, HTTP 206) para retomada de downloads e baixo consumo de memória RAM.
+- 📦 **Download de Pastas em ZIP sob Demanda**: Compactação em streaming direto para a resposta HTTP (`io.Writer`) com cancelamento via contexto e **zero resíduos ou arquivos temporários deixados em disco**.
+- 📤 **Upload Simples e em Lote (Drag & Drop)**: Envio de arquivos únicos ou múltiplos diretamente para o diretório visualizado, com área intuitiva de arrastar e soltar e feedback de progresso em tempo real.
+- 📦 **Binário Único Autocontido**: Todos os templates HTML, estilos CSS e scripts JS são compilados dentro do executável via `go:embed`. Transporte apenas um arquivo para qualquer servidor Linux ou Windows.
 
 ---
 
-## 🚀 Guia de Uso (Passo a Passo)
+## 🚀 Guia de Uso da CLI
 
-### 1. Obtenção do Executável
+### 1. Obtenção e Compilação
 
-Você pode compilar localmente ou utilizar o binário da release:
+Você pode compilar localmente com um único comando:
 
 ```bash
 # Compilar o binário para seu sistema operacional
@@ -44,53 +46,101 @@ make build
 
 ### 2. Catálogo Completo de Comandos da CLI
 
-A aplicação oferece uma interface de terminal rica com subcomandos e flags configuráveis:
+A CLI permite iniciar o servidor diretamente no comando raiz ou através do subcomando `serve`:
 
 | Comando / Flag | Descrição | Exemplo de Uso |
 | :--- | :--- | :--- |
-| `file-server` | Comando raiz; exibe a visão geral da aplicação | `./bin/file-server` |
-| `file-server --help` (`-h`) | Exibe a ajuda interativa com todos os comandos e flags | `./bin/file-server --help` |
-| `file-server version` | Exibe a versão semântica, commit, data de compilação e plataforma | `./bin/file-server version` |
-| `file-server version --json` (`-j`) | Exibe os metadados completos de versão em formato JSON estruturado | `./bin/file-server version -j` |
-| `file-server serve` | Inicia o servidor HTTP web e API na porta padrão (`8080`) | `./bin/file-server serve` |
-| `--port` (`-p`) | Define a porta TCP na qual o servidor irá escutar (default: `8080`) | `./bin/file-server serve -p 3000` |
-| `--host` | Define o endereço IP/host de escuta (default: `0.0.0.0`) | `./bin/file-server serve --host 127.0.0.1` |
-| `--config` | Caminho para arquivo customizado de configuração YAML | `./bin/file-server --config config.yaml` |
-| `--verbose` (`-v`) | Habilita logs detalhados de diagnóstico | `./bin/file-server serve -v` |
+| `file-server [dir]` | Inicia o servidor na pasta informada (ou na pasta atual caso omitida) | `./bin/file-server` ou `./bin/file-server /meus/arquivos` |
+| `file-server serve [dir]` | Subcomando explícito para iniciar o servidor web | `./bin/file-server serve ./dados` |
+| `--dir` (`-d`) | Define o caminho do diretório raiz a ser compartilhado | `./bin/file-server -d /var/public` |
+| `--port` (`-p`) | Define a porta TCP na qual o servidor irá escutar (default: `8080`) | `./bin/file-server -p 3000` |
+| `--host` | Define o endereço IP/host de escuta (default: `0.0.0.0`) | `./bin/file-server --host 127.0.0.1` |
+| `--tls` (`-s`) | Ativa criptografia segura TLS/HTTPS (com certificado autoassinado automático em memória) | `./bin/file-server --tls` ou `./bin/file-server -s` |
+| `--tls-cert` | Caminho para o arquivo PEM contendo o certificado público TLS customizado | `./bin/file-server --tls-cert cert.pem --tls-key key.pem` |
+| `--tls-key` | Caminho para o arquivo PEM contendo a chave privada TLS customizada | `./bin/file-server --tls-cert cert.pem --tls-key key.pem` |
+| `file-server version` | Exibe versão semântica, commit, data de build e plataforma | `./bin/file-server version` |
+| `file-server version -j` | Exibe os metadados de versão em formato JSON estruturado | `./bin/file-server version -j` |
+| `file-server --help` (`-h`) | Exibe a ajuda interativa completa da CLI | `./bin/file-server --help` |
 
 ---
 
-### 3. Exemplos Práticos de Uso
+### 3. Exemplos Práticos de Inicialização
 
-#### Iniciar o Servidor Web e Acessar no Navegador
+#### Compartilhar a Pasta Atual Instantaneamente (HTTP)
 ```bash
-# Inicia o servidor na porta 8080
-./bin/file-server serve --port=8080
+# Inicia na porta 8080 servindo o diretório corrente
+./bin/file-server
 
-# Acesse no seu navegador:
-# http://localhost:8080
+# Acesse no navegador:
+# http://localhost:8080 ou http://<ip-da-maquina>:8080
 ```
 
-#### Consultar a Versão da Aplicação
+#### Iniciar Servidor Seguro com TLS/HTTPS Autoassinado (Zero Configuração)
 ```bash
-# Versão textual formatada
-./bin/file-server version
+# Inicia com HTTPS na porta 8443 e certificado gerado em memória
+./bin/file-server -s -p 8443
 
-# Versão em formato JSON (ideal para scripts e esteiras)
-./bin/file-server version --json
+# Acesse no navegador:
+# https://localhost:8443 ou https://<ip-da-maquina>:8443
 ```
 
-#### Endpoints de API Disponíveis
-- `GET /`: Interface web responsiva com status do servidor.
-- `GET /partials/health`: Fragmento HTML para atualização dinâmica via HTMX.
-- `GET /api/health`: Status de saúde e métricas de uptime em JSON.
-- `GET /api/version`: Metadados estruturados de versão e build em JSON.
+#### Iniciar Servidor Seguro com Certificados TLS Customizados
+```bash
+# Inicia com certificado e chave privada próprios
+./bin/file-server /dados -p 443 --tls-cert /etc/ssl/cert.pem --tls-key /etc/ssl/key.pem
+```
+
+#### Compartilhar uma Pasta Específica com Porta Customizada
+```bash
+# Servindo a pasta /home/usuario/Downloads na porta 9090
+./bin/file-server /home/usuario/Downloads --port 9090
+
+# Ou utilizando o subcomando serve
+./bin/file-server serve --dir /home/usuario/Downloads -p 9090
+```
 
 ---
 
-## 🛠️ Guia para Desenvolvedores
+## 🌐 Guia de Uso da Interface Web
 
-Esta seção detalha os padrões arquiteturais, ferramentas e fluxos de trabalho para contribuir com o projeto.
+A interface gráfica do **File Server** foi projetada para oferecer uma experiência ágil tanto no desktop quanto em dispositivos móveis:
+
+1. **Navegação Hierárquica por Breadcrumbs**:
+   - Clique em qualquer pasta na lista para entrar nela.
+   - Utilize a barra de navegação (*breadcrumbs*) no topo para retornar instantaneamente a qualquer nível superior ou para a raiz do compartilhamento.
+
+2. **Filtro de Busca em Tempo Real**:
+   - Digite na caixa de busca (*"Filtrar arquivos nesta pasta..."*) para filtrar instantaneamente os itens visíveis no navegador via Alpine.js sem recarregar a página ou fazer requisições extras ao servidor.
+
+3. **Download de Arquivos e Pastas**:
+   - **Download Individual**: Clique no nome do arquivo ou no ícone de download para baixar diretamente com suporte a pausas e retomadas (*HTTP Range requests*).
+   - **Download de Pasta em ZIP**: Clique no botão *"Baixar Pasta (.zip)"* no topo ou no ícone correspondente na linha de qualquer pasta para baixar a árvore inteira compactada em `.zip` em streaming contínuo.
+
+4. **Upload Simples e Múltiplo (Drag & Drop)**:
+   - **Botão Enviar**: Clique em *"Enviar Arquivos"*, selecione um ou mais arquivos e confirme o envio.
+   - **Arrastar e Soltar**: Arraste arquivos de qualquer lugar do seu computador e solte sobre a janela do navegador para iniciar o envio diretamente para a pasta atualmente aberta.
+
+---
+
+## 📡 Catálogo de Rotas e Endpoints da API
+
+| Método | Rota | Descrição |
+| :--- | :--- | :--- |
+| `GET` | `/` ou `/files/*` | Interface gráfica do explorador de arquivos (HTML/SSR) |
+| `GET` | `/api/files/*` | Metadados e listagem do diretório em JSON |
+| `GET` | `/download/*` | Download de arquivo individual com suporte a HTTP Range (206) |
+| `GET` | `/zip/*` | Download de diretório compactado em `.zip` via streaming |
+| `POST`| `/upload/*` | Upload multipart de arquivos para o diretório de destino |
+| `GET` | `/status` | Painel de diagnóstico e integridade dos serviços do servidor |
+| `GET` | `/partials/health` | Fragmento HTML do card de saúde para requisições HTMX |
+| `GET` | `/api/health` | Status de saúde e métricas de uptime em JSON |
+| `GET` | `/api/version` | Metadados estruturados de versão e build em JSON |
+
+---
+
+## 🛠️ Guia para Desenvolvedores e Padrões de Qualidade
+
+Esta seção descreve os padrões de engenharia de software empregados no desenvolvimento do **File Server**.
 
 ### 📋 Pré-requisitos
 
@@ -100,51 +150,37 @@ Esta seção detalha os padrões arquiteturais, ferramentas e fluxos de trabalho
 
 ---
 
-### 📦 Setup do Ambiente de Desenvolvimento
-
-Execute o comando de setup para instalar e verificar todas as ferramentas recomendadas (`golangci-lint`, `air` para live-reload e `govulncheck`):
-
-```bash
-make setup
-```
-
----
-
 ### 🏗️ Arquitetura e Estrutura de Pacotes
 
-O projeto adota os princípios de **Clean Architecture** e **Ports & Adapters**, assegurando o encapsulamento estrito das regras de negócio em `internal/`:
+O projeto adota rigorosamente os princípios de **Clean Architecture** e **Ports & Adapters**, isolando todo o domínio de negócio em `internal/`:
 
 ```
 file-server/
 ├── cmd/                          # Camada de entrada da CLI (Cobra)
-│   ├── root.go                   # Comando base e flags globais
+│   ├── root.go                   # Comando base e inicialização padrão
 │   ├── version.go                # Subcomando 'version'
 │   └── serve.go                  # Subcomando 'serve' (Composition Root)
-├── internal/                     # Código privado do domínio (não importável externamente)
+├── internal/                     # Domínio isolado e privado (internal/)
 │   ├── core/
-│   │   ├── domain/               # Entidades de negócio e modelos puros
-│   │   ├── ports/                # Interfaces de entrada/saída (contratos)
-│   │   └── services/             # Implementação da lógica de casos de uso
+│   │   ├── domain/               # Entidades de domínio (FileItem, DirectoryListing, Breadcrumb)
+│   │   ├── ports/                # Interfaces e contratos (FileService, HealthService)
+│   │   └── services/             # Serviços centrais (LocalFileService, TLS 1.3/1.2 e streaming ZIP)
 │   ├── adapters/
-│   │   └── handlers/             # Controladores HTTP, HTML e endpoints REST
-│   └── version/                  # Metadados de compilação (ldflags)
+│   │   └── handlers/             # Controladores HTTP, templates e downloads
+│   ├── testutils/                # Fixtures e mocks para testes automatizados
+│   └── version/                  # Metadados de compilação injetados via ldflags
 ├── web/                          # Recursos de frontend
-│   ├── templates/                # Layouts base, páginas e partials HTML
-│   ├── static/                   # Folhas de estilo CSS e scripts JS
+│   ├── templates/                # Templates Go HTML (layouts, pages, partials)
+│   ├── static/                   # CSS, scripts JS e assets estáticos
 │   └── web.go                    # Empacotamento embutido (go:embed embed.FS)
-├── scripts/                      # Scripts do harness (cobertura, setup)
-├── .agent/rules/                 # Diretrizes de IA (Harness, Loop e Graph Engineering)
-├── .github/workflows/            # CI/CD (Quality Gate e Release Multiplataforma)
-├── .githooks/                    # Ganchos de pre-commit e Conventional Commits
-├── openspec/                     # Especificações normativas (Spec-Driven Development)
+├── scripts/                      # Harness de automação (scripts de cobertura e setup)
+├── openspec/                     # Especificações normativas do projeto
 └── Makefile                      # Interface universal de comandos
 ```
 
 ---
 
-### 🕹️ Harness de Comandos (Makefile)
-
-O `Makefile` autodocumentado centraliza todas as operações do ciclo de vida:
+### 🕹️ Harness de Automação (Makefile)
 
 ```bash
 # Exibir o menu interativo com todos os comandos disponíveis
@@ -157,81 +193,55 @@ make help
 | `make setup` | Instala e checa ferramentas locais (`golangci-lint`, `air`, `govulncheck`) |
 | `make dev` | Inicia o servidor em modo de desenvolvimento com live-reload (Air) |
 | `make run` | Executa a aplicação diretamente do código fonte |
-| `make fmt` | Formata o código Go e templates |
+| `make fmt` | Formata todo o código Go e templates |
 | `make lint` | Executa análise estática com `golangci-lint` (ou `go vet`) |
 | `make vulncheck` | Executa auditoria de vulnerabilidades de segurança com `govulncheck` |
-| `make test` | Executa toda a suíte de testes com validação de barreira de cobertura (&ge; 80%) |
+| `make test` | Executa toda a suíte de testes e valida a barreira de cobertura (&ge; 80%) |
 | `make test-unit` | Executa testes unitários rápidos |
-| `make test-coverage`| Roda `./scripts/coverage.sh`, gera relatório HTML e valida a meta de 80% |
 | `make check` | Executa o pipeline completo de qualidade local (`fmt` + `lint` + `test`) |
-| `make build` | Compila o binário de produção otimizado com assets embutidos para a plataforma atual |
+| `make build` | Compila o binário de produção otimizado com assets embutidos |
 | `make build-all` | Realiza compilação cruzada para Linux e Windows (`amd64` e `arm64`) |
 | `make clean` | Limpa diretórios de build (`bin/`, `dist/`), relatórios e temporários |
 
 ---
 
-### 🧪 Testes Automatizados (TDD & BDD)
+### 🧪 Práticas de Testes e Qualidade (TDD & BDD)
 
-Os testes seguem a convenção BDD declarativa estruturada em subtestes:
+O desenvolvimento segue **TDD (Test-Driven Development)** e especificações em estilo **BDD (Behavior-Driven Development)** estruturadas em subtestes com `testing` + `testify`:
 
 ```go
-func TestHealthService(t *testing.T) {
-    t.Run("Given initialized health service When checking health Then returns healthy status", func(t *testing.T) {
-        svc := services.NewHealthService()
-        status, err := svc.Check(context.Background())
-
+func TestLocalFileService_GetFile(t *testing.T) {
+    t.Run("sucesso ao obter arquivo existente", func(t *testing.T) {
+        file, info, err := svc.GetFile(ctx, "sample.txt")
         require.NoError(t, err)
-        assert.Equal(t, "healthy", status.Status)
+        defer file.Close()
+        assert.Equal(t, "sample.txt", info.Name())
     })
 }
 ```
 
-Para rodar os testes e inspecionar o relatório visual de cobertura:
-```bash
-make test-coverage
-# Abra o arquivo coverage.html no navegador para verificar linhas cobertas
-```
-
----
-
-### ⚡ Live-Reloading no Frontend
-
-Para desenvolver a interface com recarregamento instantâneo a cada alteração em arquivos `.go`, `.html` ou `.css`:
-
-```bash
-make dev
-```
+- **Barreira Mínima de Cobertura**: Meta contínua de cobertura de código &ge; 80%.
+- **Execução e Relatório**:
+  ```bash
+  make test
+  # Relatório HTML gerado em: coverage.html
+  ```
 
 ---
 
 ### 🌍 Compilação Multiplataforma (Linux & Windows)
 
-Para gerar executáveis para todas as arquiteturas suportadas com injeção automática de versão via `ldflags`:
+Para gerar executáveis portáteis para Linux e Windows (arquiteturas `amd64` e `arm64`):
 
 ```bash
 make build-all
 ```
 
-Arquivos gerados em `dist/`:
-- `file-server-linux-amd64` (Linux x86_64)
-- `file-server-linux-arm64` (Linux ARM64)
-- `file-server-windows-amd64.exe` (Windows x86_64)
-- `file-server-windows-arm64.exe` (Windows ARM64)
-
----
-
-### 🏷️ Convenções de Commit e Githooks
-
-O repositório adota o padrão **Conventional Commits**:
-
-- `feat:` Nova funcionalidade
-- `fix:` Correção de bug
-- `refactor:` Refatoração de código sem alteração de comportamento
-- `test:` Inclusão ou ajuste de testes
-- `docs:` Alterações em documentações
-- `chore:` Tarefas de manutenção ou dependências
-
-Os ganchos em `.githooks/` validam a formatação do código e o padrão da mensagem antes de cada commit.
+Os binários serão gerados no diretório `dist/`:
+- `dist/file-server-linux-amd64`
+- `dist/file-server-linux-arm64`
+- `dist/file-server-windows-amd64.exe`
+- `dist/file-server-windows-arm64.exe`
 
 ---
 

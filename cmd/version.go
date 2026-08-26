@@ -19,13 +19,13 @@ var versionCmd = &cobra.Command{
 		if jsonOutput {
 			data, err := json.MarshalIndent(info, "", "  ")
 			if err != nil {
-				fmt.Printf("erro ao serializar versão: %v\n", err)
+				fmt.Fprintf(cmd.ErrOrStderr(), "erro ao serializar versão: %v\n", err)
 				return
 			}
-			fmt.Println(string(data))
+			fmt.Fprintln(cmd.OutOrStdout(), string(data))
 			return
 		}
-		fmt.Println(info.String())
+		fmt.Fprintln(cmd.OutOrStdout(), info.String())
 	},
 }
 

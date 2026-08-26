@@ -1,11 +1,13 @@
 {{template "base.html" .}}
 
+{{define "title"}}Status do Sistema - File Server{{end}}
+
 {{define "content"}}
 <div class="space-y-8">
     <div class="bg-gradient-to-r from-indigo-900/40 via-slate-800 to-slate-900 border border-indigo-500/20 rounded-2xl p-8 shadow-xl">
-        <h1 class="text-3xl font-extrabold text-white tracking-tight mb-2">Fundação do Sistema Pronta</h1>
+        <h1 class="text-3xl font-extrabold text-white tracking-tight mb-2">File Server - Status do Sistema</h1>
         <p class="text-slate-300 max-w-2xl text-sm leading-relaxed">
-            Ambiente moderno em Golang com renderização HTML no servidor, TDD/BDD, assets embutidos no binário (<code class="text-indigo-400 font-mono text-xs">go:embed</code>) e integração com HTMX + Tailwind.
+            Painel de diagnóstico e monitoramento do servidor web de arquivos de alta performance. Visualização de integridade dos serviços, métricas de tempo de atividade (uptime) e diretório raiz configurado.
         </p>
     </div>
 
@@ -28,23 +30,23 @@
         </div>
 
         <div class="bg-slate-800/60 border border-slate-700/60 rounded-xl p-6 shadow-sm">
-            <h2 class="text-lg font-semibold text-white mb-4">Recursos da Arquitetura</h2>
+            <h2 class="text-lg font-semibold text-white mb-4">Recursos do Servidor de Arquivos</h2>
             <ul class="space-y-2 text-sm text-slate-300">
                 <li class="flex items-center space-x-2">
                     <span class="text-emerald-400 font-bold">✓</span>
-                    <span>Clean Architecture com isolamento em <code class="font-mono text-xs text-indigo-400">internal/</code></span>
+                    <span>Compartilhamento e streaming de alta velocidade para rede local (LAN)</span>
                 </li>
                 <li class="flex items-center space-x-2">
                     <span class="text-emerald-400 font-bold">✓</span>
-                    <span>Binário único autocontido portátil via <code class="font-mono text-xs text-indigo-400">go:embed</code></span>
+                    <span>Download de pastas compactadas em ZIP via streaming direto</span>
                 </li>
                 <li class="flex items-center space-x-2">
                     <span class="text-emerald-400 font-bold">✓</span>
-                    <span>Testes TDD/BDD com meta de cobertura &ge; 80%</span>
+                    <span>Proteção estrita de sandbox e bloqueio absoluto contra path traversal</span>
                 </li>
                 <li class="flex items-center space-x-2">
                     <span class="text-emerald-400 font-bold">✓</span>
-                    <span>Makefile universal e cross-compilação para Linux/Windows</span>
+                    <span>Upload único e múltiplo de arquivos via Drag & Drop e formulário</span>
                 </li>
             </ul>
         </div>

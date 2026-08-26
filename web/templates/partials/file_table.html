@@ -1,0 +1,117 @@
+<div class="overflow-x-auto">
+    <table class="w-full text-left text-sm text-slate-300">
+        <thead class="bg-slate-950/60 text-xs uppercase tracking-wider text-slate-400 border-b border-slate-800">
+            <tr>
+                <th scope="col" class="py-3.5 px-4 font-semibold">Nome</th>
+                <th scope="col" class="py-3.5 px-4 font-semibold w-32 hidden sm:table-cell">Tamanho</th>
+                <th scope="col" class="py-3.5 px-4 font-semibold w-44 hidden md:table-cell">Modificado em</th>
+                <th scope="col" class="py-3.5 px-4 font-semibold w-28 text-right">Ações</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800/60">
+            {{range .Items}}
+            <tr class="hover:bg-slate-800/40 transition-colors group file-row" data-name="{{.Name}}" x-show="matchesSearch('{{.Name}}')">
+                <td class="py-3 px-4 flex items-center gap-3">
+                    <!-- Ícone dinâmico por categoria -->
+                    <span class="flex-shrink-0">
+                        {{if .IsDir}}
+                            <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                </svg>
+                            </div>
+                        {{else if eq .Category "image"}}
+                            <div class="w-8 h-8 rounded-lg bg-pink-500/10 text-pink-400 flex items-center justify-center border border-pink-500/20">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                        {{else if eq .Category "video"}}
+                            <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center border border-rose-500/20">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                        {{else if eq .Category "audio"}}
+                            <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center border border-amber-500/20">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                                </svg>
+                            </div>
+                        {{else if eq .Category "archive"}}
+                            <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center border border-purple-500/20">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                                </svg>
+                            </div>
+                        {{else if eq .Category "code"}}
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
+                            </div>
+                        {{else if eq .Category "document"}}
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                        {{else}}
+                            <div class="w-8 h-8 rounded-lg bg-slate-500/10 text-slate-400 flex items-center justify-center border border-slate-500/20">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                        {{end}}
+                    </span>
+
+                    <div class="min-w-0 flex-1">
+                        {{if .IsDir}}
+                            <a href="/files/{{.RelativePath}}" class="font-medium text-white hover:text-indigo-400 active:text-indigo-300 transition-colors truncate block text-sm sm:text-base">
+                                {{.Name}}
+                            </a>
+                            <span class="sm:hidden text-[11px] text-slate-500 font-mono block mt-0.5">Pasta</span>
+                        {{else}}
+                            <a href="/download/{{.RelativePath}}" class="font-medium text-slate-200 hover:text-indigo-300 active:text-indigo-200 transition-colors truncate block text-sm sm:text-base">
+                                {{.Name}}
+                            </a>
+                            <span class="sm:hidden text-[11px] text-slate-400 font-mono block mt-0.5">{{.FormattedSize}}</span>
+                        {{end}}
+                    </div>
+                </td>
+                <td class="py-3 px-4 text-slate-400 text-xs font-mono hidden sm:table-cell whitespace-nowrap">
+                    {{if .IsDir}}
+                        <span class="text-slate-500">-</span>
+                    {{else}}
+                        {{.FormattedSize}}
+                    {{end}}
+                </td>
+                <td class="py-3 px-4 text-slate-400 text-xs hidden md:table-cell whitespace-nowrap">
+                    {{.FormattedModTime}}
+                </td>
+                <td class="py-3 px-3 sm:px-4 text-right whitespace-nowrap">
+                    <div class="flex items-center justify-end gap-1.5 opacity-90 group-hover:opacity-100">
+                        {{if .IsDir}}
+                            <a href="/zip/{{.RelativePath}}" 
+                               title="Baixar pasta inteira compactada em ZIP"
+                               class="p-2 sm:p-1.5 min-w-[36px] min-h-[36px] sm:min-w-[32px] sm:min-h-[32px] flex items-center justify-center rounded-xl bg-slate-800 hover:bg-indigo-600 active:bg-indigo-700 text-slate-300 hover:text-white transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                            </a>
+                        {{else}}
+                            <a href="/download/{{.RelativePath}}" 
+                               title="Baixar arquivo"
+                               class="p-2 sm:p-1.5 min-w-[36px] min-h-[36px] sm:min-w-[32px] sm:min-h-[32px] flex items-center justify-center rounded-xl bg-slate-800 hover:bg-indigo-600 active:bg-indigo-700 text-slate-300 hover:text-white transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                            </a>
+                        {{end}}
+                    </div>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>
