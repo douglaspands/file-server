@@ -6,9 +6,9 @@ O arquivo `docs/foundation-spec-prompt.md` foi concebido originalmente com base 
 
 **Goals:**
 - Manter o arquivo `docs/generic-golang-foundation-spec-prompt.md` para projetos Go.
-- Criar `docs/generic-python-foundation-spec-prompt.md` adaptado ao ecossistema Python (`src` layout, `pyproject.toml`, `pytest` com cobertura >= 80%, `ruff`, `mypy`, Type Hints, empacotamento wheel/sdist).
-- Criar `docs/generic-nodejs-foundation-spec-prompt.md` adaptado ao ecossistema Node.js / JavaScript moderno (ESM nativo, `package.json`, `node:test` ou `vitest` com cobertura >= 80%, `eslint`, `prettier`, `npm audit`).
-- Criar `docs/generic-typescript-foundation-spec-prompt.md` adaptado ao ecossistema TypeScript com tipagem estrita (`strict: true`, `tsconfig` NodeNext, `vitest`, `tsup`/`tsc`, `eslint-typescript`, `prettier`, `make typecheck`).
+- Manter e aprimorar `docs/generic-python-foundation-spec-prompt.md` adaptado ao ecossistema Python moderno (`src` layout, `pyproject.toml` mandatório, `uv` para gestão de Python/venv/dependências, `ty` para checagem de tipos ultraveloz, `pytest` com cobertura >= 80%, `ruff`, empacotamento wheel/sdist).
+- Manter `docs/generic-nodejs-foundation-spec-prompt.md` adaptado ao ecossistema Node.js / JavaScript moderno (ESM nativo, `package.json`, `node:test` ou `vitest` com cobertura >= 80%, `eslint`, `prettier`, `npm audit`).
+- Manter `docs/generic-typescript-foundation-spec-prompt.md` adaptado ao ecossistema TypeScript com tipagem estrita (`strict: true`, `tsconfig` NodeNext, `vitest`, `tsup`/`tsc`, `eslint-typescript`, `prettier`, `make typecheck`).
 - Garantir que todos os 4 prompts contenham rigorosamente os **10 pilares fundamentais de engenharia**, a recomendação formal do framework **OpenSpec** (Pilar 7) com foco em PO e QA, parametrização de plataformas alvo (`[PLATAFORMAS_ALVO]`) no Pilar 8, Makefile universal autodocumentado (Pilar 4) e Engenharia de Agentes com Harness/Loop/Graph (Pilar 6).
 
 **Non-Goals:**
@@ -23,26 +23,23 @@ O arquivo `docs/foundation-spec-prompt.md` foi concebido originalmente com base 
   2. `docs/generic-python-foundation-spec-prompt.md` (Python)
   3. `docs/generic-nodejs-foundation-spec-prompt.md` (Node.js / JS)
   4. `docs/generic-typescript-foundation-spec-prompt.md` (TypeScript)
-- **Justificativa**: Cada ecossistema possui ferramentas canônicas distintas (Go toolchain, Python/ruff/pytest, Node/npm, TypeScript/tsc/tsup). Ter um documento dedicado por linguagem oferece instruções 100% idiomáticas e prontas para uso por desenvolvedores e agentes de IA sem ambiguidades de sintaxe ou configuração.
+- **Justificativa**: Cada ecossistema possui ferramentas canônicas distintas. Ter um documento dedicado por linguagem oferece instruções 100% idiomáticas e prontas para uso por desenvolvedores e agentes de IA sem ambiguidades de sintaxe ou configuração.
 
-### Decisão 2: Adaptação Idiomática dos 10 Pilares
-- **Python**:
-  - Clean Architecture em `src/<pacote>/` (`core/domain/`, `ports/`, `services/`, `adapters/`), tipagem estrita com Type Hints e Protocols (`typing.Protocol`), `pyproject.toml`, `pytest` + `pytest-cov` >= 80%, `ruff`, `mypy`, Makefile universal (`make check` = fmt + lint + typecheck + security + test).
-- **Node.js (JavaScript puro)**:
-  - Clean Architecture em `src/` (`core/domain/`, `ports/`, `services/`, `adapters/`), ESM nativo (`"type": "module"`), `node:test` ou `vitest` com cobertura >= 80%, `eslint`, `prettier`, `package.json` (`"bin"`, `"exports"`), Makefile universal.
-- **TypeScript**:
-  - Clean Architecture em `src/` (`core/domain/`, `ports/`, `services/`, `adapters/`), tipagem estrita sem `any` (`strict: true`, `NodeNext`), `vitest` com cobertura >= 80%, `eslint` (`@typescript-eslint`), `prettier`, `tsup`/`tsc`, Makefile universal (`make typecheck`, `make check`).
+### Decisão 2: Adaptação Idiomática e Modernização do Python com `uv`, `ty` e `pyproject.toml`
+- **Escolha**:
+  - `uv` (Astral) como ferramenta padrão mandatória para gerenciar versões do Python (`uv python`), ambientes virtuais isolados (`uv venv`), adição e sincronização determinística de dependências e lockfiles (`uv add`, `uv lock`, `uv sync`) e execução ágil (`uv run`).
+  - `ty` (Astral) como ferramenta de checagem estática de tipos de alta performance em substituição ao tradicional `mypy`, acelerando drasticamente o ciclo de feedback no `make check` e no loop do agente.
+  - `pyproject.toml` como manifesto central e mandatório para metadados (PEP 621), build system, scripts e configurações de ferramentas (`[tool.ruff]`, `[tool.pytest.ini_options]`, `[tool.ty]`).
 
 ### Decisão 3: Recomendação Universal do Framework OpenSpec e PO/QA (Pilar 7)
 - Todos os 4 prompts recomendam formalmente o OpenSpec, fornecendo diretrizes de linguagem ubíqua e acessível para o PO e cenários determinísticos BDD/Gherkin com `#### Scenario:` e `WHEN/THEN` para automação por QA.
 
 ## Risks / Trade-offs
 
-- **[Risco]** Divergência entre os 10 pilares nos 4 arquivos de documentação.
-  - *Mitigação*: Manter estrutura, seções e numeração de pilares rigorosamente idênticas em todos os documentos, adaptando apenas termos específicos da linguagem (ex: pacotes vs módulos, pytest vs testing vs vitest, golangci-lint vs ruff vs eslint).
+- **[Risco]** Ferramenta `ty` ser recente no ecossistema.
+  - *Mitigação*: O prompt orienta a configuração compatível com os padrões de type hints do Python (PEP 484/526) e execução via `uv run ty` ou fallback direto caso o projeto necessite de flags específicas.
 
 ## Migration Plan
 
-1. Criar os prompts mestres para Python, Node.js e TypeScript.
-2. Manter e validar o prompt de Golang.
-3. Validar conformidade OpenSpec (`openspec validate --all`) e executar o quality gate (`make check`).
+1. Atualizar o prompt mestre de Python em `docs/generic-python-foundation-spec-prompt.md` com `uv`, `ty` e `pyproject.toml`.
+2. Validar conformidade OpenSpec (`openspec validate --all`) e executar o quality gate (`make check`).

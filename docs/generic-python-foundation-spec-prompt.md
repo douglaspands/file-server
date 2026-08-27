@@ -4,7 +4,12 @@ Este documento contém o **Prompt Mestre de Fundação de Projetos Python** (`ge
 
 É altamente **recomendado adotar o framework OpenSpec** como padrão de excelência para a governança contínua de especificações, documentação viva, rastreabilidade de decisões e alinhamento transparente entre visão de produto (PO) e qualidade técnica/automação (QA).
 
-Ele condensa todos os requisitos de arquitetura limpa, qualidade de código, tipagem estrita com Type Hints, automação de comandos via Makefile, esteira de testes com TDD/BDD (`pytest`), CI/CD, governança OpenSpec, autonomia operacional e Engenharia de Agentes (Harness, Loop e Graph Engineering), permitindo gerar uma fundação arquitetural de excelência para **qualquer tipo de projeto em Python moderno** (APIs REST/GraphQL/gRPC, ferramentas de linha de comando CLI, aplicações Web/SSR, daemons/workers assíncronos, pipelines de dados, bibliotecas ou interfaces de terminal TUI).
+Para o ecossistema Python moderno, é fortemente recomendado e padronizado:
+- **`uv` (Astral)** como ferramenta universal e ultrarrápida para gerenciar versões do Python (`uv python`), ambientes virtuais isolados (`uv venv`), resolução de dependências com lockfile determinístico (`uv lock`, `uv sync`) e execução de comandos/ferramentas (`uv run`).
+- **`ty` (Astral)** como checador estático de tipos de alta performance, substituindo o legado `mypy` com ganhos drásticos de velocidade de execução.
+- **`pyproject.toml`** como manifesto central e mandatório (PEP 621 / PEP 517) para metadados, scripts executáveis e configuração unificada de todas as ferramentas (`[tool.ruff]`, `[tool.pytest.ini_options]`, `[tool.ty]`).
+
+Ele condensa todos os requisitos de arquitetura limpa, tipagem estrita, qualidade de código, automação de comandos via Makefile, esteira de testes com TDD/BDD (`pytest`), CI/CD, governança OpenSpec, autonomia operacional e Engenharia de Agentes (Harness, Loop e Graph Engineering), permitindo gerar uma fundação arquitetural de excelência para **qualquer tipo de projeto em Python moderno** (APIs REST/GraphQL/gRPC, ferramentas de linha de comando CLI, aplicações Web/SSR, daemons/workers assíncronos, pipelines de dados, bibliotecas ou interfaces de terminal TUI).
 
 ---
 
@@ -81,7 +86,7 @@ A especificação deve ser gerada utilizando o padrão OpenSpec em Português do
 PILAR 1: PADRÃO ARQUITETURAL EM PYTHON E LAYOUT CANÔNICO (CLEAN ARCHITECTURE)
 ================================================================================
 - Adotar o layout canônico moderno baseado no padrão 'src-layout' (PEP 621 / PEP 517/518), garantindo isolamento estrito contra importações acidentais de pacotes não instalados:
-  * pyproject.toml: Arquivo de configuração centralizado e padronizado para build system (ex: hatchling, flit-core, setuptools), dependências de produção e desenvolvimento, metadados do projeto e configurações de ferramentas (ruff, mypy, pytest, coverage).
+  * pyproject.toml: Arquivo de configuração centralizado, padronizado e MANDATÓRIO para metadados do projeto (PEP 621), build system (hatchling, flit-core ou setuptools), scripts executáveis, dependências de produção/desenvolvimento e configuração de ferramentas (ruff, ty, pytest, coverage).
   * src/[PACOTE_PYTHON]/main.py ou cli.py: Ponto de entrada da aplicação, parse de argumentos/configurações e composição explícita de dependências (composition root).
   * src/[PACOTE_PYTHON]/core/domain/: Entidades, modelos de negócio puros e objetos de valor (dataclasses imutáveis ou modelos Pydantic v2), enums, exceções de domínio e regras invariantes, totalmente livres de acoplamentos externos ou de frameworks de infraestrutura.
   * src/[PACOTE_PYTHON]/core/ports/: Interfaces e contratos formais de entrada (casos de uso/serviços de aplicação) e saída (repositórios, adaptadores de I/O, clientes externos, mensageria) definidos explicitamente via 'typing.Protocol' (PEP 544) ou classes abstratas ('abc.ABC').
@@ -91,9 +96,9 @@ PILAR 1: PADRÃO ARQUITETURAL EM PYTHON E LAYOUT CANÔNICO (CLEAN ARCHITECTURE)
   * tests/: Estrutura espelhada de testes dividida em 'unit/', 'integration/', 'e2e/' e 'conftest.py' centralizado para fixtures reutilizáveis.
   * scripts/: Scripts auxiliares de automação, cálculo estrito de cobertura de testes ('scripts/coverage.sh') e checagens de qualidade.
   * .github/workflows/: Pipelines de automação CI/CD e release para PyPI / GitHub Releases.
-- Tipagem Estrita Obrigatória (Type Hints):
+- Tipagem Estrita Obrigatória (Type Hints) e Checagem Ultrarrápida com 'ty':
   * Adoção de Type Hints estritos (PEP 484, PEP 585, PEP 604) em 100% das assinaturas de funções, métodos e atributos de classes.
-  * Validação estrita por checagem estática de tipos com 'mypy --strict' (ou configuração correspondente no pyproject.toml).
+  * Validação estrita por checagem estática de tipos de alta performance utilizando a ferramenta 'ty' da Astral ('ty src tests' ou 'uv run ty') em vez de ferramentas legadas mais lentas.
 - Injeção de Dependências Explícita (Composition Root):
   * Realizada manualmente nos pontos de entrada (main/cli/factories) via construtores tipados, sem o uso de frameworks invasivos de DI ou reflexão oculta em tempo de execução.
 - Encerramento Gracioso (Graceful Shutdown) e Gerenciamento de Contexto:
@@ -134,24 +139,28 @@ PILAR 3: INFRAESTRUTURA DE TESTES AUTOMATIZADOS, TDD/BDD E BARREIRA >= 80%
 ================================================================================
 PILAR 4: INTERFACE UNIVERSAL DE COMANDOS VIA MAKEFILE AUTODOCUMENTADO
 ================================================================================
-- Criar um 'Makefile' universal, autodocumentado e determinístico como interface central de automação:
+- Criar um 'Makefile' universal, autodocumentado e determinístico como interface central de automação apoiado pelo 'uv':
   * make help (alvo padrão): Exibe dinamicamente o menu com todos os comandos disponíveis e descrições formatadas.
-  * make setup: Cria o ambiente virtual (.venv), atualiza o gerenciador de pacotes (uv, poetry ou pip) e instala o projeto em modo editável com todas as dependências de desenvolvimento e teste ('pip install -e ".[dev]"' ou 'uv sync').
+  * make setup: Instala/sincroniza a versão do Python, cria o ambiente virtual isolado e instala todas as dependências do 'pyproject.toml' com resolução determinística via 'uv sync'.
   * make dev: Inicia o ambiente de desenvolvimento local (com live-reload via Uvicorn/Flask ou monitor de testes pytest-watch quando aplicável).
-  * make run: Executa a aplicação/serviço a partir do ponto de entrada principal.
-  * make test: Executa a suíte completa de testes com verificação de cobertura (barreira inegociável >= 80%).
-  * make test-unit: Executa testes unitários rápidos.
+  * make run: Executa a aplicação/serviço a partir do ponto de entrada principal ('uv run python -m [PACOTE_PYTHON]').
+  * make test: Executa a suíte completa de testes com verificação de cobertura (barreira inegociável >= 80% via 'uv run pytest').
+  * make test-unit: Executa testes unitários rápidos ('uv run pytest tests/unit').
   * make test-coverage: Gera o relatório HTML de cobertura em dist/coverage/ e valida o limiar de 80%.
-  * make lint: Executa linters estritos de código e tipagem ('ruff check .' e 'mypy src tests').
-  * make fmt: Formata o código automaticamente com ferramentas modernas e ultrarrápidas ('ruff format .' e 'ruff check --fix .').
-  * make check: Quality Gate local unificado (fmt + lint + mypy + pip-audit para vulnerabilidades de segurança + test com cobertura >= 80%).
-  * make build: Constrói os pacotes de distribuição de produção (Wheel '.whl' e Source Distribution '.tar.gz') sob 'dist/' utilizando 'python -m build' ou 'uv build'.
-  * make clean: Limpa ambientes virtuais, caches temporários (.pytest_cache, .mypy_cache, .ruff_cache, __pycache__), relatórios de cobertura e artefatos de compilação em dist/ e build/.
+  * make typecheck: Executa a checagem estática de tipos ultrarrápida com 'ty' ('uv run ty' ou 'ty src tests').
+  * make lint: Executa linters estritos de código com 'ruff' ('uv run ruff check .').
+  * make fmt: Formata o código automaticamente com 'ruff' ('uv run ruff format .' e 'uv run ruff check --fix .').
+  * make check: Quality Gate local unificado (fmt + lint + typecheck com 'ty' + pip-audit para auditoria de vulnerabilidades + test com cobertura >= 80%).
+  * make build: Constrói os pacotes de distribuição de produção (Wheel '.whl' e Source Distribution '.tar.gz') sob 'dist/' utilizando 'uv build'.
+  * make clean: Limpa ambientes virtuais (.venv), caches temporários (.pytest_cache, .ruff_cache, .ty_cache, __pycache__), relatórios de cobertura e artefatos de compilação em dist/ e build/.
 
 ================================================================================
 PILAR 5: STACK DE APLICAÇÃO, DEPENDÊNCIAS E DECISÕES ARQUITETURAIS CUSTOMIZÁVEIS
 ================================================================================
-- As decisões de frameworks, bibliotecas externas, drivers, estratégias de empacotamento, persistência e ferramentas de desenvolvimento são deliberadas em conjunto com o solicitante do prompt conforme o contexto e escopo do projeto em '[STACK_E_FRAMEWORKS]' e '[TIPO_DE_PROJETO]'.
+- Gestão de Dependências e Configuração Padronizada com 'pyproject.toml' e 'uv':
+  * É MANDATÓRIO centralizar todas as dependências de produção e desenvolvimento no arquivo 'pyproject.toml' (PEP 621), gerenciadas via 'uv add' / 'uv lock'.
+  * O 'uv' é a ferramenta padrão e recomendada para gerenciamento de versões do Python ('uv python install / pin'), criação de venv e bloqueio de dependências ('uv.lock').
+- As decisões de frameworks, bibliotecas externas, drivers, persistência e ferramentas de desenvolvimento são deliberadas em conjunto com o solicitante do prompt conforme o contexto e escopo do projeto em '[STACK_E_FRAMEWORKS]' e '[TIPO_DE_PROJETO]'.
 - Princípio da Parcimônia:
   * Priorizar a biblioteca padrão de Python (stdlib: 'asyncio', 'pathlib', 'dataclasses', 'typing', 'logging', 'sqlite3', 'argparse') sempre que atender com elegância, manutenibilidade e eficiência aos requisitos.
   * Quando bibliotecas de terceiros forem necessárias, selecionar pacotes consolidados, seguros, modernos, ativamente mantidos e com baixo acoplamento.
@@ -170,9 +179,9 @@ PILAR 6: ENGENHARIA DE AGENTES, PRIORIDADE DE FERRAMENTAS E ECONOMIA DE TOKENS
      - Localizar arquivos: Utilizar 'find_by_name'. Proibido 'find', 'ls -R' via terminal.
      - Listar diretórios: Utilizar 'list_dir'. Proibido 'ls' via terminal.
   2. Uso Restrito do Terminal ('run_command'):
-     - O terminal deve ser utilizado exclusivamente para ferramentas do ciclo de vida: 'make' ('make test', 'make lint', 'make check', 'make build'), 'python', 'pytest', 'ruff', 'mypy', 'uv', 'git', 'openspec' e binários executáveis.
+     - O terminal deve ser utilizado exclusivamente para ferramentas do ciclo de vida: 'make' ('make test', 'make lint', 'make check', 'make build'), 'uv', 'python', 'pytest', 'ruff', 'ty', 'git', 'openspec' e binários executáveis.
   3. Autonomia Operacional e Permissões (.agent/settings.json):
-     - Configurar permissões pré-autorizadas ('allow') para todas as ferramentas cotidianas ('python', 'pytest', 'make', 'git', 'openspec', 'ruff', 'mypy'), eliminando prompts de confirmação repetitivos e assegurando execução autônoma contínua.
+     - Configurar permissões pré-autorizadas ('allow') para todas as ferramentas cotidianas ('uv', 'python', 'pytest', 'make', 'git', 'openspec', 'ruff', 'ty'), eliminando prompts de confirmação repetitivos e assegurando execução autônoma contínua.
   4. Economia Ativa de Tokens, Curação de Contexto e Otimização de Janela:
      - Respostas do agente devem ser concisas e estruturadas em Markdown com links clicáveis '[arquivo](file:///caminho)'.
      - NUNCA duplicar blocos massivos de código já existentes no disco na resposta do chat.
@@ -209,10 +218,10 @@ PILAR 8: PIPELINES DE CI/CD E MATRIZ DE RELEASE (PLATAFORMAS CUSTOMIZÁVEIS)
 - Workflow de CI ('.github/workflows/ci.yml'):
   * Executado em Pull Requests e pushes na branch principal ('main').
   * Matriz de execução testando versões suportadas do Python (ex: 3.11, 3.12, 3.13) e sistemas operacionais declarados em '[PLATAFORMAS_ALVO]'.
-  * Etapas: Checkout, Setup Python, Cache de dependências, Instalação do pacote em modo editável com dependências de desenvolvimento, Execução de linter e checagem de tipos (ruff e mypy), Auditoria de vulnerabilidades de segurança ('pip-audit'), Execução de testes com barreira de cobertura >= 80% e validação de integridade OpenSpec ('openspec validate --all').
+  * Etapas: Checkout, Setup Python / uv, Cache de dependências, Instalação determinística via 'uv sync', Execução de linter e checagem de tipos (ruff e ty), Auditoria de vulnerabilidades de segurança ('pip-audit'), Execução de testes com barreira de cobertura >= 80% e validação de integridade OpenSpec ('openspec validate --all').
 - Workflow de Release e Publicação ('.github/workflows/release.yml'):
   * Disparado na criação de tags de release Git ('v*').
-  * Construção automatizada de pacotes de distribuição padrão (Wheel '.whl' e Source Distribution '.tar.gz') via 'build' ou 'uv build'.
+  * Construção automatizada de pacotes de distribuição padrão (Wheel '.whl' e Source Distribution '.tar.gz') via 'uv build'.
   * Geração de checksums SHA256 de integridade.
   * Publicação automática dos artefatos na Release do GitHub e/ou no PyPI (utilizando autenticação segura via Trusted Publishing / OIDC do GitHub Actions).
 - Boas Práticas de Prompt e Regra de Fallback:
@@ -227,10 +236,10 @@ PILAR 9: DOCUMENTAÇÃO VIVA E EXAUSTIVA NO README.MD
   1. Header & Badges: Título com badges funcionais (Python Version, CI Quality Gate, Test Coverage >= 80%, PyPI/Latest Release, License).
   2. Visão Geral da Aplicação: Propósito, valor entregue e diferenciais técnicos.
   3. Guia de Instalação e Uso:
-     - Instalação via gerenciador de pacotes ('pip install', 'pipx' ou 'uv tool install') ou execução via código fonte.
+     - Instalação via gerenciador de pacotes ('uv tool install' ou 'pip install') ou execução via código fonte.
      - Documentação completa e tabela com comandos, flags de linha de comando, variáveis de ambiente (.env), parâmetros de configuração e exemplos práticos de execução.
   4. Guia do Desenvolvedor:
-     - Pré-requisitos e setup do ambiente virtual de desenvolvimento ('make setup').
+     - Pré-requisitos e setup do ambiente virtual de desenvolvimento ('make setup' via 'uv').
      - Arquitetura de software e layout de diretórios ('src/[PACOTE_PYTHON]/core/', 'src/[PACOTE_PYTHON]/adapters/').
      - Interface universal de comandos e automação via Makefile ('make check', 'make dev', 'make test', 'make build').
      - Metodologia de testes TDD/BDD com barreira de 80%.
@@ -280,9 +289,9 @@ GEMINI.md
 
 ### Checklist dos Artefatos Gerados:
 - [x] **`proposal.md`**: Define o *Why*, *What Changes*, *Capabilities* (`project-foundation`) e *Impact* (código, IA, governança, autonomia).
-- [x] **`design.md`**: Detalha *Context*, *Goals/Non-Goals*, *Decisions* (arquitetura Python src-layout, testes BDD, Makefile, stack escolhida, type hints estritos, release matrix, README, CI/CD, prioridade de ferramentas nativas) e *Risks/Trade-offs*.
+- [x] **`design.md`**: Detalha *Context*, *Goals/Non-Goals*, *Decisions* (arquitetura Python src-layout, pyproject.toml, uv, ty, testes BDD, Makefile, stack escolhida, release matrix, README, CI/CD, prioridade de ferramentas nativas) e *Risks/Trade-offs*.
 - [x] **`specs/project-foundation/spec.md`**: Define os requisitos com perspectivas explícitas de **PO** e **QA**, cada um acompanhado de cenários BDD `#### Scenario:` com `- **WHEN**` e `- **THEN**`.
-- [x] **`tasks.md`**: Lista de tarefas organizadas por seções numeradas (`## N. Nome do Grupo`), com subtarefas granulares `- [ ] N.M`, incluindo verificações de setup, tipagem mypy, testes unitários, linter ruff, cobertura >= 80% e `openspec validate --all`.
+- [x] **`tasks.md`**: Lista de tarefas organizadas por seções numeradas (`## N. Nome do Grupo`), com subtarefas granulares `- [ ] N.M`, incluindo verificações de setup uv, tipagem ty, testes unitários pytest, linter ruff, cobertura >= 80% e `openspec validate --all`.
 - [x] **`openspec/config.yaml`**: Configuração central com `context`, `rules` (proposal, specs, design, tasks) e `operations` (apply).
 - [x] **`AGENTS.md` e `GEMINI.md`**: Diretrizes operacionais de alta prioridade para autonomia do AGY, ferramentas nativas, economia de tokens e fluxo Git squash.
 - [x] **`.agent/settings.json`**: Permissões de desenvolvimento pré-autorizadas para máxima autonomia sem interrupções.

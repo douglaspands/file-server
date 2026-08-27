@@ -16,11 +16,12 @@
 
 - [x] 3.1 Atualizar referências a `docs/foundation-spec-prompt.md` em `.agent/rules/agent_harness_engineering.md` e eventuais outras documentações
 
-## 4. Criação dos Prompts Mestres para Python, Node.js e TypeScript
+## 4. Criação e Refinamento dos Prompts Mestres para Python, Node.js e TypeScript
 
-- [x] 4.1 Criar o arquivo `docs/generic-python-foundation-spec-prompt.md` com os 10 pilares adaptados para o ecossistema Python (src layout, Clean Architecture, Type Hints, pytest >= 80%, Makefile com ruff e mypy, OpenSpec recomendado e CI/CD)
+- [x] 4.1 Criar o arquivo `docs/generic-python-foundation-spec-prompt.md` com os 10 pilares adaptados para o ecossistema Python
 - [x] 4.2 Criar o arquivo `docs/generic-nodejs-foundation-spec-prompt.md` com os 10 pilares adaptados para o ecossistema Node.js / JavaScript moderno (ESM nativo, Clean Architecture, node:test/vitest >= 80%, Makefile com eslint/prettier, OpenSpec recomendado e CI/CD)
 - [x] 4.3 Criar o arquivo `docs/generic-typescript-foundation-spec-prompt.md` com os 10 pilares adaptados para o ecossistema TypeScript (tipagem estrita, Clean Architecture, vitest >= 80%, Makefile com tsc/tsup/eslint, OpenSpec recomendado e CI/CD)
+- [x] 4.4 Atualizar `docs/generic-python-foundation-spec-prompt.md` recomendando `uv` como gerenciador de versões/libs/venv, substituindo `mypy` por `ty` e exigindo o manifesto `pyproject.toml`
 
 ## 5. Validação de Qualidade e Governança
 
