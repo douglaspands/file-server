@@ -17,7 +17,12 @@
 - [x] 3.1 Atualizar referências internas em `.agent/rules/agent_harness_engineering.md` e especificações para os novos nomes dos arquivos
 - [x] 3.2 Criar `docs/README.md` com a visão geral do estudo de Spec-Driven Development, catálogo dos 8 prompts mestres em tabela comparativa e guia de utilização
 
-## 4. Validação de Qualidade e Governança
+## 4. Aprofundamento do Pilar 10 (Governança Git, Higiene e .gitignore)
 
-- [x] 4.1 Validar a integridade das especificações OpenSpec através de `openspec validate --all`
-- [x] 4.2 Executar o quality gate completo do projeto (`make check`) validando formatação, linters e suíte de testes com cobertura >= 80%
+- [x] 4.1 Atualizar o Pilar 10 nos 8 prompts mestres (`docs/generic-*-foundation-spec-prompt-*.md`) com `.gitignore` mandatório e justificativa da governança Git
+- [x] 4.2 Atualizar `docs/README.md` refletindo as boas práticas do Pilar 10
+
+## 5. Validação de Qualidade e Governança
+
+- [x] 5.1 Validar a integridade das especificações OpenSpec através de `openspec validate --all`
+- [x] 5.2 Executar o quality gate completo do projeto (`make check`) validando formatação, linters e suíte de testes com cobertura >= 80%

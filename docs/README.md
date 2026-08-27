@@ -62,7 +62,7 @@ Todos os prompts desta suíte compartilham e adaptam para a linguagem alvo os **
 7. **Governança de Especificações com OpenSpec (Recomendado)**: Separação clara entre a visão de produto do **Product Owner (PO)** e os cenários de teste automatizáveis do **QA**.
 8. **Pipelines de CI/CD e Matriz de Release Multiplataforma**: Workflows GitHub Actions parametrizáveis por `[PLATAFORMAS_ALVO]` com fallback inteligente.
 9. **Documentação Viva e Exaustiva no README.md**: Badges funcionais, guia de uso da CLI, variáveis de ambiente e documentação de desenvolvedor.
-10. **Governança Git, Conventional Commits e Squash Merge**: Commits semânticos (`feat:`, `fix:`), branches de feature por especificação e merge exclusivamente via **Squash** sob permissão explícita.
+10. **Governança Git, Higiene de Repositório e Squash Merge**: Criação mandatória de `.gitignore` idiomático completo (proteção de segredos, isolamento de builds/caches/relatórios de cobertura e preservação da janela de contexto dos agentes), commits semânticos (`feat:`, `fix:`), branches de feature por especificação e merge exclusivamente via **Squash** sob permissão explícita prévia do usuário.
 
 ---
 

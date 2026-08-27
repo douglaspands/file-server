@@ -246,16 +246,26 @@ PILAR 9: DOCUMENTAÇÃO VIVA E EXAUSTIVA NO README.MD
      - Diretrizes de IA (Antigravity), autonomia de ferramentas e padrão Conventional Commits.
 
 ================================================================================
-PILAR 10: GOVERNANÇA GIT, CONVENTIONAL COMMITS, BRANCHING E SQUASH MERGE
+PILAR 10: GOVERNANÇA GIT, HIGIENE DE REPOSITÓRIO E SQUASH MERGE
 ================================================================================
-- Padrão estrito de Conventional Commits: 'feat:', 'fix:', 'refactor:', 'test:', 'docs:', 'chore:'.
-- Feature Branch por Especificação:
-  * Toda nova mudança do OpenSpec inicia em branch dedicada: 'git checkout main && git checkout -b feature/<change-name>'.
-- Permissão Obrigatória do Usuário:
-  * Ao concluir e arquivar uma especificação, o agente DEVE solicitar permissão explícita ao usuário antes de integrar na 'main' ou abrir Pull Request.
-- Estratégia de Integração Exclusivamente SQUASH:
-  * Merge Local: 'git checkout main && git merge --squash feature/<change-name> && git commit -m "feat(<change-name>): ..."'.
-  * Pull Request: Integração configurada estritamente via Squash and Merge ('gh pr merge --squash').
+- Criação e Configuração Mandatória de '.gitignore' Idiomático:
+  * Criar imediatamente na raiz do repositório um arquivo '.gitignore' abrangente para TypeScript/Node.js, cobrindo:
+    - Dependências de pacotes: 'node_modules/', '.pnpm-store/', '.yarn/'.
+    - Distribuição e builds: 'dist/', 'build/', 'out/', '*.tsbuildinfo', '.turbo/'.
+    - Relatórios e saídas de teste/cobertura: 'coverage/', '.nyc_output/', '*.lcov'.
+    - Logs e arquivos temporários: 'npm-debug.log*', 'yarn-debug.log*', 'yarn-error.log*', 'pnpm-debug.log*', '*.log'.
+    - Segredos e variáveis de ambiente: '.env', '.env.*', '*.pem', '*.key', '*.crt' (exceto templates públicos como '.env.example').
+    - Configurações de IDEs e do Sistema Operacional: '.vscode/', '.idea/', '*.swp', '.DS_Store', 'Thumbs.db'.
+- Importância e Boas Práticas de Governança Git em Engenharia com Agentes de IA:
+  * Higiene e Economia de Contexto: Manter o repositório rigorosamente livre de 'node_modules' e diretórios compilados 'dist/' evita que ferramentas de busca e I/O do agente ('grep_search', 'find_by_name', 'list_dir') indexem dezenas de milhares de arquivos de tipos ou dependências, protegendo a janela de contexto de alucinações e desperdício de tokens.
+  * Segurança Operacional Inegociável: Prevenção estrita contra commits acidentais de credenciais, chaves de API e segredos na árvore Git.
+  * Padrão Estrito de Conventional Commits: Todos os commits devem seguir a convenção semântica ('feat:', 'fix:', 'refactor:', 'test:', 'docs:', 'chore:', 'perf:', 'ci:'), assegurando rastreabilidade clara e automação facilitada de changelogs e releases.
+  * Feature Branch por Especificação: Toda nova mudança proposta pelo OpenSpec deve ser desenvolvida em branch dedicada a partir da 'main' ('git checkout -b feature/<change-name>'), garantindo que intervenções de IA ocorram em ambiente isolado (sandbox).
+  * Permissão Obrigatória do Usuário: O agente de IA NUNCA deve realizar merge na 'main' ou abrir Pull Request sem autorização explícita e prévia do usuário.
+  * Estratégia de Integração Exclusivamente SQUASH:
+    - Merge Local: 'git checkout main && git merge --squash feature/<change-name> && git commit -m "feat(<change-name>): <resumo consolidado das mudanças>"'.
+    - Pull Request (GitHub): Configurar e executar a integração exclusivamente via Squash and Merge ('gh pr merge --squash').
+    - Racional: O Squash Merge consolida múltiplos micro-commits de desenvolvimento e experimentação em um único commit atômico e testado na 'main', garantindo histórico limpo, linear, legível e 100% bisectável ('git bisect') e reversível ('git revert').
 ```
 
 ---
