@@ -1,31 +1,29 @@
 ## Why
 
-O arquivo `docs/foundation-spec-prompt.md` atual possuía acoplamentos rígidos e específicos a certas tecnologias e frameworks (como HTMX, Alpine.js, Tailwind CSS e Cobra CLI), além de assumir sempre uma estrutura de servidor web com interface SSR, decisões pré-fabricadas de empacotamento (`go:embed`), live-reload (`Air`) e matrizes fixas de compilação/release. Ao iniciar novos projetos Go de naturezas distintas (como microserviços headless, APIs gRPC/REST, ferramentas CLI sem interface web, daemons, bibliotecas ou TUIs), esse acoplamento impõe especificações desnecessárias que precisam ser manualmente expurgadas.
+O arquivo `docs/foundation-spec-prompt.md` original possuía acoplamentos rígidos e específicos a certas tecnologias e frameworks em Go, limitando sua utilidade como gerador de fundações de software para novos projetos em múltiplos ecossistemas.
 
-É necessário generalizar o prompt mestre de fundação para que ele sirva como alicerce universal para qualquer projeto em Go, delegando ao usuário a definição explícita do tipo de aplicação, módulos, binários, bibliotecas, empacotamento, plataformas alvo de compilação/release e stack tecnológica desejada, mantendo intactos todos os pilares essenciais de engenharia (Clean Architecture/layout canônico, TDD/BDD com cobertura >= 80%, Makefile universal, CI/CD, documentação viva no README, governança Git com squash e Engenharia de Agentes com Harness, Loop e Graph). Além disso, o arquivo foi renomeado para `docs/generic-golang-foundation-spec-prompt.md`, o framework OpenSpec é explicitamente recomendado para governança contínua de especificações (com foco em PO e QA), e o Pilar 8 permite a escolha de arquiteturas de compilação com fallback para a arquitetura corrente ou questionamento proativo pelo agente.
+É necessário disponibilizar uma suíte completa de prompts mestres genéricos de fundação arquitetural e de engenharia de software para as principais linguagens e ecossistemas da indústria: **Golang**, **Python**, **Node.js (JavaScript puro / ESM)** e **TypeScript**. Cada prompt preserva integralmente os 10 pilares inegociáveis de excelência (Clean Architecture/layout canônico, TDD/BDD com cobertura >= 80%, Makefile universal, CI/CD, documentação viva no README, governança Git com squash, recomendação formal do framework OpenSpec com foco em PO/QA e Engenharia de Agentes com Harness, Loop e Graph), adaptando as convenções, ferramentas de build, linters e runners de teste de forma idiomática para cada linguagem.
 
 ## What Changes
 
-- **Renomeação do Arquivo de Documentação**: Renomear `docs/foundation-spec-prompt.md` para `docs/generic-golang-foundation-spec-prompt.md`.
-- **Desacoplamento de Frameworks e Decisões Pré-Fabricadas (Pilar 5)**:
-  - Remover imposições obrigatórias de frameworks web (HTMX, Alpine.js, Tailwind CSS) e CLI (Cobra) do corpo dos pilares fundamentais.
-  - Remover decisões pré-definidas de empacotamento autocontido (`go:embed`) e loops de live-reload (`Air`), delegando essas escolhas à deliberação conjunta com o solicitante do prompt conforme a necessidade real do projeto.
-  - Transformar seções de stack e interface em blocos modulares/configuráveis definidos via variáveis e placeholders pelo usuário.
-- **Recomendação e Boas Práticas do Framework OpenSpec para Governança de Especificações (Pilar 7)**:
-  - Recomendar formalmente o uso do framework **OpenSpec** como o padrão de excelência para especificação viva, rastreabilidade de mudanças e prevenção de divergência documental (*specification rot*).
-  - Estruturação de especificações com linguagem ubíqua e clara de negócio para o Product Owner (PO), sem jargões de baixo nível que ofusquem o valor entregue.
-  - Estruturação de cenários determinísticos BDD/Gherkin (`Given-When-Then`, com entradas, saídas, bordas e erros) prontos para serem consumidos por ferramentas de automação de testes pelo QA.
-- **Parametrização de Arquiteturas de Compilação e Boas Práticas de Prompt (Pilar 8)**:
-  - Introduzir a variável `[PLATAFORMAS_ALVO]` para que o usuário informe os sistemas operacionais e arquiteturas (`GOOS`/`GOARCH`) desejados para build e release (ex: Linux amd64/arm64, Darwin arm64, Windows amd64).
-  - Regra de Fallback e Clareza no Prompt: Caso as plataformas alvo não sejam informadas, adotar como padrão a arquitetura do ambiente de execução corrente ou instruir o agente a questionar o usuário quando houver ambiguidade sobre distribuição multiplataforma.
-- **Preservação Integral dos Padrões de Excelência de Engenharia**:
-  - Manter layout canônico e Clean Architecture em Go (`cmd/`, `internal/`).
-  - Manter esteira automatizada de testes com TDD/BDD e barreira inegociável de cobertura >= 80%.
-  - Manter Makefile universal autodocumentado (`make check`, `make test`, `make build`, etc.).
-  - Manter governança de IA e Engenharia de Agentes do Antigravity (Harness Engineering, Loop Engineering, Graph Engineering, Native Tool Grounding e Economia Ativa de Tokens).
-  - Manter pipelines de CI/CD e release no GitHub Actions baseados nas plataformas escolhidas.
-  - Manter governança Git (Conventional Commits, branches de feature e merge exclusivamente Squash).
-- **Atualização de Referências**: Atualizar referências ao arquivo renomeado nas especificações e documentações do projeto.
+- **Renomeação do Arquivo Go**: Renomear `docs/foundation-spec-prompt.md` para `docs/generic-golang-foundation-spec-prompt.md` e generalizar seus 10 pilares.
+- **Criação do Prompt Mestre para Python**:
+  - Criar `docs/generic-python-foundation-spec-prompt.md` adaptado ao ecossistema Python moderno (`src` layout, `pyproject.toml`, `pytest` com cobertura >= 80%, `ruff`, `mypy`, tipagem estrita com Type Hints, empacotamento wheels/sdist e Makefile universal).
+- **Criação do Prompt Mestre para Node.js (JavaScript ESM)**:
+  - Criar `docs/generic-nodejs-foundation-spec-prompt.md` adaptado a JavaScript moderno (`"type": "module"`, `package.json`, `node:test` ou `vitest` com cobertura >= 80%, `eslint`, `prettier`, `npm audit` e Makefile universal).
+- **Criação do Prompt Mestre para TypeScript**:
+  - Criar `docs/generic-typescript-foundation-spec-prompt.md` adaptado a TypeScript com tipagem estrita (`strict: true`, `tsconfig` NodeNext, `vitest`, `tsup`/`tsc`, `eslint-typescript`, `prettier`, verificação estática de tipos `make typecheck` e Makefile universal).
+- **Preservação e Governança Universal dos 10 Pilares em Todas as Linguagens**:
+  - Clean Architecture / Ports & Adapters com isolamento de regras de domínio no core.
+  - Modularidade de entrada e versionamento dinâmico.
+  - Testes automatizados TDD/BDD com barreira >= 80% de cobertura.
+  - Makefile universal e determinístico (`make check`, `make test`, `make build`, etc.).
+  - Stack customizável deliberada com o solicitante do prompt (sem imposições pré-fabricadas).
+  - Engenharia de Agentes (Harness, Loop e Graph Engineering, Native Tool Grounding e Economia de Tokens).
+  - Recomendação formal do framework **OpenSpec** com visão conjunta de negócio para o **PO** e cenários BDD/Gherkin para automação por **QA**.
+  - Pipelines de CI/CD e Matriz de Release customizáveis (`[PLATAFORMAS_ALVO]`) com fallback seguro.
+  - README vivo e exaustivo.
+  - Governança Git com Conventional Commits, Feature Branches e Merge Squash.
 
 ## Capabilities
 
@@ -33,10 +31,10 @@ O arquivo `docs/foundation-spec-prompt.md` atual possuía acoplamentos rígidos 
 <!-- Nenhuma nova capacidade introduzida. -->
 
 ### Modified Capabilities
-- `project-foundation`: Atualização dos requisitos do prompt mestre de fundação arquitetural para padronizar o documento `docs/generic-golang-foundation-spec-prompt.md` como modelo genérico, agnóstico de tecnologias, recomendando o OpenSpec para governança de especificações e parametrização de arquiteturas de compilação/release para qualquer projeto Go.
+- `project-foundation`: Atualização dos requisitos do prompt mestre de fundação arquitetural para disponibilizar a suíte de prompts universais e agnósticos para Go, Python, Node.js e TypeScript, todos recomendando o framework OpenSpec para governança de especificações.
 
 ## Impact
 
-- **Documentação**: `docs/foundation-spec-prompt.md` é renomeado e reformulado para `docs/generic-golang-foundation-spec-prompt.md`.
-- **Especificações OpenSpec**: `specs/project-foundation/spec.md` passa a referenciar o novo nome, a recomendação explícita do framework OpenSpec e as boas práticas de governança PO/QA e compilação/release customizável.
+- **Documentação**: São disponibilizados 4 prompts mestres universais em `docs/`: `generic-golang-foundation-spec-prompt.md`, `generic-python-foundation-spec-prompt.md`, `generic-nodejs-foundation-spec-prompt.md` e `generic-typescript-foundation-spec-prompt.md`.
+- **Especificações OpenSpec**: `specs/project-foundation/spec.md` passa a referenciar os prompts multilíngues genéricos.
 - **Código / Aplicação**: Nenhum impacto direto no código fonte em Go ou nos binários em execução da aplicação `file-server`.

@@ -1,64 +1,48 @@
 ## Context
 
-O arquivo `docs/foundation-spec-prompt.md` foi concebido originalmente com base nos requisitos específicos do projeto `file-server`, contendo acoplamentos a frameworks web (HTMX, Alpine.js, Tailwind CSS), CLI (Cobra), decisões pré-fixadas de empacotamento (`go:embed`), live-reload (`Air`) e plataformas fixas de compilação. Veja mais em [proposal.md](file:///home/douglas/Workspace/gemini/sftp-server/openspec/changes/generic-golang-foundation-prompt/proposal.md).
-
-Para transformar esse prompt mestre em um modelo universal para qualquer novo projeto Go, é necessário desacoplar essas tecnologias específicas e parametrizar o template, delegando decisões arquiteturais e de compilação à negociação com o solicitante, recomendando formalmente o framework OpenSpec para governança de especificações com alinhamento claro entre PO e QA, e suportando compilação/release orientada a plataformas alvo (`[PLATAFORMAS_ALVO]`).
+O arquivo `docs/foundation-spec-prompt.md` foi concebido originalmente com base nos requisitos específicos do projeto `file-server`. A generalização do conceito de prompt mestre de fundação arquitetural revelou a necessidade de prover modelos equivalentes de excelência para os principais ecossistemas de desenvolvimento utilizados em projetos corporativos e open-source: **Go**, **Python**, **Node.js (JavaScript puro)** e **TypeScript**. Veja mais em [proposal.md](file:///home/douglas/Workspace/gemini/sftp-server/openspec/changes/generic-golang-foundation-prompt/proposal.md).
 
 ## Goals / Non-Goals
 
 **Goals:**
-- Renomear o arquivo de documentação para `docs/generic-golang-foundation-spec-prompt.md`.
-- Generalizar os 10 pilares fundamentais do prompt mestre para Golang, tornando-os agnósticos a frameworks web ou bibliotecas de CLI pré-definidas.
-- Remover do Pilar 5 quaisquer decisões pré-definidas de empacotamento autocontido (`go:embed`) ou live-reload (`Air`), delegando essas escolhas ao solicitante do prompt conforme o contexto da aplicação.
-- Aprimorar o Pilar 7 recomendando formalmente o framework OpenSpec para governança de especificações, garantindo que o Product Owner (PO) compreenda claramente as regras de negócio e o QA disponha de cenários testáveis preparados para automação de testes.
-- Aprimorar o Pilar 8 com parametrização de plataformas de compilação e matriz de release (`[PLATAFORMAS_ALVO]`), aplicando fallback seguro para a arquitetura corrente ou instruindo o agente a questionar o usuário quando houver ambiguidade.
-- Definir placeholders estruturados (`[NOME_DO_PROJETO]`, `[MODULO_GO]`, `[TIPO_DE_PROJETO]`, `[BINARIOS_OU_SERVICOS]`, `[STACK_E_FRAMEWORKS]`, `[PLATAFORMAS_ALVO]`, `[DESCRICAO_DO_PROJETO]`) permitindo ao desenvolvedor especificar todas as preferências ao invocar o prompt.
-- Fornecer orientações e exemplos práticos de preenchimento para diferentes arquétipos de aplicação Go (Web/SSR, API REST/gRPC, CLI/TUI, Worker/Daemon, Biblioteca).
-- Preservar rigorosamente os requisitos inegociáveis de engenharia: Clean Architecture/layout canônico, TDD/BDD com cobertura >= 80%, Makefile universal, Harness/Loop/Graph Engineering, CI/CD GitHub Actions e Git com Conventional Commits e merge via Squash.
-- Atualizar todas as referências ao documento no repositório.
+- Manter o arquivo `docs/generic-golang-foundation-spec-prompt.md` para projetos Go.
+- Criar `docs/generic-python-foundation-spec-prompt.md` adaptado ao ecossistema Python (`src` layout, `pyproject.toml`, `pytest` com cobertura >= 80%, `ruff`, `mypy`, Type Hints, empacotamento wheel/sdist).
+- Criar `docs/generic-nodejs-foundation-spec-prompt.md` adaptado ao ecossistema Node.js / JavaScript moderno (ESM nativo, `package.json`, `node:test` ou `vitest` com cobertura >= 80%, `eslint`, `prettier`, `npm audit`).
+- Criar `docs/generic-typescript-foundation-spec-prompt.md` adaptado ao ecossistema TypeScript com tipagem estrita (`strict: true`, `tsconfig` NodeNext, `vitest`, `tsup`/`tsc`, `eslint-typescript`, `prettier`, `make typecheck`).
+- Garantir que todos os 4 prompts contenham rigorosamente os **10 pilares fundamentais de engenharia**, a recomendação formal do framework **OpenSpec** (Pilar 7) com foco em PO e QA, parametrização de plataformas alvo (`[PLATAFORMAS_ALVO]`) no Pilar 8, Makefile universal autodocumentado (Pilar 4) e Engenharia de Agentes com Harness/Loop/Graph (Pilar 6).
 
 **Non-Goals:**
 - Não alterar o código de produção ou binários do `file-server`.
-- Não flexibilizar ou diminuir a barreira de qualidade (cobertura >= 80% e `make check` continuam mandatórios).
-- Não remover as disciplinas de Engenharia de Agentes (Harness, Loop, Graph) ou governança OpenSpec.
+- Não flexibilizar a barreira de qualidade (cobertura >= 80% e `make check` continuam mandatórios em todos os prompts).
 
 ## Decisions
 
-### Decisão 1: Renomeação para `docs/generic-golang-foundation-spec-prompt.md`
-- **Escolha**: Mover e renomear `docs/foundation-spec-prompt.md` para `docs/generic-golang-foundation-spec-prompt.md`.
-- **Justificativa**: O novo nome explicita de forma inequívoca o propósito do arquivo como um gerador de especificações de fundação universal para Go.
-
-### Decisão 2: Generalização dos Pilares de Stack e Entrada
+### Decisão 1: Suíte de 4 Arquivos de Prompt Especializados por Linguagem
 - **Escolha**:
-  - **Pilar 2 (Modularidade de Entrada e Versionamento Dinâmico)**: Focado no composition root sob `cmd/` e injeção de versão via `-ldflags` (`internal/version`), deixando a biblioteca de parsing (Cobra, stdlib `flag`, urfave/cli, etc.) a critério do usuário.
-  - **Pilar 5 (Stack Tecnológica e Dependências Customizáveis)**: Focado estritamente nas escolhas informadas em `[STACK_E_FRAMEWORKS]` e `[TIPO_DE_PROJETO]`, removendo imposições pré-definidas de `go:embed` ou live-reload (`Air`), que devem ser decididas conforme a necessidade real do projeto.
+  1. `docs/generic-golang-foundation-spec-prompt.md` (Go)
+  2. `docs/generic-python-foundation-spec-prompt.md` (Python)
+  3. `docs/generic-nodejs-foundation-spec-prompt.md` (Node.js / JS)
+  4. `docs/generic-typescript-foundation-spec-prompt.md` (TypeScript)
+- **Justificativa**: Cada ecossistema possui ferramentas canônicas distintas (Go toolchain, Python/ruff/pytest, Node/npm, TypeScript/tsc/tsup). Ter um documento dedicado por linguagem oferece instruções 100% idiomáticas e prontas para uso por desenvolvedores e agentes de IA sem ambiguidades de sintaxe ou configuração.
 
-### Decisão 3: Recomendação do Framework OpenSpec e Governança PO/QA (Pilar 7)
-- **Escolha**: Recomendar formalmente o framework OpenSpec no Pilar 7 como padrão de governança de especificações para projetos Go, estruturando:
-  * Visão PO: Regras de negócio em linguagem clara e critérios de aceitação objetivos, livres de jargões técnicos que ofusquem o valor do produto.
-  * Visão QA: Cenários formais BDD/Gherkin (`Given-When-Then`), validação de limites/bordas e suporte direto à automação de testes.
-- **Justificativa**: Evita divergência de documentação (*spec rot*), unifica a visão entre negócio e qualidade técnica, e viabiliza desenvolvimento autônomo com agentes de IA.
+### Decisão 2: Adaptação Idiomática dos 10 Pilares
+- **Python**:
+  - Clean Architecture em `src/<pacote>/` (`core/domain/`, `ports/`, `services/`, `adapters/`), tipagem estrita com Type Hints e Protocols (`typing.Protocol`), `pyproject.toml`, `pytest` + `pytest-cov` >= 80%, `ruff`, `mypy`, Makefile universal (`make check` = fmt + lint + typecheck + security + test).
+- **Node.js (JavaScript puro)**:
+  - Clean Architecture em `src/` (`core/domain/`, `ports/`, `services/`, `adapters/`), ESM nativo (`"type": "module"`), `node:test` ou `vitest` com cobertura >= 80%, `eslint`, `prettier`, `package.json` (`"bin"`, `"exports"`), Makefile universal.
+- **TypeScript**:
+  - Clean Architecture em `src/` (`core/domain/`, `ports/`, `services/`, `adapters/`), tipagem estrita sem `any` (`strict: true`, `NodeNext`), `vitest` com cobertura >= 80%, `eslint` (`@typescript-eslint`), `prettier`, `tsup`/`tsc`, Makefile universal (`make typecheck`, `make check`).
 
-### Decisão 4: Parametrização de Plataformas de Compilação e Release (Pilar 8)
-- **Escolha**:
-  - Adicionar placeholder `[PLATAFORMAS_ALVO]` no cabeçalho do prompt.
-  - No Pilar 8, orientar a configuração da matriz de cross-compilação do Makefile (`make build-all`) e do GitHub Actions (`release.yml`) baseando-se estritamente nas plataformas informadas pelo usuário.
-  - **Regra de Fallback e Boas Práticas**: Se `[PLATAFORMAS_ALVO]` não for preenchido, o agente deve assumir a arquitetura/sistema operacional corrente do host para `make build` ou questionar proativamente o usuário caso uma release multiplataforma seja explicitamente requerida.
-
-### Decisão 5: Atualização Sistemática de Referências
-- **Escolha**: Atualizar todas as ocorrências do nome antigo nos arquivos de regras (`.agent/rules/agent_harness_engineering.md`), configurações e documentações.
-- **Justificativa**: Evita links quebrados e mantém coerência absoluta em todo o repositório.
+### Decisão 3: Recomendação Universal do Framework OpenSpec e PO/QA (Pilar 7)
+- Todos os 4 prompts recomendam formalmente o OpenSpec, fornecendo diretrizes de linguagem ubíqua e acessível para o PO e cenários determinísticos BDD/Gherkin com `#### Scenario:` e `WHEN/THEN` para automação por QA.
 
 ## Risks / Trade-offs
 
-- **[Risco]** Links quebrados apontando para o arquivo antigo.
-  - *Mitigação*: Utilizar `grep_search` para rastrear todas as menções a `docs/foundation-spec-prompt.md` e atualizá-las para `docs/generic-golang-foundation-spec-prompt.md`.
-- **[Risco]** Ambiguidade nas respostas da IA ao receber um prompt genérico.
-  - *Mitigação*: Incluir no cabeçalho do documento uma tabela de placeholders e exemplos práticos de preenchimento para múltiplos arquétipos distintos com regras explícitas de fallback.
+- **[Risco]** Divergência entre os 10 pilares nos 4 arquivos de documentação.
+  - *Mitigação*: Manter estrutura, seções e numeração de pilares rigorosamente idênticas em todos os documentos, adaptando apenas termos específicos da linguagem (ex: pacotes vs módulos, pytest vs testing vs vitest, golangci-lint vs ruff vs eslint).
 
 ## Migration Plan
 
-1. Atualizar o arquivo `docs/generic-golang-foundation-spec-prompt.md` com as refinarias dos Pilares 5, 7 e 8.
-2. Remover o arquivo legado `docs/foundation-spec-prompt.md`.
-3. Atualizar referências no arquivo `.agent/rules/agent_harness_engineering.md` e em `specs/project-foundation/spec.md`.
-4. Validar integridade do OpenSpec com `openspec validate --all` e do repositório com `make check`.
+1. Criar os prompts mestres para Python, Node.js e TypeScript.
+2. Manter e validar o prompt de Golang.
+3. Validar conformidade OpenSpec (`openspec validate --all`) e executar o quality gate (`make check`).
