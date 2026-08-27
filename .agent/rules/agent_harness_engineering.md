@@ -15,14 +15,10 @@
   5. *Validação Final*: Confirmar com `make check` e `openspec validate --all`.
 - Não finalize tarefas sem evidências de testes passando e conformidade de cobertura >= 80%.
 
-## 3. Graph Engineering (Navegação em DAG e Resolução Topológica)
-- **Ordem de Implementação**:
-  1. *Contratos / Interfaces (`internal/core/ports/`)* primeiro.
-  2. *Entidades de Domínio (`internal/core/domain/`)*.
-  3. *Serviços de Domínio (`internal/core/services/`)*.
-  4. *Adaptadores e Handlers (`internal/adapters/`)*.
-  5. *Composição / Entrypoints (`cmd/` e `main.go`)*.
-- Nunca crie dependências circulares entre pacotes internos.
+## 3. Graph Engineering (Orquestração de State Graphs e DAG de Tarefas de IA)
+- **Modelagem de Fluxo em Grafo (DAG)**: Estruture o planejamento e a execução de mudanças como um Grafo Direcionado Acíclico de decisões e tarefas, resolvendo dependências topológicas antes de iniciar qualquer implementação.
+- **Transições Determinísticas de Estado**: Navegue de forma controlada entre os estados cognitivos e operacionais (Especificação -> Planejamento -> Implementação -> Verificação -> Arquivamento), garantindo que cada etapa atenda aos critérios de aceite antes do avanço.
+- **Orquestração de Subagentes e Isolamento de Tarefas**: Delegue tarefas especializadas (pesquisas amplas, validações pontuais) para subagentes dedicados, sintetizando suas saídas e evitando dependências circulares ou bloqueios no fluxo de raciocínio principal.
 
 ## 4. Token & Context Economy (Eficiência da Janela de Contexto)
 - **Leitura Cirúrgica**: Use `StartLine` e `EndLine` no `view_file` para evitar ler arquivos extensos na íntegra.

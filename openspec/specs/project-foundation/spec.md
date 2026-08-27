@@ -55,8 +55,8 @@ O sistema SHALL fornecer capacidade de recarregamento rápido (live-reload) no d
 - **THEN** o servidor de desenvolvimento deve recompilar e reiniciar automaticamente em menos de 2 segundos, atualizando a interface web
 
 ### Requirement: Estratégias do Antigravity CLI (Harness, Loop e Graph Engineering) e Otimização de Tokens
-O repositório SHALL conter diretrizes, regras e configurações em `.agent/rules/`, `.agent/settings.json`, `AGENTS.md`, `GEMINI.md` e `openspec/config.yaml` que capacitem o Antigravity CLI a operar com autonomia máxima sem interrupções desnecessárias por confirmação de prompt, priorizando estritamente ferramentas nativas de arquivos em vez de comandos de terminal, otimizando o consumo de tokens na janela de contexto e aplicando estratégias de engenharia de IA e agente (**Harness Engineering, Loop Engineering, Graph Engineering e Tooling Autonomy**), tratando Harness Engineering estritamente como o arcabouço de regras, scaffolding, guardrails e configurações de segurança e contexto para a IA.
-*(Visão PO: Garante autonomia operacional contínua, agilidade máxima sem interrupções manuais triviais e governança rigorosa de IA com economia drástica de tokens em todas as interações. Visão QA: Garante validação determinística via ferramentas nativas de inspeção/edição, isolamento seguro do agente e execução de ciclo de vida com rastreabilidade total).*
+O repositório SHALL conter diretrizes, regras e configurações em `.agent/rules/`, `.agent/settings.json`, `AGENTS.md`, `GEMINI.md`, `docs/foundation-spec-prompt.md` e `openspec/config.yaml` que capacitem o Antigravity CLI a operar com autonomia máxima sem interrupções desnecessárias por confirmação de prompt, priorizando estritamente ferramentas nativas de arquivos em vez de comandos de terminal, otimizando o consumo de tokens na janela de contexto e aplicando integralmente as disciplinas de engenharia de IA e agentes (**Harness Engineering, Loop Engineering, Graph Engineering, Tooling Grounding e Token Economics**), tratando Graph Engineering puramente como modelagem de fluxo cognitivo/operacional de agentes e orquestração de grafos de execução (State Graphs / DAG de raciocínio e tarefas).
+*(Visão PO: Garante autonomia operacional contínua, agilidade máxima sem interrupções manuais triviais e governança rigorosa de IA com economia drástica de tokens em todas as interações. Visão QA: Garante validação determinística via ferramentas nativas de inspeção/edição, isolamento seguro do agente, orquestração estruturada de tarefas e execução de ciclo de vida com rastreabilidade total).*
 
 #### Scenario: Harness Engineering pelo Antigravity CLI
 - **WHEN** o Antigravity CLI for inicializado e executar operações no repositório
@@ -64,11 +64,11 @@ O repositório SHALL conter diretrizes, regras e configurações em `.agent/rule
 
 #### Scenario: Loop Engineering pelo Antigravity CLI
 - **WHEN** o Antigravity CLI implementar ou refatorar componentes da aplicação
-- **THEN** o agente deve executar loops curtos de feedback contínuo (código -> teste automatizado -> correção de falhas -> validação final) antes de submeter a solução
+- **THEN** o agente deve executar loops curtos de feedback contínuo (inspeção cirúrgica de requisitos -> intervenção pontual no código -> execução de testes automatizados -> diagnóstico de erros -> correção e validação final com `make check`) antes de submeter a solução
 
 #### Scenario: Graph Engineering pelo Antigravity CLI
-- **WHEN** o Antigravity CLI planejar ou implementar novos módulos e tarefas
-- **THEN** o agente deve mapear o grafo de dependências (DAG) das tarefas e a árvore de chamadas do projeto, implementando componentes na ordem topológica correta (interfaces/ports antes de adaptadores) sem dependências circulares
+- **WHEN** o Antigravity CLI planejar, orquestrar ou executar tarefas e fluxos de raciocínio
+- **THEN** o agente deve estruturar sua execução como um grafo direcionado acíclico (DAG / State Graph) de tarefas e decisões cognitivas, decompondo tarefas em nós ordenados topologicamente, controlando transições determinísticas de estado entre fases (planejamento, implementação, validação) e coordenando a execução de subagentes sem dependências circulares ou bloqueios
 
 #### Scenario: Governança contínua de regras para propostas futuras
 - **WHEN** qualquer nova proposta ou plano for iniciado no repositório

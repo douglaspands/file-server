@@ -112,7 +112,7 @@ PILAR 5: STACK DE FRONTEND WEB, LIVE-RELOAD E BINÁRIO 100% AUTOCONTIDO (GO:EMBE
 PILAR 6: ENGENHARIA DE AGENTES, PRIORIDADE DE FERRAMENTAS E ECONOMIA DE TOKENS
 ================================================================================
 - Documentar e configurar em 'AGENTS.md', 'GEMINI.md', '.agent/rules/' e '.agent/settings.json' as diretrizes de operação e autonomia do Antigravity (AGY):
-  1. Prioridade Mandatória de Ferramentas Nativas:
+  1. Prioridade Mandatória de Ferramentas Nativas (Native Tool Grounding):
      - Criar arquivos: Utilizar estritamente 'write_to_file'. Proibido executar 'cat << EOF', 'echo >' ou 'touch' via terminal.
      - Editar arquivos: Utilizar 'replace_file_content' para alterações pontuais e cirúrgicas. Proibido scripts 'sed', 'awk' ou 'cat >' no terminal.
      - Inspecionar / Ler arquivos: Utilizar 'view_file' especificando 'StartLine' e 'EndLine' para focar apenas no trecho relevante. Proibido 'cat', 'head', 'tail'.
@@ -122,15 +122,17 @@ PILAR 6: ENGENHARIA DE AGENTES, PRIORIDADE DE FERRAMENTAS E ECONOMIA DE TOKENS
   2. Uso Restrito do Terminal ('run_command'):
      - O terminal deve ser utilizado exclusivamente para ferramentas do ciclo de vida: 'make' ('make test', 'make lint', 'make check', 'make build'), 'go' ('go test', 'go mod tidy'), 'git', 'openspec' e binários executáveis.
   3. Autonomia Operacional e Permissões (.agent/settings.json):
-     - Configurar permissões pré-autorizadas ('allow') para todas as ferramentas cotidianas ('go', 'make', 'git', 'openspec', linters), eliminando prompts de confirmação repetitivos.
-  4. Economia Ativa de Tokens e Otimização de Outputs:
+     - Configurar permissões pré-autorizadas ('allow') para todas as ferramentas cotidianas ('go', 'make', 'git', 'openspec', linters), eliminando prompts de confirmação repetitivos e assegurando execução autônoma contínua.
+  4. Economia Ativa de Tokens, Curação de Contexto e Otimização de Janela:
      - Respostas do agente devem ser concisas e estruturadas em Markdown com links clicáveis '[arquivo](file:///caminho)'.
      - NUNCA duplicar blocos massivos de código já existentes no disco na resposta do chat.
-     - Leitura cirúrgica de arquivos limitando linhas e execução de comandos com saídas concisas (sem flags excessivamente verbosas).
-  5. Harness, Loop & Graph Engineering (Boas Práticas de IA):
+     - Leitura cirúrgica de arquivos limitando linhas ('StartLine'/'EndLine') e edições pontuais com 'replace_file_content'.
+     - Execução de comandos com saídas concisas e estruturadas (sem flags excessivamente verbosas).
+  5. Disciplinas de Engenharia de Agentes em Sistemas Compostos (Harness, Loop & Graph Engineering):
      - Harness Engineering: Arcabouço operacional e scaffolding de IA composto por diretrizes determinísticas (.agent/rules/, AGENTS.md, GEMINI.md), matriz de permissões pré-autorizadas (.agent/settings.json), guardrails de segurança, contexto otimizado e limites de sandbox para governar a operação autônoma, previsível e segura do Antigravity CLI.
-     - Loop Engineering: Ciclos rápidos de auto-validação contínua do agente (inspeção cirúrgica de requisitos -> alterações pontuais de código -> execução de testes automatizados -> diagnóstico de erros -> correção e validação final com 'make check').
-     - Graph Engineering: Resolução topológica do grafo de dependências (DAG) de tarefas e arquitetura em camadas (ports -> domain -> services -> adapters -> cmd) sem dependências circulares.
+     - Loop Engineering: Ciclos cognitivos e iterativos de execução e auto-validação contínua do agente (ReAct / Reflection loops: inspeção cirúrgica de requisitos -> intervenção pontual no código -> execução de testes automatizados -> diagnóstico de erros -> correção e validação final com 'make check'), prevenindo loops infinitos e garantindo convergência rápida.
+     - Graph Engineering (State Graphs & DAG de Raciocínio): Modelagem e orquestração do fluxo cognitivo/operacional do agente como um grafo direcionado acíclico (DAG) de tarefas, estados e decisões. Decomposição topológica de dependências entre tarefas de planejamento e execução, controle de transições determinísticas de estado entre fases (especificação -> implementação -> verificação -> reflexão), roteamento de fluxos e coordenação/paralelismo entre subagentes especializados sem dependências circulares ou bloqueios cognitivos.
+     - Gestão de Contexto e Subagentes: Delegação de pesquisas e tarefas isoladas para subagentes dedicados para manter a janela de contexto do agente principal limpa, enxuta e focada.
 
 ================================================================================
 PILAR 7: GOVERNANÇA OPENSPEC (PO/QA, PT-BR E REGRAS PERMANENTES)
@@ -222,4 +224,4 @@ GEMINI.md
 - [x] **`openspec/config.yaml`**: Configuração central com `context`, `rules` (proposal, specs, design, tasks) e `operations` (apply).
 - [x] **`AGENTS.md` e `GEMINI.md`**: Diretrizes operacionais de alta prioridade para autonomia do AGY, ferramentas nativas, economia de tokens e fluxo Git squash.
 - [x] **`.agent/settings.json`**: Permissões de desenvolvimento pré-autorizadas para máxima autonomia sem interrupções.
-- [x] **`.agent/rules/`**: Diretrizes operacionais para Harness de IA (scaffolding e guardrails), Loop e Graph Engineering, Autonomia de Ferramentas, Git Branching Workflow, Arquivamento com Squash e Convenções Go.
+- [x] **`.agent/rules/`**: Diretrizes operacionais para Harness de IA (scaffolding e guardrails), Loop e Graph Engineering (State Graphs e DAG de tarefas), Autonomia de Ferramentas, Git Branching Workflow, Arquivamento com Squash e Convenções Go.
