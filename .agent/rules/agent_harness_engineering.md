@@ -1,9 +1,10 @@
 # Diretrizes de Harness, Loop, Graph Engineering e Economia de Tokens para Antigravity CLI
 
-## 1. Harness Engineering (Execução Otimizada de Comandos)
-- **Interface Primária**: Sempre utilize os alvos do `Makefile` para operações de desenvolvimento, testes e verificação (`make test`, `make lint`, `make check`, `make build`).
-- **Prioridade de Ferramentas Nativas**: Utilize as ferramentas nativas (`write_to_file`, `replace_file_content`, `view_file`, `grep_search`, `find_by_name`, `list_dir`) para interações no repositório. Nunca execute comandos bash para ler, escrever ou buscar arquivos.
-- **Automação Idempotente**: Execute `make check` localmente antes de sinalizar a conclusão de qualquer tarefa.
+## 1. AI Harness Engineering (Scaffolding, Guardrails e Governança de Agente)
+- **Scaffolding de Regras & Contexto**: O harness do AGY é composto por regras determinísticas (`.agent/rules/`, `AGENTS.md`, `GEMINI.md`) e restrições de sistema que estabelecem limites claros e instruções precisas para a IA.
+- **Guardrails e Sandbox**: O agente opera com isolamento estrito no workspace, pré-autorizações de segurança (`.agent/settings.json`) e estrita observância a ferramentas nativas de arquivos.
+- **Prioridade de Ferramentas Nativas**: Utilize as ferramentas nativas (`write_to_file`, `replace_file_content`, `view_file`, `grep_search`, `find_by_name`, `list_dir`) para manipulação de arquivos e código. Nunca execute comandos bash para ler, escrever ou buscar arquivos.
+- **Uso Controlado de Ferramentas de Ciclo de Vida**: O agente consome alvos de automação (`make test`, `make lint`, `make check`, `make build`) estritamente como ferramentas de verificação dentro de seu harness operacional.
 
 ## 2. Loop Engineering (Ciclos Rápidos de Auto-Validação)
 - **Ciclo de Feedback Contínuo**:

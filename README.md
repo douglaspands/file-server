@@ -180,14 +180,14 @@ file-server/
 │   └── web.go                    # Empacotamento embutido (go:embed embed.FS)
 ├── docs/                         # Documentação técnica e assets visuais
 │   └── assets/                   # Screenshots e diagramas vetoriais da interface gráfica
-├── scripts/                      # Harness de automação (cobertura e setup)
+├── scripts/                      # Scripts de suporte e automação (cobertura e setup)
 ├── openspec/                     # Especificações normativas do projeto (OpenSpec)
 └── Makefile                      # Interface universal de comandos
 ```
 
 ---
 
-### 🕹️ Harness de Automação (Makefile)
+### 🕹️ Interface Universal de Automação (Makefile)
 
 ```bash
 # Exibir o menu interativo com todos os comandos disponíveis

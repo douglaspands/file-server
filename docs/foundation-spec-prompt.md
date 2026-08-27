@@ -43,7 +43,7 @@ PILAR 1: PADRÃO ARQUITETURAL E ESTRUTURA CANÔNICA EM GO (CLEAN ARCHITECTURE)
   * internal/version/: Pacote centralizado para controle de versão, commit e build date.
   * internal/testutils/: Helpers, fixtures e utilitários para testes.
   * web/templates/ e web/static/: Templates HTML, estilos CSS, scripts JS e assets da interface.
-  * scripts/: Scripts de suporte, harness de cobertura e verificação.
+  * scripts/: Scripts de suporte, automação de cobertura e verificação.
   * .github/workflows/: Pipelines de automação CI/CD e release multiplataforma.
 - Regra de Isolamento: O código de domínio e regras de negócio privadas devem residir estritamente em 'internal/'.
 - Injeção de Dependências: Realizada de forma explícita e manual nos construtores (NewService, NewHandler) no composition root, sem uso de frameworks pesados baseados em reflexão em tempo de execução.
@@ -127,10 +127,10 @@ PILAR 6: ENGENHARIA DE AGENTES, PRIORIDADE DE FERRAMENTAS E ECONOMIA DE TOKENS
      - Respostas do agente devem ser concisas e estruturadas em Markdown com links clicáveis '[arquivo](file:///caminho)'.
      - NUNCA duplicar blocos massivos de código já existentes no disco na resposta do chat.
      - Leitura cirúrgica de arquivos limitando linhas e execução de comandos com saídas concisas (sem flags excessivamente verbosas).
-  5. Harness, Loop & Graph Engineering:
-     - Harness Engineering: Makefile como interface universal de execução.
-     - Loop Engineering: Ciclos curtos de feedback contínuo (código -> teste automatizado -> correção -> validação com 'make check').
-     - Graph Engineering: Implementação na ordem topológica da DAG (ports -> domain -> services -> adapters -> cmd) sem dependências circulares.
+  5. Harness, Loop & Graph Engineering (Boas Práticas de IA):
+     - Harness Engineering: Arcabouço operacional e scaffolding de IA composto por diretrizes determinísticas (.agent/rules/, AGENTS.md, GEMINI.md), matriz de permissões pré-autorizadas (.agent/settings.json), guardrails de segurança, contexto otimizado e limites de sandbox para governar a operação autônoma, previsível e segura do Antigravity CLI.
+     - Loop Engineering: Ciclos rápidos de auto-validação contínua do agente (inspeção cirúrgica de requisitos -> alterações pontuais de código -> execução de testes automatizados -> diagnóstico de erros -> correção e validação final com 'make check').
+     - Graph Engineering: Resolução topológica do grafo de dependências (DAG) de tarefas e arquitetura em camadas (ports -> domain -> services -> adapters -> cmd) sem dependências circulares.
 
 ================================================================================
 PILAR 7: GOVERNANÇA OPENSPEC (PO/QA, PT-BR E REGRAS PERMANENTES)
@@ -167,7 +167,7 @@ PILAR 9: DOCUMENTAÇÃO VIVA E EXAUSTIVA NO README.MD
   4. Guia do Desenvolvedor:
      - Pré-requisitos e setup do ambiente ('make setup').
      - Arquitetura de software e layout de diretórios ('internal/core/', 'internal/adapters/').
-     - Harness de comandos via Makefile ('make check', 'make dev', 'make test', 'make build-all').
+     - Interface universal de comandos e automação via Makefile ('make check', 'make dev', 'make test', 'make build-all').
      - Metodologia de testes TDD/BDD com barreira de 80%.
      - Live-reload no desenvolvimento web.
      - Diretrizes de IA (Antigravity), autonomia de ferramentas e padrão Conventional Commits.
@@ -222,4 +222,4 @@ GEMINI.md
 - [x] **`openspec/config.yaml`**: Configuração central com `context`, `rules` (proposal, specs, design, tasks) e `operations` (apply).
 - [x] **`AGENTS.md` e `GEMINI.md`**: Diretrizes operacionais de alta prioridade para autonomia do AGY, ferramentas nativas, economia de tokens e fluxo Git squash.
 - [x] **`.agent/settings.json`**: Permissões de desenvolvimento pré-autorizadas para máxima autonomia sem interrupções.
-- [x] **`.agent/rules/`**: Diretrizes operacionais para Harness/Loop/Graph Engineering, Autonomia de Ferramentas, Git Branching Workflow, Arquivamento com Squash e Convenções Go.
+- [x] **`.agent/rules/`**: Diretrizes operacionais para Harness de IA (scaffolding e guardrails), Loop e Graph Engineering, Autonomia de Ferramentas, Git Branching Workflow, Arquivamento com Squash e Convenções Go.
