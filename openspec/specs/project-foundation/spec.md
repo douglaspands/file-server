@@ -55,12 +55,12 @@ O sistema SHALL fornecer capacidade de recarregamento rápido (live-reload) no d
 - **THEN** o servidor de desenvolvimento deve recompilar e reiniciar automaticamente em menos de 2 segundos, atualizando a interface web
 
 ### Requirement: Estratégias do Antigravity CLI (Harness, Loop e Graph Engineering) e Otimização de Tokens
-O repositório SHALL conter diretrizes, regras e configurações em `.agent/rules/`, `.agent/settings.json`, `AGENTS.md`, `GEMINI.md` e `openspec/config.yaml` que capacitem o Antigravity CLI a operar com autonomia máxima sem interrupções desnecessárias por confirmação de prompt, priorizando estritamente ferramentas nativas de arquivos em vez de comandos de terminal, otimizando o consumo de tokens na janela de contexto e aplicando estratégias de engenharia de agente (**Harness Engineering, Loop Engineering, Graph Engineering e Tooling Autonomy**).
-*(Visão PO: Garante autonomia operacional contínua, agilidade máxima sem interrupções manuais triviais e economia drástica de tokens em todas as interações. Visão QA: Garante validação determinística via ferramentas nativas de inspeção/edição e execução segura de comandos de ciclo de vida com rastreabilidade total).*
+O repositório SHALL conter diretrizes, regras e configurações em `.agent/rules/`, `.agent/settings.json`, `AGENTS.md`, `GEMINI.md` e `openspec/config.yaml` que capacitem o Antigravity CLI a operar com autonomia máxima sem interrupções desnecessárias por confirmação de prompt, priorizando estritamente ferramentas nativas de arquivos em vez de comandos de terminal, otimizando o consumo de tokens na janela de contexto e aplicando estratégias de engenharia de IA e agente (**Harness Engineering, Loop Engineering, Graph Engineering e Tooling Autonomy**), tratando Harness Engineering estritamente como o arcabouço de regras, scaffolding, guardrails e configurações de segurança e contexto para a IA.
+*(Visão PO: Garante autonomia operacional contínua, agilidade máxima sem interrupções manuais triviais e governança rigorosa de IA com economia drástica de tokens em todas as interações. Visão QA: Garante validação determinística via ferramentas nativas de inspeção/edição, isolamento seguro do agente e execução de ciclo de vida com rastreabilidade total).*
 
 #### Scenario: Harness Engineering pelo Antigravity CLI
-- **WHEN** o Antigravity CLI executar comandos de desenvolvimento, teste ou diagnóstico
-- **THEN** o agente deve utilizar o Makefile como harness padronizado (`make test`, `make lint`, `make check`), consumindo saídas concisas e estruturadas para minimizar gasto de tokens
+- **WHEN** o Antigravity CLI for inicializado e executar operações no repositório
+- **THEN** o repositório deve fornecer um harness de IA composto por scaffolding de regras determinísticas (`.agent/rules/`, `AGENTS.md`, `GEMINI.md`), guardrails de segurança e contexto, configurações de permissões pré-autorizadas (`.agent/settings.json`) e restrições de ferramentas nativas para guiar o agente de forma segura, determinística e otimizada
 
 #### Scenario: Loop Engineering pelo Antigravity CLI
 - **WHEN** o Antigravity CLI implementar ou refatorar componentes da aplicação
