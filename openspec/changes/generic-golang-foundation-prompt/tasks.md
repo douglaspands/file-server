@@ -5,6 +5,7 @@
 - [x] 1.3 Estruturar os 10 pilares fundamentais de engenharia (Clean Architecture, Entrypoints/ldflags, TDD/BDD >= 80%, Makefile universal, Stack customizável, Harness/Loop/Graph Engineering, OpenSpec PO/QA em PT-BR, CI/CD GitHub Actions, Living README e Governança Git com Squash)
 - [x] 1.4 Refinar o Pilar 5 no prompt mestre removendo decisões pré-definidas de empacotamento autocontido (`go:embed`) e live-reload (`Air`), delegando essas escolhas ao solicitante do prompt
 - [x] 1.5 Aprimorar o Pilar 7 no prompt mestre com boas práticas de governança OpenSpec para PO (regras de negócio e aceitação) e QA (preparado para ferramentas de automação de testes)
+- [x] 1.6 Refinar o Pilar 8 no prompt mestre parametrizando arquiteturas de compilação/release (`[PLATAFORMAS_ALVO]`), definindo fallback para arquitetura corrente ou questionamento ao usuário, e incluindo boas práticas de prompt
 
 ## 2. Remoção do Arquivo Legado
 

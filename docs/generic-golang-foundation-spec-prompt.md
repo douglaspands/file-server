@@ -15,6 +15,7 @@ Ele condensa todos os requisitos de arquitetura limpa, qualidade de código, aut
    - `[TIPO_DE_PROJETO]`: Arquétipo da aplicação (ex: `API REST Headless`, `Ferramenta de Linha de Comando CLI`, `Serviço Web com SSR`, `Worker Assíncrono / Daemon`, `Biblioteca Go`, `Terminal UI (TUI)`).
    - `[BINARIOS_OU_SERVICOS]`: Nomes dos pontos de entrada/executáveis compilados sob `cmd/` (ex: `cmd/backup-cli`, `cmd/api` e `cmd/worker`, `cmd/server`).
    - `[STACK_E_FRAMEWORKS]`: Bibliotecas, frameworks e drivers específicos que você deseja utilizar no projeto (ex: `Chi router + pgx para PostgreSQL`, `Cobra CLI`, `Go net/http stdlib + embed.FS + Tailwind CSS`, `Bubble Tea para TUI`, ou `Apenas biblioteca padrão de Go`).
+   - `[PLATAFORMAS_ALVO]`: Sistemas operacionais e arquiteturas alvo para compilação e release (ex: `Linux (amd64, arm64), macOS (arm64, amd64), Windows (amd64)` ou `Apenas ambiente corrente`). *(Caso não informado, o padrão assumirá a arquitetura corrente ou o agente questionará o usuário se houver necessidade de distribuição multiplataforma)*.
    - `[DESCRICAO_DO_PROJETO]`: Resumo objetivo do propósito, valor de negócio e responsabilidades da aplicação.
 3. **Execute no Antigravity CLI** ou passe para a ferramenta de IA como instrução para propor uma nova mudança:
    ```text
@@ -32,6 +33,7 @@ Ele condensa todos os requisitos de arquitetura limpa, qualidade de código, aut
 - `[TIPO_DE_PROJETO]`: `Ferramenta de Linha de Comando (CLI)`
 - `[BINARIOS_OU_SERVICOS]`: `cmd/s3-sync/main.go` (binário `s3-sync`)
 - `[STACK_E_FRAMEWORKS]`: `github.com/spf13/cobra para subcomandos e flags, AWS SDK for Go v2 para operações S3`
+- `[PLATAFORMAS_ALVO]`: `Linux (amd64, arm64), macOS (arm64, amd64), Windows (amd64)`
 - `[DESCRICAO_DO_PROJETO]`: `Utilitário de linha de comando para sincronização bidirecional de diretórios locais com buckets Amazon S3 com suporte a filtros glob e concorrência configurável.`
 
 #### Exemplo 2: Microserviço / API REST Headless
@@ -40,6 +42,7 @@ Ele condensa todos os requisitos de arquitetura limpa, qualidade de código, aut
 - `[TIPO_DE_PROJETO]`: `API REST e Event Consumer`
 - `[BINARIOS_OU_SERVICOS]`: `cmd/api/main.go` (binário `order-api`) e `cmd/worker/main.go` (binário `order-worker`)
 - `[STACK_E_FRAMEWORKS]`: `Chi router para endpoints HTTP, pgx/v5 para PostgreSQL com pool de conexões, RabbitMQ amqp091 para mensageria assíncrona`
+- `[PLATAFORMAS_ALVO]`: `Linux (amd64, arm64)`
 - `[DESCRICAO_DO_PROJETO]`: `Microserviço de gestão de pedidos de e-commerce, processamento de pagamentos e consumo de eventos de estoque com persistência relacional.`
 
 #### Exemplo 3: Aplicação Web com Renderização no Servidor (SSR)
@@ -48,6 +51,7 @@ Ele condensa todos os requisitos de arquitetura limpa, qualidade de código, aut
 - `[TIPO_DE_PROJETO]`: `Serviço Web com Interface SSR e Streaming`
 - `[BINARIOS_OU_SERVICOS]`: `cmd/dashboard/main.go` (binário `metrics-dashboard`)
 - `[STACK_E_FRAMEWORKS]`: `Go html/template embutido com go:embed, HTMX para atualizações parciais do DOM, Tailwind CSS standalone CLI para estilização`
+- `[PLATAFORMAS_ALVO]`: `Linux (amd64, arm64), Windows (amd64, arm64)`
 - `[DESCRICAO_DO_PROJETO]`: `Painel de monitoramento e visualização de métricas de infraestrutura em tempo real compilado em binário único 100% autocontido.`
 
 ---
@@ -57,7 +61,7 @@ Ele condensa todos os requisitos de arquitetura limpa, qualidade de código, aut
 ```text
 Você é um Arquiteto de Software Principal, Engenheiro Líder em Go (Golang) e Especialista em Engenharia de Agentes de IA (Antigravity CLI).
 
-Sua tarefa é criar a especificação completa de fundação arquitetural e de engenharia de software intitulada 'project-foundation' para o novo projeto '[NOME_DO_PROJETO]' (Módulo Go: '[MODULO_GO]', Tipo: '[TIPO_DE_PROJETO]', Binários/Pontos de Entrada: '[BINARIOS_OU_SERVICOS]', Stack & Tecnologias: '[STACK_E_FRAMEWORKS]'), cuja descrição é:
+Sua tarefa é criar a especificação completa de fundação arquitetural e de engenharia de software intitulada 'project-foundation' para o novo projeto '[NOME_DO_PROJETO]' (Módulo Go: '[MODULO_GO]', Tipo: '[TIPO_DE_PROJETO]', Binários/Pontos de Entrada: '[BINARIOS_OU_SERVICOS]', Stack & Tecnologias: '[STACK_E_FRAMEWORKS]', Plataformas Alvo: '[PLATAFORMAS_ALVO]'), cuja descrição é:
 "[DESCRICAO_DO_PROJETO]"
 
 A especificação deve ser gerada utilizando o padrão OpenSpec em Português do Brasil (PT-BR) e cobrir integralmente os 10 pilares fundamentais descritos a seguir, produzindo os artefatos: 'proposal.md', 'design.md', 'specs/project-foundation/spec.md', 'tasks.md', 'openspec/config.yaml', 'AGENTS.md', 'GEMINI.md', '.agent/settings.json' e as regras em '.agent/rules/'.
@@ -120,8 +124,8 @@ PILAR 4: INTERFACE UNIVERSAL DE COMANDOS VIA MAKEFILE AUTODOCUMENTADO
   * make lint: Executa o linter estrito 'golangci-lint' com regras de qualidade, complexidade e bugs (.golangci.yml).
   * make fmt: Formata o código Go (gofmt, goimports).
   * make check: Quality Gate local unificado (fmt + lint + govulncheck + test com cobertura).
-  * make build: Compila o(s) binário(s) de produção otimizado(s) com stripping de símbolos (-s -w) e injeção de ldflags.
-  * make build-all: Compila binários cruzados para Linux (amd64, arm64) e Windows (amd64, arm64).
+  * make build: Compila o(s) binário(s) de produção otimizado(s) com stripping de símbolos (-s -w) e injeção de ldflags para o ambiente local/corrente.
+  * make build-all: Compila binários para todas as plataformas e arquiteturas definidas em '[PLATAFORMAS_ALVO]' (ou compilação local se nenhuma matriz multiplataforma for especificada).
   * make clean: Limpa binários compilados em dist/, relatórios de cobertura e artefatos temporários.
 
 ================================================================================
@@ -179,17 +183,21 @@ PILAR 7: GOVERNANÇA OPENSPEC (ALINHAMENTO PO/QA, PT-BR E BOAS PRÁTICAS)
   * operations.apply.guidance: Executar 'make test' e 'make check' para validar alterações antes de concluir tarefas, priorizando ferramentas nativas.
 
 ================================================================================
-PILAR 8: PIPELINES DE CI/CD E RELEASE MULTIPLATAFORMA NO GITHUB ACTIONS
+PILAR 8: PIPELINES DE CI/CD E MATRIZ DE RELEASE (PLATAFORMAS CUSTOMIZÁVEIS)
 ================================================================================
 - Workflow de CI ('.github/workflows/ci.yml'):
   * Executado em Pull Requests e pushes na branch principal ('main').
   * Etapas: Checkout, Setup Go, golangci-lint, govulncheck, execução de testes com barreira de cobertura >= 80% e validação de integridade OpenSpec ('openspec validate --all').
 - Workflow de Release Multiplataforma ('.github/workflows/release.yml'):
   * Disparado na criação de tags de release Git ('v*').
-  * Cross-compilação com injeção de versão via '-ldflags' para:
-    - Linux: amd64 e arm64 (binários empacotados em arquivos '.tar.gz').
-    - Windows: amd64 e arm64 (binários '.exe' empacotados em arquivos '.zip').
-  * Geração de checksums SHA256 e publicação automática de todos os artefatos na Release do GitHub.
+  * Matriz de Compilação parametrizada estritamente conforme '[PLATAFORMAS_ALVO]':
+    - Cross-compilação com injeção de versão via '-ldflags' para cada par SO/Arquitetura especificado (ex: Linux amd64/arm64, Darwin arm64/amd64, Windows amd64/arm64).
+    - Empacotamento adequado para cada plataforma (arquivos '.tar.gz' para Unix/Linux/macOS e '.zip' para Windows com binários '.exe').
+    - Geração de checksums SHA256 e publicação automática de todos os artefatos compilados na Release do GitHub.
+- Boas Práticas de Prompt e Regra de Fallback:
+  * Caso as plataformas alvo ('[PLATAFORMAS_ALVO]') NÃO sejam informadas pelo usuário no prompt:
+    1. O agente deve assumir como padrão a compilação exclusiva para a plataforma/arquitetura corrente do host.
+    2. Se o projeto demandar distribuição de binários para terceiros e houver ambiguidade, o agente DEVE questionar proativamente o usuário antes de assumir matrizes arbitrárias.
 
 ================================================================================
 PILAR 9: DOCUMENTAÇÃO VIVA E EXAUSTIVA NO README.MD
