@@ -12,9 +12,10 @@
 - [x] 2.3 Criar `docs/generic-nodejs-foundation-spec-prompt-claude.md` adaptado ao Claude Code com ESM nativo
 - [x] 2.4 Criar `docs/generic-typescript-foundation-spec-prompt-claude.md` adaptado ao Claude Code com tipagem estrita
 
-## 3. Atualização de Referências e Regras
+## 3. Catálogo de Documentação e Atualização de Referências
 
 - [x] 3.1 Atualizar referências internas em `.agent/rules/agent_harness_engineering.md` e especificações para os novos nomes dos arquivos
+- [x] 3.2 Criar `docs/README.md` com a visão geral do estudo de Spec-Driven Development, catálogo dos 8 prompts mestres em tabela comparativa e guia de utilização
 
 ## 4. Validação de Qualidade e Governança
 

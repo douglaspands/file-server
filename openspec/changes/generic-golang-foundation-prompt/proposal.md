@@ -2,10 +2,12 @@
 
 O arquivo `docs/foundation-spec-prompt.md` original possuía acoplamentos rígidos e específicos a certas tecnologias e frameworks em Go, limitando sua utilidade como gerador de fundações de software para novos projetos em múltiplos ecossistemas e diferentes ferramentas de IA de linha de comando.
 
-É necessário disponibilizar uma suíte completa de prompts mestres genéricos de fundação arquitetural e de engenharia de software para as principais linguagens e ecossistemas da indústria (**Golang**, **Python**, **Node.js (JavaScript puro / ESM)** e **TypeScript**), com versões dedicadas e otimizadas tanto para o **Antigravity CLI (`agy`)** quanto para o **Claude Code (`claude`)**. Cada prompt preserva integralmente os 10 pilares inegociáveis de excelência (Clean Architecture/layout canônico, TDD/BDD com cobertura >= 80%, Makefile universal, CI/CD, documentação viva no README, governança Git com squash, recomendação formal do framework OpenSpec com foco em PO/QA e Engenharia de Agentes com Harness, Loop e Graph), adaptando as convenções, ferramentas de build, linters e runners de teste de forma idiomática para cada linguagem e para o harness de IA selecionado.
+Este projeto consolidou um estudo aprofundado de **Spec-Driven Development (SDD)** utilizando o framework **OpenSpec**. É necessário disponibilizar uma suíte completa de prompts mestres genéricos de fundação arquitetural e de engenharia de software para as principais linguagens e ecossistemas da indústria (**Golang**, **Python**, **Node.js (JavaScript puro / ESM)** e **TypeScript**), com versões dedicadas e otimizadas tanto para o **Antigravity CLI (`agy`)** quanto para o **Claude Code (`claude`)**, acompanhadas de um `docs/README.md` que catalogue e explique a finalidade de cada prompt e as decisões arquiteturais do estudo. Cada prompt preserva integralmente os 10 pilares inegociáveis de excelência (Clean Architecture/layout canônico, TDD/BDD com cobertura >= 80%, Makefile universal, CI/CD, documentação viva no README, governança Git com squash, recomendação formal do framework OpenSpec com foco em PO/QA e Engenharia de Agentes com Harness, Loop e Graph).
 
 ## What Changes
 
+- **Catálogo Central da Pasta Docs (`docs/README.md`)**:
+  - Criar `docs/README.md` documentando o estudo de Spec-Driven Development (SDD), a metodologia de Engenharia de Agentes e a tabela comparativa e descritiva dos 8 prompts mestres.
 - **Padronização de Nomenclatura com Sufixos de Harness (`-agy.md` e `-claude.md`)**:
   - Renomear os prompts existentes do Antigravity para `docs/generic-<linguagem>-foundation-spec-prompt-agy.md`.
   - Criar os prompts equivalentes para Claude Code sob `docs/generic-<linguagem>-foundation-spec-prompt-claude.md`.
@@ -38,10 +40,10 @@ O arquivo `docs/foundation-spec-prompt.md` original possuía acoplamentos rígid
 <!-- Nenhuma nova capacidade introduzida. -->
 
 ### Modified Capabilities
-- `project-foundation`: Atualização dos requisitos do prompt mestre de fundação arquitetural para disponibilizar a suíte completa de 8 prompts universais para Go, Python, Node.js e TypeScript com versões para Antigravity CLI e Claude Code.
+- `project-foundation`: Atualização dos requisitos do prompt mestre de fundação arquitetural para disponibilizar a suíte completa de 8 prompts universais para Go, Python, Node.js e TypeScript com versões para Antigravity CLI e Claude Code, indexados e documentados em `docs/README.md`.
 
 ## Impact
 
-- **Documentação**: São disponibilizados 8 prompts mestres em `docs/` com nomenclaturas claras indicando linguagem e harness (`-agy.md` e `-claude.md`).
-- **Especificações OpenSpec**: `specs/project-foundation/spec.md` passa a referenciar os 8 prompts.
+- **Documentação**: São disponibilizados 8 prompts mestres em `docs/` acompanhados do catálogo e guia de Spec-Driven Development em `docs/README.md`.
+- **Especificações OpenSpec**: `specs/project-foundation/spec.md` passa a referenciar os 8 prompts e o catálogo `docs/README.md`.
 - **Código / Aplicação**: Nenhum impacto direto no código fonte em Go ou nos binários em execução da aplicação `file-server`.
