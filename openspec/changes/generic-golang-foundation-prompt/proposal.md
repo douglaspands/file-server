@@ -2,7 +2,7 @@
 
 O arquivo `docs/foundation-spec-prompt.md` atual possuía acoplamentos rígidos e específicos a certas tecnologias e frameworks (como HTMX, Alpine.js, Tailwind CSS e Cobra CLI), além de assumir sempre uma estrutura de servidor web com interface SSR, decisões pré-fabricadas de empacotamento (`go:embed`), live-reload (`Air`) e matrizes fixas de compilação/release. Ao iniciar novos projetos Go de naturezas distintas (como microserviços headless, APIs gRPC/REST, ferramentas CLI sem interface web, daemons, bibliotecas ou TUIs), esse acoplamento impõe especificações desnecessárias que precisam ser manualmente expurgadas.
 
-É necessário generalizar o prompt mestre de fundação para que ele sirva como alicerce universal para qualquer projeto em Go, delegando ao usuário a definição explícita do tipo de aplicação, módulos, binários, bibliotecas, empacotamento, plataformas alvo de compilação/release e stack tecnológica desejada, mantendo intactos todos os pilares essenciais de engenharia (Clean Architecture/layout canônico, TDD/BDD com cobertura >= 80%, Makefile universal, CI/CD, documentação viva no README, governança Git com squash e Engenharia de Agentes com Harness, Loop e Graph). Além disso, o arquivo foi renomeado para `docs/generic-golang-foundation-spec-prompt.md`, o Pilar 7 deve incluir boas práticas para compreensão de PO e QA, e o Pilar 8 deve permitir a escolha de arquiteturas de compilação com fallback para a arquitetura corrente ou questionamento proativo pelo agente.
+É necessário generalizar o prompt mestre de fundação para que ele sirva como alicerce universal para qualquer projeto em Go, delegando ao usuário a definição explícita do tipo de aplicação, módulos, binários, bibliotecas, empacotamento, plataformas alvo de compilação/release e stack tecnológica desejada, mantendo intactos todos os pilares essenciais de engenharia (Clean Architecture/layout canônico, TDD/BDD com cobertura >= 80%, Makefile universal, CI/CD, documentação viva no README, governança Git com squash e Engenharia de Agentes com Harness, Loop e Graph). Além disso, o arquivo foi renomeado para `docs/generic-golang-foundation-spec-prompt.md`, o framework OpenSpec é explicitamente recomendado para governança contínua de especificações (com foco em PO e QA), e o Pilar 8 permite a escolha de arquiteturas de compilação com fallback para a arquitetura corrente ou questionamento proativo pelo agente.
 
 ## What Changes
 
@@ -11,7 +11,8 @@ O arquivo `docs/foundation-spec-prompt.md` atual possuía acoplamentos rígidos 
   - Remover imposições obrigatórias de frameworks web (HTMX, Alpine.js, Tailwind CSS) e CLI (Cobra) do corpo dos pilares fundamentais.
   - Remover decisões pré-definidas de empacotamento autocontido (`go:embed`) e loops de live-reload (`Air`), delegando essas escolhas à deliberação conjunta com o solicitante do prompt conforme a necessidade real do projeto.
   - Transformar seções de stack e interface em blocos modulares/configuráveis definidos via variáveis e placeholders pelo usuário.
-- **Boas Práticas de Governança OpenSpec para PO e QA (Pilar 7)**:
+- **Recomendação e Boas Práticas do Framework OpenSpec para Governança de Especificações (Pilar 7)**:
+  - Recomendar formalmente o uso do framework **OpenSpec** como o padrão de excelência para especificação viva, rastreabilidade de mudanças e prevenção de divergência documental (*specification rot*).
   - Estruturação de especificações com linguagem ubíqua e clara de negócio para o Product Owner (PO), sem jargões de baixo nível que ofusquem o valor entregue.
   - Estruturação de cenários determinísticos BDD/Gherkin (`Given-When-Then`, com entradas, saídas, bordas e erros) prontos para serem consumidos por ferramentas de automação de testes pelo QA.
 - **Parametrização de Arquiteturas de Compilação e Boas Práticas de Prompt (Pilar 8)**:
@@ -32,10 +33,10 @@ O arquivo `docs/foundation-spec-prompt.md` atual possuía acoplamentos rígidos 
 <!-- Nenhuma nova capacidade introduzida. -->
 
 ### Modified Capabilities
-- `project-foundation`: Atualização dos requisitos do prompt mestre de fundação arquitetural para padronizar o documento `docs/generic-golang-foundation-spec-prompt.md` como modelo genérico, agnóstico de tecnologias, com governança PO/QA e parametrização de arquiteturas de compilação/release para qualquer projeto Go.
+- `project-foundation`: Atualização dos requisitos do prompt mestre de fundação arquitetural para padronizar o documento `docs/generic-golang-foundation-spec-prompt.md` como modelo genérico, agnóstico de tecnologias, recomendando o OpenSpec para governança de especificações e parametrização de arquiteturas de compilação/release para qualquer projeto Go.
 
 ## Impact
 
 - **Documentação**: `docs/foundation-spec-prompt.md` é renomeado e reformulado para `docs/generic-golang-foundation-spec-prompt.md`.
-- **Especificações OpenSpec**: `specs/project-foundation/spec.md` passa a referenciar o novo nome, o comportamento agnóstico do prompt mestre e as boas práticas de governança PO/QA e compilação/release customizável.
+- **Especificações OpenSpec**: `specs/project-foundation/spec.md` passa a referenciar o novo nome, a recomendação explícita do framework OpenSpec e as boas práticas de governança PO/QA e compilação/release customizável.
 - **Código / Aplicação**: Nenhum impacto direto no código fonte em Go ou nos binários em execução da aplicação `file-server`.

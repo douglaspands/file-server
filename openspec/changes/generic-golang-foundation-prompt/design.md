@@ -2,7 +2,7 @@
 
 O arquivo `docs/foundation-spec-prompt.md` foi concebido originalmente com base nos requisitos específicos do projeto `file-server`, contendo acoplamentos a frameworks web (HTMX, Alpine.js, Tailwind CSS), CLI (Cobra), decisões pré-fixadas de empacotamento (`go:embed`), live-reload (`Air`) e plataformas fixas de compilação. Veja mais em [proposal.md](file:///home/douglas/Workspace/gemini/sftp-server/openspec/changes/generic-golang-foundation-prompt/proposal.md).
 
-Para transformar esse prompt mestre em um modelo universal para qualquer novo projeto Go, é necessário desacoplar essas tecnologias específicas e parametrizar o template, delegando decisões arquiteturais e de compilação à negociação com o solicitante, incorporando boas práticas de governança OpenSpec para fácil leitura de regras de negócio pelo PO, automação de testes pelo QA e compilação/release orientada a plataformas alvo (`[PLATAFORMAS_ALVO]`).
+Para transformar esse prompt mestre em um modelo universal para qualquer novo projeto Go, é necessário desacoplar essas tecnologias específicas e parametrizar o template, delegando decisões arquiteturais e de compilação à negociação com o solicitante, recomendando formalmente o framework OpenSpec para governança de especificações com alinhamento claro entre PO e QA, e suportando compilação/release orientada a plataformas alvo (`[PLATAFORMAS_ALVO]`).
 
 ## Goals / Non-Goals
 
@@ -10,7 +10,7 @@ Para transformar esse prompt mestre em um modelo universal para qualquer novo pr
 - Renomear o arquivo de documentação para `docs/generic-golang-foundation-spec-prompt.md`.
 - Generalizar os 10 pilares fundamentais do prompt mestre para Golang, tornando-os agnósticos a frameworks web ou bibliotecas de CLI pré-definidas.
 - Remover do Pilar 5 quaisquer decisões pré-definidas de empacotamento autocontido (`go:embed`) ou live-reload (`Air`), delegando essas escolhas ao solicitante do prompt conforme o contexto da aplicação.
-- Aprimorar o Pilar 7 com boas práticas de governança OpenSpec para que o Product Owner (PO) compreenda claramente as regras técnicas e de negócio e o QA disponha de cenários testáveis preparados para automação de testes.
+- Aprimorar o Pilar 7 recomendando formalmente o framework OpenSpec para governança de especificações, garantindo que o Product Owner (PO) compreenda claramente as regras de negócio e o QA disponha de cenários testáveis preparados para automação de testes.
 - Aprimorar o Pilar 8 com parametrização de plataformas de compilação e matriz de release (`[PLATAFORMAS_ALVO]`), aplicando fallback seguro para a arquitetura corrente ou instruindo o agente a questionar o usuário quando houver ambiguidade.
 - Definir placeholders estruturados (`[NOME_DO_PROJETO]`, `[MODULO_GO]`, `[TIPO_DE_PROJETO]`, `[BINARIOS_OU_SERVICOS]`, `[STACK_E_FRAMEWORKS]`, `[PLATAFORMAS_ALVO]`, `[DESCRICAO_DO_PROJETO]`) permitindo ao desenvolvedor especificar todas as preferências ao invocar o prompt.
 - Fornecer orientações e exemplos práticos de preenchimento para diferentes arquétipos de aplicação Go (Web/SSR, API REST/gRPC, CLI/TUI, Worker/Daemon, Biblioteca).
@@ -28,21 +28,24 @@ Para transformar esse prompt mestre em um modelo universal para qualquer novo pr
 - **Escolha**: Mover e renomear `docs/foundation-spec-prompt.md` para `docs/generic-golang-foundation-spec-prompt.md`.
 - **Justificativa**: O novo nome explicita de forma inequívoca o propósito do arquivo como um gerador de especificações de fundação universal para Go.
 
-### Decisão 2: Generalização dos Pilares de Stack, Entrada e Governança PO/QA
+### Decisão 2: Generalização dos Pilares de Stack e Entrada
 - **Escolha**:
   - **Pilar 2 (Modularidade de Entrada e Versionamento Dinâmico)**: Focado no composition root sob `cmd/` e injeção de versão via `-ldflags` (`internal/version`), deixando a biblioteca de parsing (Cobra, stdlib `flag`, urfave/cli, etc.) a critério do usuário.
   - **Pilar 5 (Stack Tecnológica e Dependências Customizáveis)**: Focado estritamente nas escolhas informadas em `[STACK_E_FRAMEWORKS]` e `[TIPO_DE_PROJETO]`, removendo imposições pré-definidas de `go:embed` ou live-reload (`Air`), que devem ser decididas conforme a necessidade real do projeto.
-  - **Pilar 7 (Governança OpenSpec com Foco em PO e QA)**: Estruturar as regras para que:
-    * O PO compreenda a motivação, o valor de negócio e as regras funcionais através de linguagem clara e critérios de aceitação objetivos, sem jargões de infraestrutura de baixo nível.
-    * O QA obtenha especificações formais com cenários BDD/Gherkin (`Given-When-Then`), validação explícita de casos de borda, contratos de entrada/saída e tratamento de erros, viabilizando automação direta em ferramentas de teste.
 
-### Decisão 3: Parametrização de Plataformas de Compilação e Release (Pilar 8)
+### Decisão 3: Recomendação do Framework OpenSpec e Governança PO/QA (Pilar 7)
+- **Escolha**: Recomendar formalmente o framework OpenSpec no Pilar 7 como padrão de governança de especificações para projetos Go, estruturando:
+  * Visão PO: Regras de negócio em linguagem clara e critérios de aceitação objetivos, livres de jargões técnicos que ofusquem o valor do produto.
+  * Visão QA: Cenários formais BDD/Gherkin (`Given-When-Then`), validação de limites/bordas e suporte direto à automação de testes.
+- **Justificativa**: Evita divergência de documentação (*spec rot*), unifica a visão entre negócio e qualidade técnica, e viabiliza desenvolvimento autônomo com agentes de IA.
+
+### Decisão 4: Parametrização de Plataformas de Compilação e Release (Pilar 8)
 - **Escolha**:
   - Adicionar placeholder `[PLATAFORMAS_ALVO]` no cabeçalho do prompt.
   - No Pilar 8, orientar a configuração da matriz de cross-compilação do Makefile (`make build-all`) e do GitHub Actions (`release.yml`) baseando-se estritamente nas plataformas informadas pelo usuário.
   - **Regra de Fallback e Boas Práticas**: Se `[PLATAFORMAS_ALVO]` não for preenchido, o agente deve assumir a arquitetura/sistema operacional corrente do host para `make build` ou questionar proativamente o usuário caso uma release multiplataforma seja explicitamente requerida.
 
-### Decisão 4: Atualização Sistemática de Referências
+### Decisão 5: Atualização Sistemática de Referências
 - **Escolha**: Atualizar todas as ocorrências do nome antigo nos arquivos de regras (`.agent/rules/agent_harness_engineering.md`), configurações e documentações.
 - **Justificativa**: Evita links quebrados e mantém coerência absoluta em todo o repositório.
 
@@ -55,7 +58,7 @@ Para transformar esse prompt mestre em um modelo universal para qualquer novo pr
 
 ## Migration Plan
 
-1. Atualizar o arquivo `docs/generic-golang-foundation-spec-prompt.md` com as refinarias do Pilar 5, Pilar 7 e Pilar 8.
+1. Atualizar o arquivo `docs/generic-golang-foundation-spec-prompt.md` com as refinarias dos Pilares 5, 7 e 8.
 2. Remover o arquivo legado `docs/foundation-spec-prompt.md`.
 3. Atualizar referências no arquivo `.agent/rules/agent_harness_engineering.md` e em `specs/project-foundation/spec.md`.
 4. Validar integridade do OpenSpec com `openspec validate --all` e do repositório com `make check`.

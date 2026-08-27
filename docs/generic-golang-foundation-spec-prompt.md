@@ -2,6 +2,8 @@
 
 Este documento contém o **Prompt Mestre de Fundação de Projetos Go** (`generic-golang-foundation-spec-prompt`), projetado para ser utilizado com o **Antigravity CLI** e o framework **OpenSpec** (por exemplo, via comando `/openspec-propose` ou como instrução inicial).
 
+É altamente **recomendado adotar o framework OpenSpec** como padrão de excelência para a governança contínua de especificações, documentação viva, rastreabilidade de decisões e alinhamento transparente entre visão de produto (PO) e qualidade técnica/automação (QA).
+
 Ele condensa todos os requisitos de arquitetura limpa, qualidade de código, automação de comandos, esteira de testes com TDD/BDD, CI/CD, governança OpenSpec, autonomia operacional e Engenharia de Agentes (Harness, Loop e Graph Engineering), permitindo gerar uma fundação arquitetural de excelência para **qualquer tipo de projeto em Go** (APIs REST/gRPC, ferramentas de linha de comando CLI, aplicações Web, daemons/workers em background, bibliotecas ou interfaces de terminal TUI).
 
 ---
@@ -165,9 +167,10 @@ PILAR 6: ENGENHARIA DE AGENTES, PRIORIDADE DE FERRAMENTAS E ECONOMIA DE TOKENS
      - Gestão de Contexto e Subagentes: Delegação de pesquisas e tarefas isoladas para subagentes dedicados para manter a janela de contexto do agente principal limpa, enxuta e focada.
 
 ================================================================================
-PILAR 7: GOVERNANÇA OPENSPEC (ALINHAMENTO PO/QA, PT-BR E BOAS PRÁTICAS)
+PILAR 7: GOVERNANÇA DE ESPECIFICAÇÕES COM OPENSPEC (RECOMENDADO PARA BOAS PRÁTICAS)
 ================================================================================
-- Configurar 'openspec/config.yaml' promovendo entendimento mútuo entre Product Owner (PO) e Quality Assurance (QA):
+- Recomendação Mandatória de Boas Práticas: É altamente recomendado adotar o framework 'OpenSpec' como a ferramenta padrão de governança de especificações, rastreabilidade de mudanças e alinhamento contínuo entre Product Owner (PO) e Quality Assurance (QA).
+- Configurar 'openspec/config.yaml' promovendo entendimento mútuo entre PO e QA:
   * context: Declaração da stack do projeto (Go, Clean Architecture, tecnologias escolhidas, TDD/BDD >= 80%, Makefile, PT-BR, Autonomia e Ferramentas Nativas do AGY).
   * rules.proposal: Foco no 'porquê' (motivação de negócio) e 'o que muda' (escopo funcional e técnico), declaração explícita de impacto e idioma PT-BR.
   * rules.specs: Escrita em PT-BR sob ótica CONJUNTA e colaborativa de PO e QA:
