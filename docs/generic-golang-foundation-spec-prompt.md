@@ -125,16 +125,14 @@ PILAR 4: INTERFACE UNIVERSAL DE COMANDOS VIA MAKEFILE AUTODOCUMENTADO
   * make clean: Limpa binários compilados em dist/, relatórios de cobertura e artefatos temporários.
 
 ================================================================================
-PILAR 5: STACK DE APLICAÇÃO, DEPENDÊNCIAS E ASSETS CUSTOMIZÁVEIS
+PILAR 5: STACK DE APLICAÇÃO, DEPENDÊNCIAS E DECISÕES ARQUITETURAIS CUSTOMIZÁVEIS
 ================================================================================
-- Implementar fielmente as escolhas tecnológicas e dependências declaradas em '[STACK_E_FRAMEWORKS]' e '[TIPO_DE_PROJETO]'.
+- As decisões de frameworks, bibliotecas externas, drivers, estratégias de empacotamento, persistência e ferramentas de desenvolvimento são deliberadas em conjunto com o solicitante do prompt conforme o contexto e escopo do projeto em '[STACK_E_FRAMEWORKS]' e '[TIPO_DE_PROJETO]'.
 - Princípio da Parcimônia:
-  * Priorizar a biblioteca padrão de Go sempre que viável.
-  * Quando dependências de terceiros forem necessárias, escolher bibliotecas maduras, leves, ativamente mantidas e sem dependências transitivas excessivas.
-- Empacotamento de Recursos Autocontidos (quando aplicável):
-  * Se o projeto possuir templates, assets estáticos, migrations SQL ou arquivos de configuração default, embutir diretamente no executável via diretiva '//go:embed' (embed.FS), gerando binários 100% autocontidos e portáteis.
-- Loop Rápido de Feedback:
-  * Configurar ferramentas de recarga rápida (como Air em '.air.toml') quando o tipo de aplicação se beneficiar de live-reload no desenvolvimento local ('make dev').
+  * Priorizar a biblioteca padrão de Go (stdlib) sempre que atender com elegância e eficiência aos requisitos.
+  * Quando bibliotecas de terceiros forem necessárias, selecionar pacotes maduros, seguros, ativamente mantidos e com baixo acoplamento/árvore de dependências enxuta.
+- Decisões Sob Demanda (sem imposições pré-fabricadas):
+  * Estratégias como empacotamento embutido (//go:embed), servidores HTTP/gRPC, ferramentas de live-reload no desenvolvimento local (Air), ORMs ou migrations SQL NÃO devem ser impostas arbitrariamente: só devem ser adotadas se fizerem sentido para o projeto e forem expressamente acordadas no prompt.
 
 ================================================================================
 PILAR 6: ENGENHARIA DE AGENTES, PRIORIDADE DE FERRAMENTAS E ECONOMIA DE TOKENS
@@ -163,12 +161,20 @@ PILAR 6: ENGENHARIA DE AGENTES, PRIORIDADE DE FERRAMENTAS E ECONOMIA DE TOKENS
      - Gestão de Contexto e Subagentes: Delegação de pesquisas e tarefas isoladas para subagentes dedicados para manter a janela de contexto do agente principal limpa, enxuta e focada.
 
 ================================================================================
-PILAR 7: GOVERNANÇA OPENSPEC (PO/QA, PT-BR E REGRAS PERMANENTES)
+PILAR 7: GOVERNANÇA OPENSPEC (ALINHAMENTO PO/QA, PT-BR E BOAS PRÁTICAS)
 ================================================================================
-- Configurar 'openspec/config.yaml' com:
-  * context: Declaração da stack do projeto (Go, Clean Architecture, stack escolhida, TDD/BDD >= 80%, Makefile, PT-BR, Autonomia e Ferramentas Nativas do AGY).
-  * rules.proposal: Foco no 'porquê' e 'o que muda', declaração explícita de impacto e idioma PT-BR.
-  * rules.specs: Escrita em PT-BR sob ótica CONJUNTA de PO (valor de negócio e critérios de aceitação) e QA (cenários de teste com 4 hashtags '#### Scenario:', bullets '- **WHEN**' e '- **THEN**', validação de bordas e erros). Mínimo de 50 caracteres na seção '## Purpose'.
+- Configurar 'openspec/config.yaml' promovendo entendimento mútuo entre Product Owner (PO) e Quality Assurance (QA):
+  * context: Declaração da stack do projeto (Go, Clean Architecture, tecnologias escolhidas, TDD/BDD >= 80%, Makefile, PT-BR, Autonomia e Ferramentas Nativas do AGY).
+  * rules.proposal: Foco no 'porquê' (motivação de negócio) e 'o que muda' (escopo funcional e técnico), declaração explícita de impacto e idioma PT-BR.
+  * rules.specs: Escrita em PT-BR sob ótica CONJUNTA e colaborativa de PO e QA:
+    - **Diretrizes para o Product Owner (PO)**:
+      * Redação em linguagem clara, ubíqua e acessível ao negócio, descrevendo o valor entregue sem detalhes internos de implementação (como nomes de funções ou classes) que obscureçam a regra.
+      * Seção '## Purpose' obrigatória (mínimo de 50 caracteres) explicando claramente o objetivo da capacidade para o produto e seus usuários.
+      * Requisitos funcionais ('### Requirement: <Nome>') com critérios de aceitação objetivos e verificáveis.
+    - **Diretrizes para o Quality Assurance (QA) e Automação de Testes**:
+      * Estruturação formal de cenários BDD/Gherkin com 4 hashtags '#### Scenario: <Nome>' e bullets padronizados '- **WHEN**' e '- **THEN**' (e opcionalmente '- **GIVEN**').
+      * Cobertura determinística de fluxos principais (caminho feliz), fluxos alternativos, validação de limites/bordas e tratamento de erros e exceções.
+      * Cenários redigidos de forma precisa para que ferramentas de automação de testes (como Godog/Cucumber para Go, Playwright, testes de contrato ou testes E2E) consigam traduzir e validar os comportamentos de ponta a ponta sem ambiguidades.
   * rules.tasks: Seções numeradas '## N. Nome do Grupo', checkboxes '- [ ] N.M Descrição', tarefas explícitas de testes unitários/BDD com validação de cobertura >= 80% e 'make check'.
   * operations.apply.guidance: Executar 'make test' e 'make check' para validar alterações antes de concluir tarefas, priorizando ferramentas nativas.
 
